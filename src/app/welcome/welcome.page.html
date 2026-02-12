@@ -1,0 +1,36 @@
+<ion-content [fullscreen]="true">
+    <ion-toolbar>
+      <div class="welcome_main h_100vh bg_gogreen">
+        <div>
+          <img src="../../assets/welcome/welcome_ingredients.svg" class="welcome_ingredients" alt="welcome_ingredients" title="welcome_ingredients">
+        </div>
+        <div class="welcome_second">
+          <div class="delivery_man_main">
+            <img src="../../assets/welcome/delivery_man.svg" class="delivery_man" alt="delivery_man" title="delivery_man">
+          </div>
+          <div class="content_welcome">
+            <div class="order_in_seconds_main text_center">
+              <img src="../../assets/welcome/order_in_seconds.svg" class="order_in_seconds" alt="order_in_seconds" title="order_in_seconds">
+            </div>
+            
+            <div class="login_welcome d_flex justify_content_center">
+              <a class="bg_gogreen text_white text_center" href="../login">Log in</a>
+            </div>
+             
+            <div class="sign_up_welcome d_flex justify_content_center">
+              <!-- <a class="text_center text_grey" href="../signup">I'm new, sign me up</a> -->
+              <div class="text_center text_grey mt-2" (click)="signUpPage()">I'm new, sign me up</div>
+            </div>
+            
+            <div class="welcome_footer">
+              <p class="text_grey">
+                By logging in or registering, you agree to our <br>
+                <a class="text_gogreen text_dec_none" href="javascript:void(0)">Terms of service</a> and <a class="text_gogreen text_dec_none" href="../login">Privacy policy</a>.
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </ion-toolbar>
+</ion-content>

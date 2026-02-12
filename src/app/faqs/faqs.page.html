@@ -1,0 +1,121 @@
+<ion-header [translucent]="true" class="mineee">
+  <!-- <ion-toolbar>
+    <div class="header">
+      <div class="col1">
+        <img
+          src="../../assets/home/backbutton.svg"
+          (click)="goBackToScreen()"
+          class="backbutton"
+          alt="Back"
+          title="Back"
+        />
+      </div>
+      <div class="col2">
+        <p class="address">FAQs</p>
+      </div>
+      <div class="col3">
+        <ion-icon name="checkmark-outline" class="check-icon"></ion-icon>
+      </div>
+    </div>
+  </ion-toolbar> -->
+
+  <div class="zero_padding">
+    <div class="row header_row">
+      <div class="my_common_header">
+        <ion-col size="2" class="common_header">
+          <div (click)="goBack()" class="back_arrow_div">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+          </div>
+        </ion-col>
+        <ion-col size="8" class="upload_product_heading">
+          <h2>FAQs</h2>
+        </ion-col>
+        <ion-col size="2" class="check_right">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </ion-col>
+      </div>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="main-faqs">
+    <ion-title class="faq-title">Frequently Asked Questions</ion-title>
+
+    <div class="faq-quest">
+      <div value="q1">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">What is Go Green?</p>
+        </div>
+        <div class="faq-answer" slot="content">
+          Go Green is a platform connecting eco-conscious customers with
+          sustainable vendors and products.
+        </div>
+      </div>
+
+      <div value="q2">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">How do I register as a vendor?</p>
+        </div>
+        <div class="faq-answer" slot="content">
+          Go to the vendor section and click on “Register.” Fill in your store
+          details and submit for verification.
+        </div>
+      </div>
+
+      <div value="q3">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">Can customers order directly from vendors?</p>
+        </div>
+        <div class="faq-answer" slot="content">
+          Yes, customers can place orders directly from the vendor profile if
+          the vendor has enabled that feature.
+        </div>
+      </div>
+
+      <div value="q4">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">
+            How do I locate eco-friendly stores near me?
+          </p>
+        </div>
+        <div class="faq-answer" slot="content">
+          Enable location access and use the “Find Stores Near Me” option on the
+          home screen.
+        </div>
+      </div>
+
+      <div value="q5">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">
+            How can I add my store’s exact location on the map?
+          </p>
+        </div>
+        <div class="faq-answer" slot="content">
+          While registering, use the map picker to drop a pin or auto-detect
+          your store’s location.
+        </div>
+      </div>
+
+      <div value="q6">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">Is Go Green available in all cities?</p>
+        </div>
+        <div class="faq-answer" slot="content">
+          Currently, Go Green is live in select cities. We are expanding
+          rapidly—stay tuned!
+        </div>
+      </div>
+
+      <div value="q7">
+        <div slot="header" class="faq-item">
+          <p class="faq-question">How do I update my store information?</p>
+        </div>
+        <div class="faq-answer" slot="content">
+          Go to “Profile” > “Manage Store” and update your details. Changes may
+          require admin approval.
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

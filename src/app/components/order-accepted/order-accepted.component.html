@@ -1,0 +1,91 @@
+<ion-card class="order-card">
+  <div class="main_div">
+    <div class="for">
+      <div class="image-section">
+        <img src="../../assets/welcome/delivery_man.svg" alt="Shop Image" />
+      </div>
+      <div class="spinner-border" role="status">
+        <!-- <span class="sr-only">Loading...</span> -->
+      </div>
+    </div>
+    <h2 class="main-title">New Order!</h2>
+    <div class="order-meta">ID: {{this.orderDetails?.order_uid}}
+    </div>
+    <table class="order_modal_cutomer_deatils">
+      <tbody>
+        <tr>
+          <th>Customer Name</th>
+          <td>{{this.orderDetails?.firstname}} {{this.orderDetails?.lastname}}</td>
+        </tr>
+        <tr>
+          <th>Contact</th>
+          <td>{{this.orderDetails?.prefix}} {{this.orderDetails?.phonenumber}}</td>
+        </tr>
+        <tr>
+          <th>Address</th>
+          <td>{{this.orderDetails?.address}}</td>
+        </tr>
+        <tr>
+          <th>Distance from vendor to customer</th>
+          <td>{{ (vendor_to_customer_distance_km ?? '0.00') + ' KM' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="main-title">Vendor Details</h2>
+    <table class="order_modal_cutomer_deatils">
+      <tbody>
+        <tr>
+          <th>Vendor Name</th>
+          <td>{{this.orderDetails?.store_name}} </td>
+        </tr>
+        <tr>
+          <th>Contact</th>
+          <td>{{this.orderDetails?.vendor_prefix}} {{this.orderDetails?.vendor_phonenumber}}</td>
+        </tr>
+        <tr>
+          <th>Address</th>
+          <td>{{this.orderDetails?.store_address}}</td>
+        </tr>
+          <tr>
+          <th>Distance from me to vendor</th>
+          <td>{{ (rider_to_vendor_distance_km ?? '0.00') + ' KM' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="bill_div">
+      <!-- <div class="order-details">
+        <h4>ORDER DETAILS:</h4>
+        <table class="order_items_table">
+          <thead>
+            <tr>
+              <th>Sr</th>
+              <th>Item Name</th>
+              <th>Qty</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order_list; let i = index">
+              <td class="text_middle">{{ i + 1 }}</td>
+              <td class="width_full">{{ item.product_name }} ({{item.variant_value}})</td>
+              <td class="text_middle">{{ item.product_quantity }}</td>
+              <td class="text_middle">${{ item.total_item_price }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div> -->
+      <div class="bill-section">
+        <div class="total-bill">Total Bill: <strong>${{ this.orderDetails?.total_price }}</strong></div>
+      </div>
+
+      <!-- Accept Button -->
+      <div class="order_pop_modal">
+        <button (click)="onAccept()" class="btn accept_order_btn">Accept</button>
+        <button (click)="onDecline()" class="btn reject_order_btn">Reject</button>
+      </div>
+    </div>
+  </div>
+
+</ion-card>

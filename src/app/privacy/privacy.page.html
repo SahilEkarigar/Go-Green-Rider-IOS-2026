@@ -1,0 +1,60 @@
+<ion-header [translucent]="true" class="mineee">
+  <!-- <ion-toolbar>
+    <div class="header header-centered">
+      <div class="col1">
+        <img src="../../assets/home/backbutton.svg" (click)="goBackToScreen()" class="avatarprofile" alt="Go Back">
+      </div>
+      <div class="col2 title-center">
+        <p class="profile">Privacy Policy</p>
+      </div>
+      <div class="col2"></div>
+    </div>
+  </ion-toolbar> -->
+  <div class="zero_padding">
+    <div class="row header_row">
+      <div class="my_common_header">
+        <ion-col size="2" class="common_header">
+          <div (click)="goBack()" class="back_arrow_div">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+          </div>
+        </ion-col>
+        <ion-col size="8" class="upload_product_heading">
+          <h2>Privacy Policy</h2>
+        </ion-col>
+        <ion-col size="2" class="check_right">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </ion-col>
+      </div>
+    </div>
+  </div>
+</ion-header>
+
+
+<ion-content class="ion-padding content">
+  <div class="container">
+    <div class="create_account">
+      <h6>Privacy Policy</h6>
+      <p class="text-center">
+        At Go Green Store, we are committed to protecting your privacy. This Privacy Policy outlines how we collect, use, and safeguard your personal information when you use our services.
+      </p>
+      
+      <div class="field_row_div">
+        <label>Information Collection:</label>
+        <p class="input-field text-center">We collect personal information like name, email address, and payment information when you use our services.</p>
+
+        <label>Data Usage:</label>
+        <p class="input-field text-center">We use the data to process your orders, improve user experience, and communicate with you regarding your purchases.</p>
+
+        <label>Third-Party Sharing:</label>
+        <p class="input-field text-center">We do not sell your personal information. We may share your data with third-party service providers who help us fulfill your orders and provide customer support.</p>
+
+        <label>Data Protection:</label>
+        <p class="input-field text-center">We use secure encryption methods to protect your personal information during transactions.</p>
+      </div>
+
+      <p class="text-center" style="margin-top: 20px;">
+        By using our services, you consent to the terms of this Privacy Policy. If you have any questions, please contact us.
+      </p>
+    </div>
+  </div>
+</ion-content>

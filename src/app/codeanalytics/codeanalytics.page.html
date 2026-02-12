@@ -1,0 +1,61 @@
+<ion-content [fullscreen]="true">
+  <div class="container zero_padding">
+    <div class="row header_row">
+      <div class="my_common_header">
+        <ion-col size="2" class="common_header">
+          <div (click)="goBack()" class="back_arrow_div">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+          </div>
+        </ion-col>
+        <ion-col size="8" class="upload_product_heading">
+          <h2>Analytics</h2>
+        </ion-col>
+        <ion-col size="2" class="check_right">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </ion-col>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="analytics-segment">
+    <button [class.active]="selectedTab === 'today'" (click)="selectTab('today')">Today</button>
+    <button [class.active]="selectedTab === 'week'" (click)="selectTab('week')">Weekly</button>
+    <button [class.active]="selectedTab === 'month'" (click)="selectTab('month')">Monthly</button>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="stat-grid">
+
+    <!-- Row 1: Orders + Completion -->
+    <div class="caard-1">
+      <div class="card-title">{{ currentData?.totalOrders || 0 }}</div>
+      <div class="card-sub">Total Orders</div>
+    </div>
+    <div class="caard-1">
+      <div class="card-title">{{ currentData?.completionRate || 0 }}%</div>
+      <div class="card-sub">Completion Rate</div>
+    </div>
+
+    <!-- Row 2: Line Chart -->
+    <div class="caard-1 chart-card full-width">
+      <canvas id="lineChart"></canvas>
+    </div>
+
+    <!-- Row 3: Top Day + Repeat Customers -->
+    <div class="caard-1">
+      <div class="card-title">{{ topDay?.day || '-' }}</div>
+      <div class="card-sub">Top Performing Day</div>
+    </div>
+    <div class="caard-1">
+      <div class="card-title">{{ repeatCustomerPercentage || 0 }}%</div>
+      <div class="card-sub">Repeat Customers</div>
+    </div>
+
+    <!-- Row 4: Bar Chart -->
+    <div class="caard-1 chart-card full-width">
+      <div class="card-sub1">Earnings</div>
+      <canvas id="barChart"></canvas>
+    </div>
+  </div>
+</ion-content>

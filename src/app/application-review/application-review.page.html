@@ -1,0 +1,24 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <div class="header" (click)="goBack()">
+      <div class="col1">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+     
+    </div>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true">
+  <div class="welcome_main">
+    <div class="delivery_man_main">
+      <img src="../../assets/application-review/application_review_image.svg" alt="Application Review" />
+    </div>
+    <div class="content_welcome">
+      <img src="../../assets/application-review/Group 736.svg" alt="Under Review" class="under-review-image" />
+      <p class="review-text">
+        Your application is currently under review. We will<br>notify you as soon as it has been approved. Thank you<br>for your patience!
+      </p>
+      <button class="ok-button" (click)="goHome()">OK</button>
+    </div>
+  </div>
+</ion-content>

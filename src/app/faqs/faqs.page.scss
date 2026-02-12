@@ -1,0 +1,162 @@
+.faq-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-align: center;
+  color: #2d6a4f;
+  white-space: normal;
+}
+
+.faq-bg {
+  background-color: #f8f9fa;
+}
+
+.faq-accordion-group {
+  --border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.faq-header {
+  border-radius: 12px;
+  margin: 10px 0;
+  --inner-border-width: 0;
+  font-weight: 600;
+}
+
+.faq-icon {
+  font-size: 20px;
+  color: #005528;
+}
+
+.faq-content {
+  font-size: 14.5px;
+  color: #444;
+  background: #fff;
+  border-radius: 0 0 12px 12px;
+}
+
+.mineee {
+  z-index: 999;
+  position: sticky;
+  background: white;
+  border-bottom: 2px solid #e7e7e7 !important;
+  box-shadow: 0px 0px 0px red !important;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+.backbutton {
+  width: 22px;
+  height: 22px;
+}
+
+.col2 p {
+  font-family: "Open Sans", sans-serif;
+  color: #005528;
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0;
+}
+
+.check-icon {
+  font-size: 24px;
+  color: #005528;
+}
+.faq-header {
+  background: none;
+  border: none;
+}
+.faq-group {
+  --border-radius: 0;
+}
+
+.faq-item {
+  padding: 14px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.faq-question {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #222;
+}
+
+.faq-answer {
+  padding: 12px;
+  font-size: 0.95rem;
+  color: #333;
+  background: #f1f1f1;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.main-faqs {
+  background: rgba(0, 85, 45, 0.1215686275);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 8px #cdcdcd;
+}
+
+
+// Start bottom css for header section 
+.row.header_row {
+  .my_common_header {
+    padding: 5px 25px 12px 25px;
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid #ededed;
+
+    .common_header {
+      text-align: left;
+      padding: 0px !important;
+
+      .back_arrow_div {
+        background: #00552b;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        box-shadow: 0px 2px 5px #cdcdcd;
+
+        i {
+          color: #fff;
+          font-size: 18px;
+        }
+      }
+    }
+
+    .upload_product_heading {
+      h2 {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-size: 20px;
+        font-weight: 600;
+        text-align: center;
+        text-wrap: nowrap;
+      }
+    }
+
+    .check_right {
+      text-align: right;
+
+      i {
+        font-size: 20px;
+        color: #005528;
+      }
+    }
+  }
+}
+
+.zero_padding {
+  padding: 0px;
+}
+
+// End bottom css for header section 

@@ -1,0 +1,63 @@
+.splashmain {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #088b46;
+}
+.splashmain .boundries {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    animation: boundriesMove 1.5s ease-in-out forwards;
+}
+.splashmain .leaf {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 70%;
+    animation: leafMove 1.5s ease-out  forwards;
+}
+.gogreen_logo {
+    animation: zoomIn 1.5s ease-in-out forwards;
+}
+@keyframes zoomIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+@keyframes leafMove {
+    from {
+        transform: translate(200px, 200px); /* Start from bottom-right */
+        opacity: 0;
+    }
+    to {
+        transform: translate(0, 0); /* Move to normal position */
+        opacity: 1;
+    }
+}
+@keyframes boundriesMove {
+    from {
+      transform: translate(-170px, -170px); /* Start from top-left */
+      opacity: 0;
+    }
+    to {
+      transform: translate(0, 0); /* Move to normal position */
+      opacity: 1;
+    }
+  }
+  
+  
+@media screen and (min-width: 600px) {
+    .splashmain .leaf {
+        width: 50%;
+    }
+    .splashmain .boundries {
+        width: 50%;
+    }
+}

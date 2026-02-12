@@ -1,0 +1,196 @@
+<ion-header [translucent]="true" class="mineee">
+  <ion-toolbar>
+    <div class="header">
+      <div class="col1">
+        <a href="../home" class="">
+        <img src="../../assets/home/backbutton.svg" class="avatarprofile" alt="avatarprofile" title="avatarprofile">
+      </a>
+      </div>
+      <div class="col2">
+        <p class="profile">PICKUP</p>
+      </div>
+      <div class="col2"></div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+  
+  <div class="map-container">
+   
+    <iframe class="position_relative"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3151.835434508616!2d144.95373531590465!3d-37.81720974202126!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6ad65d5df0b0b0b1%3A0x5045675218ce6e0!2sMelbourne%2C%20Australia!5e0!3m2!1sen!2sin!4v1649118758657!5m2!1sen!2sin"
+      width="100%"
+      height="700"
+      style="border:0;"
+      loading="lazy" style="z-index: -1;">
+    </iframe>
+
+    <div class="location_white_bg">
+      <div class="updown_icon">
+        <img (click)="add_select_loc()" src="../../assets/home/updown_icon.svg" alt="" srcset="">
+      </div>
+      
+<div class="orderlists" *ngFor="let order of orders; let i = index">
+          <div class="order-card">
+            <div class="order-header" (click)="toggleAccordion(i)">
+              
+              <div class="upper_map">
+                <div class="user-info">
+                  <div class="avatar"></div>
+                  <div class="main_info">
+                    <div class="customer_details_div">
+                      <p class="orderid">order id : OD117216332413925000 </p>
+                      <h3 class="headingname">amul chocolate brownie ice cream tub</h3>
+                      <div class="time_price">
+                         <p class="time">1</p>
+                      
+                      </div>
+                    </div>
+                    
+                    <div class="pricedollar">
+                       <p class="price">$30</p>
+                    </div>
+  
+                 
+                  </div>
+                </div>
+  
+  
+                <div class="address_details">
+                  <p class="store_address_head">
+                    Store Address:
+                  </p>
+  
+                  <div class="detailed_address">
+                    <p>1.</p>
+                    <div class="detailed_address2">
+                      <p class="sd">Store Address: <span class="sd_inner">xyz Store. #13/4 4020</span></p>
+                      <p class="cn">Contact Number: <span class="cn_inner">9898997655</span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
+              <div #bottom_map class="bottom_map">
+                <div class="opencontent">
+                  <div class="opencontent_details">
+                    <h6>Delievery Address:</h6>
+                    <p>Customer Name: <span class="sub_content_span">Dhruv</span></p>
+                    <p>Customer address: <span class="sub_content_span">#23 xys 1234</span></p>
+                    <p>Phone Number: <span class="sub_content_span">9876543210</span></p>
+  
+                    <div class="notediv">
+                      <label for="note">Customer Note:</label><br>
+                      <input type="text" class="notetext">
+                    </div>
+                    
+                   
+                  </div>
+                </div>
+  
+  
+                <div class="statusdiv">
+                  <div class="addtime">
+                    <p class="Address List">Address List</p>
+                    <p class="timecounter" id="hidecounter">Time 02:00</p>
+
+                  </div>
+                  
+                  
+                  <div class="first">
+                    <img src="../../assets/home/dot.svg" alt="">
+                    <p>ride current location</p>
+                  </div>
+  
+                  <!-- <img src="../../assets/home/dotline.svg" alt="" class="lineimages" id="forhide">
+                  <img src="../../assets/home/line.svg" alt="" class="lineimages" id="forshow"> -->
+                  <!-- Images -->
+<img src="../../assets/home/dotline.svg" alt="" class="lineimages" id="forhide">
+<img src="../../assets/home/line.svg" alt="" class="lineimages" id="forshow" style="display: none;">
+                  
+  
+                  <div class="second">
+                    <img src="../../assets/home/dotcrircle.svg" alt="">
+                    <p>ride current location</p>
+                  </div>
+  
+                  <img src="../../assets/home/dotline.svg" alt="" class="lineimages">
+  
+                  <div class="second">
+                    <img src="../../assets/home/dotcrircle.svg" alt="">
+                    <p>ride current location</p>
+                  </div>
+  
+                </div>
+              </div>
+
+
+              <div class="submitorder">
+                <div class="login_welcome d_flex justify_content_center">
+                   <!-- <a class="bg_gogreen text_center orderpickup" expand="block">Order Pickup</a> 
+                   <a class="bg_gogreen text_center orderdelivered"  id="open-custom-dialog" expand="block">Order Delivered</a>  -->
+
+                  <!-- Order Pickup Button (Initially Visible) -->
+<a class="bg_gogreen text_center orderpickup" id="orderPickup" expand="block" 
+(click)="toggleOrderStatus()">Order Pickup</a>
+
+<!-- Order Delivered Button (Initially Hidden) -->
+<a class="bg_gogreen text_center orderdelivered" id="orderDelivered" expand="block" style="display: none;">Order Delivered</a>
+
+                
+
+                 
+                </div>
+              </div>
+            
+             
+
+             
+            </div>
+
+
+           
+
+        
+
+          </div>
+        </div>
+
+
+
+        
+    </div>
+  </div>
+
+
+  <ion-modal id="example-modal" #modal trigger="orderDelivered">
+    <ng-template>
+      <div class="wrapper">
+        <img src="../../assets/home/submitimage.svg" alt="">
+
+        <!-- Submit Button -->
+        <a class="submit" id="open-custom-dialog-two" expand="block" (click)="openModal()">Submit</a>
+
+      </div>
+    </ng-template>
+</ion-modal>
+
+<!-- Second Modal (Initially Hidden) -->
+<div class="secondmodall" [ngClass]="{'show-modal': isModalOpen}">
+    <div class="wrapper">
+      <div class="gotohome">
+        <img src="../../assets/home/done.svg" alt="" class="doneicons">
+        <img src="../../assets/home/textimage.svg" alt="" class="textimage">
+      
+        <a class="done" href="/home">Go To Home</a>
+      </div>
+    </div>
+</div>
+
+
+  
+ 
+</ion-content>

@@ -1,0 +1,466 @@
+import { Component, OnInit, HostListener, ElementRef, AfterViewInit } from '@angular/core';
+import { IonicModule } from '@ionic/angular';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { Geolocation } from '@capacitor/geolocation';
+
+declare var bootstrap: any;
+
+
+import { GoogleMap } from '@capacitor/google-maps';
+declare var google: any;
+import { environment } from '../../environments/environment';
+
+@Component({
+  selector: 'app-store-details',
+  templateUrl: './store-details.page.html',
+  styleUrls: ['./store-details.page.scss'],
+  standalone: true,
+  imports: [IonicModule, FormsModule, CommonModule],
+})
+
+
+export class StoreDetailsPage implements AfterViewInit {
+
+  isExpanded = true;
+  private startY = 0;
+  private threshold = 50; // Minimum swipe distance to trigger
+  private isDragging = false;
+  constructor(private el: ElementRef, private router: Router) { }
+
+  async ngAfterViewInit() {
+    const collapseElements = document.querySelectorAll('.accordion .accordion-collapse');
+    collapseElements.forEach((el: any) => {
+      new bootstrap.Collapse(el, { toggle: false });
+    });
+
+    await this.loadMap();
+  }
+
+  @HostListener('touchstart', ['$event'])
+  onTouchStart(event: TouchEvent) {
+    const target = event.target as HTMLElement;
+    if (target.closest('.bottom-sheet-handle')) {
+      this.startY = event.touches[0].clientY;
+      this.isDragging = true;
+      event.preventDefault();
+    }
+  }
+
+  @HostListener('touchmove', ['$event'])
+  onTouchMove(event: TouchEvent) {
+    if (!this.isDragging) return;
+
+    const currentY = event.touches[0].clientY;
+    const diff = this.startY - currentY;
+
+    // Prevent scrolling the page when interacting with bottom sheet
+    event.preventDefault();
+  }
+
+  @HostListener('touchend', ['$event'])
+  onTouchEnd(event: TouchEvent) {
+    if (!this.isDragging) return;
+    const endY = event.changedTouches[0].clientY;
+    const diff = this.startY - endY;
+    // Swipe up
+    if (diff > this.threshold) {
+      this.isExpanded = true;
+    }
+    // Swipe down
+    else if (diff < -this.threshold) {
+      this.isExpanded = false;
+    }
+    this.isDragging = false;
+  }
+
+  toggleSheet() {
+    this.isExpanded = !this.isExpanded;
+  }
+
+  navigateToHome() {
+    this.router.navigate(['/home'])
+  }
+
+  map: any;
+  directionsService: any;
+  path: google.maps.LatLng[] = [];
+  driverMarker!: google.maps.Marker;
+  destinationMarker!: google.maps.Marker;
+  routePolyline!: google.maps.Polyline;
+  currentIndex = 0;
+  // Manual rotate mode when user rotates with two fingers
+  manualRotate: boolean = false;
+  private manualRotateResetTimer: any;
+  private isProgrammaticHeadingUpdate: boolean = false;
+  
+  // Navigation mode - follow live GPS like Google Maps
+  navigationMode: boolean = false;
+  private lastLivePosition: google.maps.LatLngLiteral | null = null;
+  private gpsWatchId: string | null = null;
+
+
+  loadMap() {
+    const mapElement = document.getElementById('map') as HTMLElement;
+    const mapOptions: any = {
+      zoom: 16,
+      center: { lat: 28.6139, lng: 77.2090 },
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      disableDefaultUI: true,
+      gestureHandling: 'greedy', // allow all gestures including rotate (vector maps)
+      rotateControl: true,       // show compass to reset/indicate rotation
+    };
+    if (environment.googleMapId) {
+      mapOptions.mapId = environment.googleMapId;
+    }
+    this.map = new google.maps.Map(mapElement, mapOptions);
+    // Ensure an initial tilt so rotation is visually apparent
+    if (typeof this.map.setTilt === 'function') {
+      this.map.setTilt(60);
+    } else {
+      this.map.setOptions({ tilt: 60 });
+    }
+
+    // Listen for user-driven heading changes to enable manual rotate mode
+    this.map.addListener('heading_changed', () => {
+      if (this.isProgrammaticHeadingUpdate) {
+        return; // ignore programmatic updates
+      }
+      this.manualRotate = true;
+      if (this.manualRotateResetTimer) {
+        clearTimeout(this.manualRotateResetTimer);
+      }
+      // After 60s without user rotation, resume auto heading
+      this.manualRotateResetTimer = setTimeout(() => {
+        this.manualRotate = false;
+      }, 60000);
+    });
+
+    this.directionsService = new google.maps.DirectionsService();
+
+    // draw initial route
+    this.calculateRoute({ lat: 28.6139, lng: 77.2090 });
+  }
+
+  // Start live GPS navigation mode like Google Maps
+  async startNavigationMode() {
+    this.navigationMode = true;
+    
+    try {
+      // Request permission if needed
+      const permission = await Geolocation.checkPermissions();
+      if (permission.location !== 'granted') {
+        await Geolocation.requestPermissions();
+      }
+
+      // Start watching GPS position
+      this.gpsWatchId = await Geolocation.watchPosition(
+        {
+          enableHighAccuracy: true,
+          timeout: 5000,
+          maximumAge: 1000
+        },
+        (position, err) => {
+          if (err || !position?.coords) {
+            console.error('GPS error:', err);
+            return;
+          }
+
+          const currentPos: google.maps.LatLngLiteral = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          // Update marker position
+          if (!this.driverMarker) {
+            this.driverMarker = new google.maps.Marker({
+              position: currentPos,
+              map: this.map,
+              icon: {
+                path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+                scale: 6,
+                strokeColor: '#008a4a',
+                strokeWeight: 2,
+                fillColor: '#008a4a',
+                fillOpacity: 1,
+              },
+            });
+          } else {
+            this.driverMarker.setPosition(currentPos);
+          }
+
+          // Calculate heading if we have previous position
+          if (this.lastLivePosition && !this.manualRotate) {
+            const heading = google.maps.geometry.spherical.computeHeading(
+              new google.maps.LatLng(this.lastLivePosition.lat, this.lastLivePosition.lng),
+              new google.maps.LatLng(currentPos.lat, currentPos.lng)
+            );
+
+            // Update marker rotation
+            this.driverMarker.setIcon({
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              scale: 6,
+              strokeColor: '#008a4a',
+              strokeWeight: 2,
+              fillColor: '#008a4a',
+              fillOpacity: 1,
+              rotation: heading
+            });
+
+            // Update camera with live navigation
+            this.updateDriverCamera(currentPos, currentPos);
+          }
+
+          this.lastLivePosition = currentPos;
+        }
+      );
+
+      console.log('🧭 Navigation mode started');
+    } catch (error) {
+      console.error('Failed to start navigation:', error);
+    }
+  }
+
+  // Stop live GPS navigation
+  async stopNavigationMode() {
+    this.navigationMode = false;
+    
+    if (this.gpsWatchId) {
+      await Geolocation.clearWatch({ id: this.gpsWatchId });
+      this.gpsWatchId = null;
+    }
+    
+    this.lastLivePosition = null;
+    console.log('🛑 Navigation mode stopped');
+  }
+
+  // Toggle navigation mode
+  toggleNavigationMode() {
+    if (this.navigationMode) {
+      this.stopNavigationMode();
+    } else {
+      this.startNavigationMode();
+    }
+  }
+
+  calculateRoute(origin: google.maps.LatLngLiteral) {
+    const request = {
+      origin: origin,
+      destination: { lat: 28.4595, lng: 77.0266 }, // 👈 drop location
+      travelMode: google.maps.TravelMode.DRIVING,
+
+    };
+
+    this.directionsService.route(request, (result: any, status: any) => {
+      if (status === 'OK') {
+        // Build full path from all steps for accurate simulation
+        const steps = result.routes[0].legs[0].steps;
+        let fullPath: google.maps.LatLng[] = [];
+        steps.forEach((step: any) => {
+          const segment = google.maps.geometry.encoding.decodePath(step.polyline.points);
+          fullPath = fullPath.concat(segment);
+        });
+        this.path = fullPath;
+
+        // Remove old polyline if recalculating
+        if (this.routePolyline) {
+          this.routePolyline.setMap(null);
+        }
+
+        // Draw single route polyline (green)
+        this.routePolyline = new google.maps.Polyline({
+          path: fullPath,
+          geodesic: true,
+          strokeColor: '#008a4a',
+          strokeOpacity: 1.0,
+          strokeWeight: 5,
+        });
+        this.routePolyline.setMap(this.map);
+
+        // Driver marker
+        if (!this.driverMarker) {
+          this.driverMarker = new google.maps.Marker({
+            position: fullPath[0],
+            map: this.map,
+            // icon: {
+            //   url: '../../assets/home/liveLocationRider.svg',
+            //   scaledSize: new google.maps.Size(40, 40),
+            // },
+            icon:{
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              scale: 5,
+              strokeColor: '#008a4a',
+              strokeWeight: 2,
+              fillColor: '#008a4a',
+              fillOpacity: 1,
+              // rotation: heading
+            },
+          });
+        }
+
+        // Destination marker
+        if (!this.destinationMarker) {
+          this.destinationMarker = new google.maps.Marker({
+            position: request.destination,
+            map: this.map,
+          });
+        }
+
+
+      }
+    });
+  }
+
+  // ✅ Keep rider bottom-center
+  panToWithOffset(latlng: google.maps.LatLng, offsetX: number, offsetY: number) {
+    const scale = Math.pow(4, this.map.getZoom());
+    const proj = this.map.getProjection();
+
+    if (!proj) return;
+
+    const point = proj.fromLatLngToPoint(latlng);
+    const worldCoord = new google.maps.Point(
+      point.x * scale,
+      point.y * scale
+    );
+
+    const newPoint = new google.maps.Point(
+      worldCoord.x + offsetX / scale,
+      worldCoord.y + offsetY / scale
+    );
+
+    const newLatLng = proj.fromPointToLatLng(
+      new google.maps.Point(newPoint.x / scale, newPoint.y / scale)
+    );
+
+    this.map.panTo(newLatLng);
+  }
+
+
+  updateDriverCamera(rider: google.maps.LatLngLiteral, next: google.maps.LatLngLiteral) {
+    // 1. In navigation mode, use GPS-based heading; in simulation use route heading
+    let heading = 0;
+    if (this.navigationMode && this.lastLivePosition) {
+      heading = google.maps.geometry.spherical.computeHeading(
+        new google.maps.LatLng(this.lastLivePosition.lat, this.lastLivePosition.lng),
+        new google.maps.LatLng(rider.lat, rider.lng)
+      );
+    } else {
+      // Simulation mode - calculate from route points
+      heading = google.maps.geometry.spherical.computeHeading(
+        new google.maps.LatLng(rider.lat, rider.lng),
+        new google.maps.LatLng(next.lat, next.lng)
+      );
+    }
+
+
+
+    const riderLatLngObj = new google.maps.LatLng(rider.lat, rider.lng);
+
+    // Camera ko JS Maps API methods se update karo
+    this.map.setCenter(riderLatLngObj);
+    this.map.setZoom(18);
+    if (!this.manualRotate) {
+      // Only update heading if not in manual rotate mode
+      this.isProgrammaticHeadingUpdate = true;
+      if (typeof this.map.setHeading === 'function') {
+        this.map.setHeading(heading);
+      } else {
+        this.map.setOptions({ heading: heading });
+      }
+      // small timeout to avoid treating this as user change
+      setTimeout(() => (this.isProgrammaticHeadingUpdate = false), 0);
+    }
+    if (typeof this.map.setTilt === 'function') {
+      this.map.setTilt(60);
+    } else {
+      this.map.setOptions({ tilt: 60 });
+    }
+
+    // Rider ko hamesha lower-third me lock karne ke liye projection-based offset
+    const mapDiv = this.map.getDiv();
+    const offsetY = -Math.round(mapDiv.clientHeight * 0.30); // negative => center moves north, rider appears lower
+    this.panToWithOffset(riderLatLngObj, 0, offsetY);
+  }
+
+  simulationInterval: any;
+  isSimulating: boolean = false;
+
+  toggleSimulation(event: Event) {
+    event.stopPropagation();
+    this.isSimulating = !this.isSimulating;
+
+    if (this.isSimulating) {
+      console.log("Starting simulation...");
+      this.isExpanded = false;
+      this.currentIndex = 0;
+      this.startSimulation();
+    } else {
+      console.log("Stopping simulation...");
+      if (this.simulationInterval) {
+        clearInterval(this.simulationInterval);
+      }
+    }
+  }
+
+  startSimulation() {
+    // Always start from the beginning
+    this.currentIndex = 0;
+    // Reset marker to the start of the path
+    if (this.driverMarker && this.path.length > 0) {
+      this.driverMarker.setPosition(this.path[0]);
+    }
+
+    if (this.simulationInterval) {
+      clearInterval(this.simulationInterval);
+    }
+
+    this.simulationInterval = setInterval(() => {
+      if (this.currentIndex < this.path.length - 1) {
+        const position = this.path[this.currentIndex];
+        const nextPosition = this.path[this.currentIndex + 1];
+
+        // Move the marker
+        if (this.driverMarker) {
+          this.driverMarker.setPosition(position);
+          // Calculate heading (bearing) for marker rotation
+          const heading = google.maps.geometry.spherical.computeHeading(position, nextPosition);
+          this.driverMarker.setIcon({
+            path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+            scale: 5,
+            strokeColor: '#008a4a',
+            strokeWeight: 2,
+            fillColor: '#008a4a',
+            fillOpacity: 1,
+            rotation: heading
+          });
+        }
+
+        // Update camera with new heading
+        const riderLatLng = position.toJSON();
+        const nextLatLng = nextPosition.toJSON();
+        this.updateDriverCamera(riderLatLng, nextLatLng);
+
+        this.currentIndex++;
+      } else {
+        clearInterval(this.simulationInterval);
+      }
+    }, 1000);
+  }
+
+
+    // startSimulation() {
+  //   setInterval(() => {
+  //     if (this.currentIndex < this.path.length - 1) {
+  //       const riderLatLng = this.path[this.currentIndex];
+  //       const nextLatLng = this.path[this.currentIndex + 1];
+
+  //       // this.updateDriverCamera(riderLatLng, nextLatLng);
+
+  //       this.driverMarker.setPosition(riderLatLng);
+  //       this.currentIndex++;
+  //     }
+  //   }, 1000);
+  // }
+}

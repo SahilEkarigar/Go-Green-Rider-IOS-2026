@@ -1,0 +1,329 @@
+<ion-header [translucent]="true" class="custom-header" [class.scrolled]="isScrolled">
+  <ion-toolbar>
+    <div>
+      <!-- <ion-button expand="block" (click)="testNewOrder()">
+      🚀 Test New Order Notification
+      </ion-button> -->
+      <div class="profile-section">
+        <div class="rider_profile_name">
+          <img [src]="user.data?.profile_pic || '../../assets/home/rider_profile.png'" class="avatar-img"
+            alt="avatar" />
+          <div class="profile-info">
+            <h2> {{ user.data?.firstname }} {{ user.data?.lastname }}</h2>
+            <p class="store-info">
+              {{ user.data?.address }}
+            </p>
+          </div>
+        </div>
+        <div class="toggle">
+          <p class="store_status">Store Status</p>
+          <div class="toggle-container" [ngClass]="{'active': isActive}">
+            <div class="toggle-btn" [ngClass]="{'active': isActive}"></div>
+
+            <div class="toggle-label offline" [ngClass]="{'active-text': isActive}" (click)="setStatus(false)">
+              Offline
+            </div>
+
+            <div class="toggle-label online" [ngClass]="{'inactive-text': isActive}" (click)="setStatus(true)">
+              Online
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content scrollEvents="true" (ionScroll)="onScroll($event)">
+
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div class="outer_box_padding pb-2">
+
+
+    <div class="tracking-card">
+      <h3 class="uppercase">Tracking details</h3>
+      <div class="tracking-box">
+        <div class="stats-row new-style">
+          <div class="stat-box-wrapper">
+            <div class="stat-box">
+              <div class="icon-green">
+                <img class="icon-size" src="../../assets/home/total_earn_image.svg" alt="Total" />
+              </div>
+              <div class="stat-text">
+                <p class="stat-value">{{ user.data?.total_orders }}</p>
+                <p class="stat-label">Total
+                  <br> Orders
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="divider-vertical"></div>
+          <div class="stat-box-wrapper">
+            <div class="stat-box">
+              <div class="icon-darkgreen">
+                <img class="icon-size" src="../../assets/home/total_orders_images.svg" alt="Completed" />
+              </div>
+              <div class="stat-text">
+                <p class="stat-value">
+                  {{ user.data?.completed_orders }}
+                </p>
+                <p class="stat-label">Completed <br> Orders</p>
+              </div>
+            </div>
+          </div>
+          <div class="divider-vertical"></div>
+          <div class="stat-box-wrapper">
+            <div class="stat-box">
+              <div class="icon-red">
+                <img class="icon-size" src="../../assets/home/pendingOrder.svg" alt="Pending" />
+              </div>
+              <div class="stat-text">
+                <p class="stat-value">{{ user.data?.rejected_orders }}</p>
+                <p class="stat-label">Rejected <br />Orders</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="action-buttons">
+      <div class="order-buttons">
+        <button class="receive-btn" [class.active]="selectedTab === 'receive'" (click)="selectTab('receive')">
+          <img [src]="selectedTab === 'receive' 
+                ? '../../assets/home/resive_order_image.svg' 
+                : '../../assets/home/resive_order_image_black.svg'" class="prepare-icon" />
+          Receive Order
+        </button>
+
+        <button class="prepare-btn" [class.active]="selectedTab === 'completed'" (click)="selectTab('completed')">
+          <img
+            [src]="selectedTab === 'completed' ? '../../assets/home/total_orders_images.svg':  '../../assets/home/completed_icon_button.svg'"
+            class="prepare-icon" />
+          Completed Order
+        </button>
+      </div>
+    </div>
+    <ng-container *ngIf="selectedTab === 'receive'">
+      <div class="orders-section">
+        <h3>New Orders</h3>
+
+        <!-- Show message if no received orders -->
+        <div *ngIf="!receivedOrders || receivedOrders.length === 0" class="no-orders">
+          No orders for this vendor
+        </div>
+
+        <!-- Loop through all received orders -->
+        <div class="order-card" *ngFor="let order of receivedOrders">
+          <div class="order-header">
+            <div class="order-id"><strong>ID: {{ order.order_uid }}</strong></div>
+
+            <div class="right-header">
+              <div class="delivery-info" *ngIf="order.is_fast_delivery">
+                <img src="../../assets/home/fast_delavery_image.svg" class="delivery-icon" />
+                <span class="fast-delivery-text">Fast Delivery</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-name">
+            <div class="order-time-receive"><span>pick time: {{ order.preparing_time }} min</span></div>
+            <span class="order-time-receive">{{ order.order_created_at | date:'shortTime' }}</span>
+          </div>
+
+          <div class="divider-items"></div>
+
+          <div class="order-title_box">
+            <h6>order details</h6>
+          </div>
+
+          <div class="order-items">
+            <!-- Loop through items in the order -->
+            <div class="item justify-content-between" *ngFor="let item of order.items">
+              <div class="d-flex gap-1 align-items-center">
+                <span class="dot green-dot"></span> <!-- keep your dot classes unchanged -->
+                <span class="text-products">{{ item.product_quantity }} x {{ item.product_name }}</span>
+              </div>
+              <span class="amount-items">$ {{ item.total_item_price || item.product_price }}</span>
+            </div>
+          </div>
+
+          <div class="customer_details_box">
+            <div class="customer_details" (click)="toggleSection(order.order_id, 'customer')">
+              <div class="left_side_detials">
+                <div>
+                  <img src="../../assets/home/customer_details_image.svg" class="delivery-icon" />
+                </div>
+                <div>
+                  <p class="details_title">Customer details</p>
+                </div>
+              </div>
+              <div class="right_side_details">
+                <img src="../../assets/home/arrow_viewMore.svg" class="delivery-icon"
+                  [class.rotated]="orderExpanded[order.order_id]?.customer" />
+
+              </div>
+            </div>
+
+            <div *ngIf="orderExpanded[order.order_id]?.customer" class="expanded-details">
+              <p><strong>Customer Name:</strong> {{ order.firstname }} {{ order.lastname }}</p>
+              <p><strong>Address:</strong> {{ order.address }}</p>
+              <p><strong>Contact Number:</strong> {{ order.phonenumber }}</p>
+            </div>
+          </div>
+
+          <!-- Store Details -->
+          <div class="customer_details_box">
+            <div class="customer_details" (click)="toggleSection(order.order_id, 'store')">
+              <div class="left_side_detials">
+                <div>
+                  <img src="../../assets/home/store_details_svgImgage.svg" class="delivery-icon" />
+                </div>
+                <div>
+                  <p class="details_title">Store details</p>
+                </div>
+              </div>
+              <div class="right_side_details">
+                <img src="../../assets/home/arrow_viewMore.svg" class="delivery-icon"
+                  [class.rotated]="orderExpanded[order.order_id]?.store" />
+
+              </div>
+            </div>
+
+            <div *ngIf="orderExpanded[order.order_id]?.store" class="expanded-details">
+              <p><strong>Store Name:</strong> {{ order.store_name }}</p>
+              <p><strong>Address:</strong> {{ order.store_address }}</p>
+              <p><strong>Contact Number:</strong> {{ order.vendor_prefix }} {{ order.vendor_phonenumber }}</p>
+            </div>
+          </div>
+
+          <div class="divider-items mt-0"></div>
+
+          <div class="action-row">
+            <button class="accept-btn" (click)="navigateStoreDetails(order)">Map</button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+
+    <ng-container *ngIf="selectedTab === 'completed'">
+      <div class="orders-section">
+        <h3>Delivered orders</h3>
+        <div *ngIf="!completedOrders || completedOrders.length === 0" class="no-orders">
+          No delivered orders for this vendor
+        </div>
+        <div class="order-card" *ngFor="let order of completedOrders">
+          <div class="order-header">
+            <div class="order-id"><strong>ID:{{ order.order_uid }}</strong></div>
+            <div class="right-header">
+              <div class="delivery-info" *ngIf="order.is_fast_delivery">
+                <img src="../../assets/home/fast_delavery_image.svg" class="delivery-icon" />
+                <span class="fast-delivery-text">Fast Delivery</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-name">
+            <div class="order-time-receive"><span>Pick time: {{ order.preparing_time }} min</span></div>
+            <span class="order-time-receive">{{ order.order_created_at | date:'shortTime' }}</span>
+          </div>
+
+          <div class="accordion" id="accordionExampleB">
+            <!-- Order details -->
+            <div class="accordion-item customer_details_box">
+              <button class="customer_details" type="button" data-bs-toggle="collapse"
+                [attr.data-bs-target]="'#collapseOrder' + order.order_id" aria-expanded="false">
+                <div class="left_side_detials">
+                  <div>
+                    <img src="../../assets/home/customer_details_image.svg" class="delivery-icon" />
+                  </div>
+                  <div>
+                    <p class="details_title">Order items</p>
+                  </div>
+                </div>
+                <div class="right_side_details">
+                  <img src="../../assets/home/arrow_viewMore.svg" class="delivery-icon icon-rotate" />
+                </div>
+              </button>
+              <div [id]="'collapseOrder' + order.order_id" class="accordion-collapse collapse">
+                <div class="accordion-body pt-0">
+                  <div class="order-items">
+                    <div class="item justify-content-between" *ngFor="let item of order.items">
+                      <div class="d-flex gap-1 align-items-center">
+                        <span class="dot"
+                          [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
+                        <span class="text-products">{{ item.product_quantity }} x {{ item.product_name }}</span>
+                      </div>
+                      <span class="amount-items">$ {{ item.total_item_price }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Customer details -->
+            <div class="accordion-item customer_details_box">
+              <button class="customer_details" type="button" data-bs-toggle="collapse"
+                [attr.data-bs-target]="'#collapseCustomer' + order.order_id" aria-expanded="false">
+                <div class="left_side_detials">
+                  <div>
+                    <img src="../../assets/home/customer_details_image.svg" class="delivery-icon" />
+                  </div>
+                  <div>
+                    <p class="details_title">Customer details</p>
+                  </div>
+                </div>
+                <div class="right_side_details">
+                  <img src="../../assets/home/arrow_viewMore.svg" class="delivery-icon icon-rotate" />
+                </div>
+              </button>
+              <div [id]="'collapseCustomer' + order.order_id" class="accordion-collapse collapse">
+                <div class="accordion-body pt-0">
+                  <p><strong>Name:</strong> {{ order.firstname }} {{ order.lastname }}</p>
+                  <p><strong>Address:</strong> {{ order.address }}</p>
+                  <p><strong>Contact:</strong> {{ order.phonenumber }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Store details -->
+            <div class="accordion-item customer_details_box">
+              <button class="customer_details" type="button" data-bs-toggle="collapse"
+                [attr.data-bs-target]="'#collapseStore' + order.order_id" aria-expanded="false">
+                <div class="left_side_detials">
+                  <div>
+                    <img src="../../assets/home/store_details_svgImgage.svg" class="delivery-icon" />
+                  </div>
+                  <div>
+                    <p class="details_title">Store details</p>
+                  </div>
+                </div>
+                <div class="right_side_details">
+                  <img src="../../assets/home/arrow_viewMore.svg" class="delivery-icon icon-rotate" />
+                </div>
+              </button>
+              <div [id]="'collapseStore' + order.order_id" class="accordion-collapse collapse">
+                <div class="accordion-body pt-0">
+                  <p><strong>Store:</strong> {{ order.store_name }}</p>
+                  <p><strong>Address:</strong> {{ order.store_address }}</p>
+                  <p><strong>Contact:</strong> {{ order.vendor_prefix }} {{ order.vendor_phonenumber }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <ng-template #loadingBlock>
+    <!-- Optional backup loading message (if needed) -->
+    <ion-spinner name="crescent"></ion-spinner>
+  </ng-template>
+</ion-content>
+<app-footer-tabs></app-footer-tabs>

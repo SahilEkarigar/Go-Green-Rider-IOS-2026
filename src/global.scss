@@ -1,0 +1,236 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+// @import "bootstrap/dist/css/bootstrap.min.css";
+
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/*
+ * IMPORTANT:
+ * Do NOT import any dark theme palettes to avoid dark mode styles.
+ * So dark.system.css or dark.always.css must NOT be imported.
+ */
+// @import "@ionic/angular/css/palettes/dark.system.css";  <-- REMOVED
+
+/* Fonts */
+@font-face {
+  font-family: opensans_bold;
+  src: url('/assets/gogreen_font/opensans_bold/OpenSans-Bold.eot') format('eot'),
+    url('/assets/gogreen_font/opensans_bold/OpenSans-Bold.woff2') format('woff2'),
+    url('/assets/gogreen_font/opensans_bold/OpenSans-Bold.woff') format('woff'),
+    url('/assets/gogreen_font/opensans_bold/OpenSans-Bold.ttf') format('ttf'),
+    url('/assets/gogreen_font/opensans_bold/OpenSans-Bold.otf') format('otf');
+}
+
+@font-face {
+  font-family: opensans_semibold;
+  src: url('/assets/gogreen_font/opensans_semibold/OpenSans-SemiBold.eot') format('eot'),
+    url('/assets/gogreen_font/opensans_semibold/OpenSans-SemiBold.woff2') format('woff2'),
+    url('/assets/gogreen_font/opensans_semibold/OpenSans-SemiBold.woff') format('woff'),
+    url('/assets/gogreen_font/opensans_semibold/OpenSans-SemiBold.ttf') format('ttf'),
+    url('/assets/gogreen_font/opensans_semibold/OpenSans-SemiBold.otf') format('otf');
+}
+
+@font-face {
+  font-family: opensans_regular;
+  src: url('/assets/gogreen_font/opensans_regular/OpenSans-Regular.eot') format('eot'),
+    url('/assets/gogreen_font/opensans_regular/OpenSans-Regular.woff2') format('woff2'),
+    url('/assets/gogreen_font/opensans_regular/OpenSans-Regular.woff') format('woff'),
+    url('/assets/gogreen_font/opensans_regular/OpenSans-Regular.ttf') format('ttf'),
+    url('/assets/gogreen_font/opensans_regular/OpenSans-Regular.otf') format('otf');
+}
+
+/* Root variables for light mode */
+:root {
+  --ion-font-family: "Open Sans", sans-serif;
+
+  /* Ionic colors */
+  --ion-background-color: #ffffff;
+  --ion-text-color: #000000;
+  --ion-color-primary: #005528;
+  --ion-color-light: #ffffff;
+  --ion-color-dark: #000000;
+
+  /* Override native dark colors to light */
+  --native-dark-font-color: #000000;
+  --native-dark-background-color: #ffffff;
+}
+
+/* Global body font */
+body {
+  font-family: var(--ion-font-family);
+}
+
+/* Custom utility classes */
+.h_100vh {
+  height: 100vh;
+}
+
+.bg_gogreen {
+  background-color: #005528;
+}
+
+.bg_white {
+  background-color: #fff;
+}
+
+.text_center {
+  text-align: center;
+}
+
+.text_white {
+  color: #fff;
+}
+
+.text_gogreen {
+  color: #005528;
+}
+
+.text_grey {
+  color: #808080;
+}
+
+.d_flex {
+  display: flex;
+}
+
+.justify_content_center {
+  justify-content: center;
+}
+
+.opensans_semibold {
+  font-family: opensans_semibold;
+}
+
+.text_dec_none {
+  text-decoration: none;
+}
+
+/* Prevent dark mode styles from applying via media queries */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: light !important;
+    --ion-background-color: #ffffff !important;
+    --ion-text-color: #000000 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  html,
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+/* Prevent Ionic's native dark mode attribute from changing styles */
+html[native-dark-active],
+html.dark,
+body.dark {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Force the light color scheme globally */
+html,
+body {
+  color-scheme: light !important;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+// html body {
+//   overflow: scroll !important;
+// }
+
+.pBottom {
+  padding-bottom: 86px !important;
+}
+
+.error-message {
+  font-size: 12px;
+  color: red;
+  opacity: 0.8;
+}
+
+.customeErrorMsg {
+  font-size: 10px;
+  color: red;
+  font-style: italic;
+}
+.my_common_header{
+  margin-top: 15px;
+}
+
+.payment-status .label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #555;
+}
+
+.payment-status .status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Status colors */
+.payment-status .pending {
+  background-color: #fff4d6;
+  color: #d99200;
+  border: 1px solid #f2c76e;
+}
+
+.payment-status .done {
+  background-color: #e8ffe8;
+  color: #2e9b2e;
+  border: 1px solid #8cd98c;
+}
+
+/* Smooth animation */
+.payment-status .status {
+  transition: background-color 0.25s, color 0.25s;
+}
+
+.accordion-button::after {
+  color: black;
+}
+
+/* 🔒 Force Ionic controls instead of native inputs */
+input,
+select,
+textarea {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}
+
+/* 🔒 Prevent native date picker UI */
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"] {
+  display: none !important;
+}

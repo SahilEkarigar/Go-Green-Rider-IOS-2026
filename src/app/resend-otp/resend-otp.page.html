@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <div class="header">
+      
+      <div class="col1">
+        <i class="fa-solid fa-arrow-left"></i>
+      </div>
+      <div class="col2">
+        <p>OTP</p>
+      </div>
+      <div class="col2">
+        <i class="fa-solid fa-question"></i>
+      </div>
+      
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="logo">
+    <img src="../../assets/otp/OTP_logo.svg" class="otplogo" alt="" title="">
+  </div>
+  <div class="curved-bg">
+      <div class="content">
+          <p class="verification">Verification <span class="code">Code</span></p>
+          <p class="sendcode">Please type the verification code<br>
+              sen to <span class="number">+9876543210</span></p>
+      </div>
+
+      <!-- <div class="otpnumber">
+
+            <div class="otp-container">
+             <input type="text" maxlength="1" class="otp-input">
+              <input type="text" maxlength="1" class="otp-input">
+              <input type="text" maxlength="1" class="otp-input">
+              <input type="text" maxlength="1" class="otp-input">
+            </div>
+      </div> -->
+      <div class="otpnumber">
+        <div class="otp-container">
+          <input type="text" maxlength="1" class="otp-input" (input)="moveToNext($event)" (keydown)="handleBackspace($event)">
+          <input type="text" maxlength="1" class="otp-input" (input)="moveToNext($event)" (keydown)="handleBackspace($event)">
+          <input type="text" maxlength="1" class="otp-input" (input)="moveToNext($event)" (keydown)="handleBackspace($event)">
+          <input type="text" maxlength="1" class="otp-input" (input)="moveToNext($event)" (keydown)="handleBackspace($event)">
+        </div>
+      </div>
+      
+
+
+      <div class="texttimer">
+        <p>Time 03:00</p>
+        <p><a class="" href="../resend-otp">Resend OTP</a></p>
+      </div>
+
+
+      <div class="login_welcome d_flex justify_content_center">
+        <a class="bg_gogreen text_center" href="../login">Continue</a>
+      </div>
+      
+      
+   
+  </div>
+</ion-content>

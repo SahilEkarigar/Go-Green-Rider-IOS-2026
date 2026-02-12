@@ -1,0 +1,139 @@
+<ion-header [translucent]="true">
+  <!-- <ion-toolbar>
+    <ion-title class="d-flex gap-3 align-items-center">
+      <a href="../home">Home</a>
+      <p>Store Details</p>
+    </ion-title>
+  </ion-toolbar> -->
+</ion-header>
+
+<ion-content fullscreen>
+  <div class="store-page">
+    <div class="map-wrapper">
+      <div class="map-toolbar">
+        <button class="back-btn" (click)="navigateToHome()">
+          <img src="../../assets/home/backbutton.svg" alt="back">
+        </button>
+        <div class="map-info">
+
+          <!-- <span class="map-info__coords">Lat: {{ riderLat | number:'1.4-4' }} • Lng: {{ riderLng | number:'1.4-4' }}</span> -->
+        </div>
+
+        <button class="drive-btn"
+          style="position: absolute; right: 10px; top: 10px; border-radius: 50%; width: 40px; height: 40px; background: white; border: none; box-shadow: 0 2px 5px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;"
+          (click)="openGoogleMaps()">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg" alt="Maps"
+            style="width: 24px; height: 24px;">
+        </button>
+      </div>
+      <ion-loading [isOpen]="isMapLoading" message="Loading map..." spinner="crescent">
+      </ion-loading>
+      <div id="map" class="map-canvas"></div>
+    </div>
+
+    <div class="details-panel">
+      <div class="heading_route">
+        <span class="map-info__title">{{ headerText }}</span>
+
+      </div>
+
+
+
+      <div class="panel-header">
+        <div>
+          <p class="panel-label">Store Details</p>
+          <h2 class="m-0">{{ order?.store_name }}</h2>
+          <p class="panel-address">{{ order?.store_address }}</p>
+        </div>
+        <img class="panel-store-img" [src]="order?.store_image || '../../assets/home/store-logo.png'"
+          alt="{{ order?.store_name }}">
+      </div>
+
+      <div class="payment-status">
+        <span class="label">Payment Method</span>
+        <span class="status">
+          {{ order?.payment_method}}
+        </span>
+      </div>
+
+      <div class="payment-status">
+        <span class="label">Payment Status</span>
+        <span class="status" [ngClass]="{
+            'pending': order?.payment_method === 'COD',
+            'done': order?.payment_method !== 'COD'
+          }">
+          {{ order?.payment_method === 'COD' ? 'Pending' : 'Done' }}
+        </span>
+      </div>
+
+      <div class="chat-section" (click)="gotochatscreen()">
+        <div class="chat-header">
+          <p>Chat with {{order?.firstname}} {{order?.lastname}}</p>
+          <div class="chat_icon">
+            <img src="../../assets/icon/chat-icon.png" alt="Chat">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="accordion accordion_box" id="storeDetailsAccordion">
+        <div class="accordion-item mt-3">
+          <h2 class="accordion-header mt-0" id="headingOne">
+            <button class="accordion-button accordion-orderdetals-swiper" type="button" data-bs-toggle="collapse"
+              data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+              Order details
+            </button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+            data-bs-parent="#storeDetailsAccordion">
+
+            <div class="accordion-body">
+              <div class="order-items m-0">
+                <div class="item justify-content-between" *ngFor="let item of order?.items">
+                  <div class="d-flex gap-1 align-items-center">
+                    <span class="dot green-dot"></span>
+                    <span class="text-products">
+                      {{ item.product_quantity }} x {{ item.product_name }}
+                    </span>
+                  </div>
+                  <span class="amount-items">$ {{ item.total_item_price || item.product_price }}</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div class="mt-3" *ngIf="!hideButton">
+        <div class="otp-container text-center" *ngIf="otp && otp.length === 6">
+          <div class="otp-box" *ngFor="let digit of otpDigits">
+            {{ digit }}
+          </div>
+        </div>
+
+        <button *ngIf="pickupButtonText === 'Order Delivered'" class="btn btn-lg reached_pickup_btn w-100"
+          (click)="deliverOrder(order?.order_id)">
+          Order Delivered
+        </button>
+
+        <button *ngIf="pickupButtonText !== 'Send OTP Again' && pickupButtonText !== 'Order Delivered'"
+          class="btn btn-lg reached_pickup_btn w-100" (click)="reachedPickup(order?.order_id)">
+          {{ pickupButtonText }}
+        </button>
+
+        <div class="button-row d-flex" *ngIf="pickupButtonText === 'Send OTP Again'">
+          <button class="btn btn-sm btn-red col-12" (click)="reachedPickup(order?.order_id)">
+            {{ pickupButtonText }}
+          </button>
+        </div>
+      </div>
+
+      <div>
+        <!-- Chat Container *ngIf="!hideButton" -->
+      </div>
+    </div>
+  </div>
+</ion-content>

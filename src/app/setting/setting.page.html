@@ -1,0 +1,324 @@
+<ion-header [translucent]="true" class="header">
+  <div class="green-header">
+    <div class="header-first">
+      <div class="col1">
+        <!-- <a (click)="">
+          <img
+            src="../../assets/home/Group 450.svg"
+            alt="avatarprofile"
+            title="avatarprofile"
+            class="avatarprofile"
+            (click)="goBackToHome()"
+          />
+        </a> -->
+        <div (click)="goBack()" class="back_arrow_div">
+          <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div>
+        <div>
+          <span class="edit-profile-button">
+            4.5
+            <img style="height: 14px" src="assets/home/Star 1.svg" />
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="container main user-profile-box">
+      <div class="create_account">
+        <div>
+          <img [src]="user.data?.profile_pic || 'assets/home/user.jfif'" (error)="onImageError($event)" class="order_in_seconds"
+            alt="Profile Picture" title="Profile Picture" (click)="openImageModal()" />
+          <button class="add-btn">
+            <!-- <img src="assets/home/add(new).svg" /> -->
+          </button>
+        </div>
+        <div class="name-store">
+          <h6>{{ user.data?.firstname }} {{ user.data?.lastname }}</h6>
+          <p>{{ user.data?.prefix }} {{ user.data?.phonenumber }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content class="custom-content">
+  <div class="style-icon">
+    <div class="stat-box-wrapper" (click)="goToWallet()">
+      <div class="stat-box">
+        <div class="icon-wrap green">
+          <img class="icons-image" src="../../assets/home/parchment_17346265.svg" alt="Total" />
+        </div>
+        <div class="stat-text">
+          <p class="stat-label">Balance & History</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider-vertical"></div>
+
+    <div class="stat-box-wrapper">
+      <div class="stat-box">
+        <div class="icon-wrap darkgreen">
+          <img class="icons-image" src="../../assets/home/wallet_2527572.svg" alt="Completed" />
+        </div>
+        <div class="stat-text">
+          <p class="stat-label">Funds Holder</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider-vertical"></div>
+
+    <div class="stat-box-wrapper">
+      <div class="stat-box">
+        <div class="icon-wrap red">
+          <img class="icons-image" src="../../assets/home/store_726569.svg" alt="Pending" />
+        </div>
+        <div class="stat-text">
+          <p class="stat-label">Checkout Lane</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="items">
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>Personal Info</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="goToEditProfile()">
+          <div>
+            <span class="front-icon"><i class="fa fa-user"></i></span>
+            <span class="setting-page-text">User Profile</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="goToChangePassword()">
+          <div>
+            <span class="front-icon"><i class="fa fa-unlock-alt"></i></span>
+            <span class="setting-page-text">Change Password</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shop Details -->
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>Vehicle Details</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="showVehicelDetialPage()">
+          <div>
+            <span class="front-icon"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
+            <span class="setting-page-text">Vehicle Details</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="goTostatus()">
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">Rider Status</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="showRiderDetailPage()">
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">Rider Documentation</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>History / Analytics</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="goToOrder()">
+          <div>
+            <span class="front-icon"><i class="fa fa-list-alt"></i></span>
+            <span class="setting-page-text">Orders History</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="goToAnalytics()">
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">Analytics</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>Wallet</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="goToWallet()">
+          <div>
+            <span class="front-icon"><i class="fa fa-history" aria-hidden="true"></i></span>
+            <span class="setting-page-text">Balance & History</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <!-- <div class="clickable-item dfgsdf" >
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">Funds Holder</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div> -->
+        <!-- <div class="seperator"></div> -->
+        <div class="clickable-item " (click)="goTohistory()">
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">Withdrawal History</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>Banking Details</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="goTobank()">
+          <div>
+            <span class="front-icon"><i class="fa fa-university" aria-hidden="true"></i></span>
+            <span class="setting-page-text">Bank Account Info</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support -->
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>Support</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="goTohelp()">
+          <div>
+            <span class="front-icon"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
+            <span class="setting-page-text">Contact Support</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="goToFAQS()">
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">FAQs</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="goToTerms()">
+          <div>
+            <span class="front-icon"><i class="fa fa-line-chart"></i></span>
+            <span class="setting-page-text">Terms & Condition</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <div class="seperator"></div>
+        <div class="clickable-item " (click)="goToPrivacy()">
+          <div>
+            <span class="front-icon"><i class="fa fa-lock" aria-hidden="true"></i></span>
+            <span class="setting-page-text">Privacy</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">
+        <div class="green-line"></div>
+        <h3>Reviews</h3>
+      </div>
+      <div class="personal">
+        <div class="clickable-item " (click)="goToRatings()">
+          <div>
+            <span class="front-icon"><i class="fa fa-star" aria-hidden="true"></i></span>
+            <span class="setting-page-text">Ratings/Reviews</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div>
+        <!-- <div class="seperator"></div> -->
+        <!-- <div class="clickable-item dfgsdf">
+          <div>
+            <span class="front-icon"
+              ><i class="fa fa-comment" aria-hidden="true"></i
+            ></span>
+            <span class="setting-page-text">Feedback</span>
+          </div>
+          <div>
+            <span class="arrow-icon"><i class="fa fa-angle-right"></i></span>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <div class="pBottom">
+      <button class="logout" (click)="logoutUser()">
+        <i class="fa fa-sign-out" aria-hidden="true"></i>
+        Logout
+      </button>
+    </div>
+  </div>
+</ion-content>
+<app-footer-tabs></app-footer-tabs>

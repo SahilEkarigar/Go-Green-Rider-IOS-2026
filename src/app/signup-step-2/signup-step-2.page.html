@@ -1,0 +1,108 @@
+<ion-content [fullscreen]="true">
+  <div class="container">
+    <div class="row signup_steps_row">
+      <div class="container my_common_header">
+        <div class="row">
+          <ion-col size="12" class="common_header">
+            <!-- <div (click)="goBack()" class="back_arrow_div">
+              <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+            </div> -->
+          </ion-col>
+        </div>
+      </div>
+      <div class="signup_steps ">
+        <ion-col size="12">
+          <h2 class="text-center">Sign Up</h2>
+          <div class="step_counts">
+            <div class="stepper">
+              <div class="step active">
+                <div class="circle">1</div>
+              </div>
+              <div class="step active">
+                <div class="circle">2</div>
+              </div>
+              <div class="step active">
+                <div class="circle">3</div>
+              </div>
+              <div class="step">
+                <div class="circle">4</div>
+              </div>
+              <!-- <div class="step">
+                <div class="circle">5</div>
+              </div> -->
+            </div>
+          </div>
+          <h4 class="text-center mt-2">Driving License & Vehicle Details
+          </h4>
+          <div class="form_box">
+            <h3>Driver Details : </h3>
+            <!-- <div class="form_input_box">
+              <label for="drivers_name">Driver Name</label>
+              <input type="text" [(ngModel)]="drivers_name" [ngClass]="{'input-error': isDrivers_nameInvalid}" id="drivers_name" name="drivers_name" class="form-control" placeholder="Enter Driver Name">
+            </div> -->
+            <div class="form_input_box">
+              <label for="drivers_licenseNumber">Driver’s License Number</label>
+              <input type="number" [(ngModel)]="drivers_licenseNumber"
+                [ngClass]="{'input-error': isDrivers_licenseNumberInvalid}" id="drivers_licenseNumber"
+                name="drivers_licenseNumber" class="form-control" placeholder="Enter License Name">
+            </div>
+            <div class="form_input_box">
+              <label for="licenseExpiryDate">License Expiry Date</label>
+              <input type="date" [(ngModel)]="licenseExpiryDate" [ngClass]="{'input-error': isLicenseExpiryDateInvalid}"
+                id="licenseExpiryDate" name="licenseExpiryDate" class="form-control" placeholder="Enter License Name">
+            </div>
+            <div class="form_input_box">
+              <label for="licence_Image">License Image</label>
+              <input type="file" (change)="onFileSelected($event, 'license')"
+                [ngClass]="{'input-error': isLicenceImageInvalid}" id="licence_Image" name="licence_Image"
+                class="form-control" placeholder="Enter Store Image">
+            </div>
+            <h3>Vehicle Details : </h3>
+            <div class="form_input_box">
+              <label for="vehicelOwnerName">Vehicle Owner Name</label>
+              <input type="text" [(ngModel)]="vehicelOwnerName" [ngClass]="{'input-error': isVehicelOwnerNameInvalid}"
+                id="vehicelOwnerName" name="vehicelOwnerName" class="form-control" placeholder="Enter License Name">
+            </div>
+            <div class="form_input_box">
+              <label for="vehicelRegistrationNumber">Vehicle Registration Number</label>
+              <input type="number" [(ngModel)]="vehicelRegistrationNumber"
+                [ngClass]="{'input-error': isVehicelRegistrationNumberInvalid}" id="vehicelRegistrationNumber"
+                name="vehicelRegistrationNumber" class="form-control" placeholder="Enter License Name">
+            </div>
+            <div class="form_input_box">
+              <label for="vehicelType">Vehicle Type</label>
+              <input type="text" [(ngModel)]="vehicelType" [ngClass]="{'input-error': isVehicelTypeInvalid}"
+                id="vehicelType" name="vehicelType" class="form-control" placeholder="Enter License Name">
+            </div>
+            <div class="form_input_box">
+              <label for="registrationExpiryDate">Registration Expiry Date</label>
+              <input type="date" [(ngModel)]="registrationExpiryDate"
+                [ngClass]="{'input-error': isRegistrationExpiryDateInvalid}" id="registrationExpiryDate"
+                name="registrationExpiryDate" class="form-control" placeholder="Enter License Name">
+            </div>
+            <div class="form_input_box">
+              <label for="registrationDocument">Registration Document</label>
+              <input type="file" (change)="onFileSelected($event, 'registration')"
+                [ngClass]="{'input-error': isRegistrationDocumentInvalid}" id="registrationDocument"
+                name="registrationDocument" class="form-control" placeholder="Enter Store Image">
+            </div>           
+          </div>
+          <div>
+            <p class="error-message">{{generalError}}</p>
+          </div>
+        </ion-col>
+
+      </div>
+      <div class="container my_common_header">
+        <div class="row">
+          <ion-col size="12" class="common_footer">
+            <div class="button_group">
+              <!-- <button type="button" class="btn theme_button_light mr_10" (click)="skip_Step()">Skip</button> -->
+              <button type="button" class="btn theme_button" (click)="NextStep()">Next</button>
+            </div>
+          </ion-col>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

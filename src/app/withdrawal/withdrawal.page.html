@@ -1,0 +1,63 @@
+<ion-header [translucent]="true" class="mineee">
+  <!-- <ion-toolbar>
+    <div class="header">
+      <div class="col1">
+        <a href="javascript:void(0)" (click)="goBackToScreen()">
+          <img
+            src="../../assets/home/backbutton.svg"
+            class="avatarprofile"
+            alt="avatarprofile"
+            title="avatarprofile"
+          />
+        </a>
+      </div>
+      <div class="col2">
+        <p class="profile">Withdrawal History</p>
+      </div>
+      <div class="col2"></div>
+    </div>
+  </ion-toolbar> -->
+  <div class="container zero_padding ">
+    <div class="row header_row">
+      <div class="my_common_header">
+        <ion-col size="2" class="common_header">
+          <div (click)="goBack()" class="back_arrow_div">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+          </div>
+        </ion-col>
+        <ion-col size="8" class="upload_product_heading">
+          <h2>Withdrawal History</h2>
+        </ion-col>
+        <ion-col size="2" class="check_right">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </ion-col>
+      </div>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="wallet-container pBottom">
+    <div class="transactions">
+      <ul>
+        <li *ngFor="let tx of transactions">
+          <div class="transaction-item">
+            <div class="item-details">
+              <span class="order-id">{{ tx.amount }}</span>
+            </div>
+          </div>
+          <div class="withdrw">
+            <small class="date">{{ tx.date }}</small>
+            <small class="date">{{ tx.time }}</small>
+          </div>
+          <div class="seperator"></div>
+          <div class="status-row" [ngClass]="tx.status.toLowerCase()">
+            <ion-icon [name]="getStatusIcon(tx.status)"></ion-icon>
+            <span class="status-text">Status. {{ tx.status }}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</ion-content>
+<app-footer-tabs></app-footer-tabs>

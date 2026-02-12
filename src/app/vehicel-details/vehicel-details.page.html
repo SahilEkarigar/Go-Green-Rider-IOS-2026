@@ -1,0 +1,73 @@
+<ion-content class="ioncontent">
+  <div class="zero_padding">
+    <div class="row header_row">
+      <div class="my_common_header">
+        <ion-col size="2" class="common_header">
+          <div (click)="goBack()" class="back_arrow_div">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+          </div>
+        </ion-col>
+        <ion-col size="8" class="upload_product_heading">
+          <h2>Vehicle Details</h2>
+        </ion-col>
+        <ion-col size="2" class="check_right" (click)="updateVehicleDetails()">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </ion-col>
+      </div>
+    </div>
+  </div>
+
+  <div class="container body_container pBottom">
+    <div class="contain-bank">
+      <div class="content-vehicle">
+        <div class="form_input_box">
+          <label for="vehicleOwnerName">Vehicle Owner Name</label>
+          <input type="text" [(ngModel)]="vehicleOwnerName" id="vehicleOwnerName" name="vehicleOwnerName"
+            class="form-control" placeholder="Enter Vehicle Owner Name" />
+        </div>
+        <div class="form_input_box">
+          <label for="vehicleRegNumber">Vehicle Registration Number</label>
+          <input type="text" [(ngModel)]="vehicleRegNumber" id="vehicleRegNumber" name="vehicleRegNumber"
+            class="form-control" placeholder="Enter Vehicle Registration Number" />
+        </div>
+
+        <div class="form_input_box">
+          <label for="vehicleType">Vehicle Type</label>
+          <select [(ngModel)]="vehicleType" id="vehicleType" name="vehicleType" class="form-control">
+            <option value="" disabled>Select Vehicle Type</option>
+            <option value="Car">Car</option>
+            <option value="Motorcycle">Motorcycle</option>
+            <option value="Truck">Truck</option>
+            <option value="Van">Van</option>
+            <option value="Bus">Bus</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form_input_box">
+          <label for="regExpiryDate">Registration Expiry Date</label>
+          <input type="date" [(ngModel)]="regExpiryDate" id="regExpiryDate" name="regExpiryDate" class="form-control" />
+        </div>
+
+        <div class="form_input_box">
+          <label for="regDocument">Registration Document</label>
+          <div class="document-upload">
+            <div class="image-preview-container">
+              <img [src]="regDocumentPreview || '../../assets/home/submitimage.svg'" alt="Uploaded Document" />
+
+              <label for="regDocument" class="edit-icon">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+              </label>
+
+              <input type="file" id="regDocument" name="regDocument" accept=".jpg,.jpeg,.png"
+                (change)="onFileChange($event)" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</ion-content>
+<app-footer-tabs></app-footer-tabs>

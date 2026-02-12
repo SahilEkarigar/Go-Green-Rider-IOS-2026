@@ -1,0 +1,99 @@
+<ion-header [translucent]="true" class="mineee">
+  <ion-toolbar>
+    <div class="container zero_padding">
+      <div class="row header_row">
+        <div class="my_common_header">
+          <ion-col size="2" class="common_header">
+            <div (click)="goBack()" class="back_arrow_div">
+              <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+            </div>
+          </ion-col>
+          <ion-col size="8" class="upload_product_heading">
+            <h2>Bank Account Info</h2>
+          </ion-col>
+        </div>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="container">
+    <div class="contain-bank">
+      <div class="img-bank">
+        <img class="banking" src="../../assets/home/bank_pic.jpg" />
+      </div>
+
+      <div class="content-bank">
+        <div class="form_input_box">
+          <label for="accountHolderName">Account Holder Name</label>
+          <input
+            type="text"
+            [(ngModel)]="accountHolderName"
+            [ngClass]="{ 'input-error': isAccountHolderNameInvalid }"
+            id="accountHolderName"
+            name="accountHolderName"
+            class="form-control"
+            placeholder="Enter Account Holder Name"
+            readonly
+          />
+        </div>
+
+        <div class="form_input_box">
+          <label for="bankName">Bank Name</label>
+          <input
+            type="text"
+            [(ngModel)]="bankName"
+            id="bankName"
+            name="bankName"
+            class="form-control"
+            placeholder="Enter Bank Name"
+            readonly
+          />
+        </div>
+
+        <div class="form_input_box">
+          <label for="transitNumber">Transit Number</label>
+          <input
+            type="text"
+            [(ngModel)]="transitNumber"
+            [ngClass]="{ 'input-error': isTransitNumberInvalid }"
+            id="transitNumber"
+            name="transitNumber"
+            class="form-control"
+            placeholder="Enter Transit Number"
+            readonly
+          />
+        </div>
+
+        <div class="form_input_box">
+          <label for="institutionNumber">Institution Number</label>
+          <input
+            type="text"
+            [(ngModel)]="institutionNumber"
+            [ngClass]="{ 'input-error': isInstitutionNumberInvalid }"
+            id="institutionNumber"
+            name="institutionNumber"
+            class="form-control"
+            placeholder="Enter Institution Number"
+            readonly
+          />
+        </div>
+
+        <div class="form_input_box">
+          <label for="accountNumber">Account Number</label>
+          <input
+            type="text"
+            [(ngModel)]="accountNumber"
+            [ngClass]="{ 'input-error': isAccountNumberInvalid }"
+            id="accountNumber"
+            name="accountNumber"
+            class="form-control"
+            placeholder="Enter Account Number"
+            readonly
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

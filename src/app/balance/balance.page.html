@@ -1,0 +1,112 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="center-toolbar">
+
+    <!-- Left button -->
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="goBack()">
+         <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+      </ion-button>
+    </ion-buttons>
+
+    <!-- Center title -->
+    <ion-title class="absolute-center-title">
+      Order History
+    </ion-title>
+
+    <!-- Right slot kept empty -->
+    <ion-buttons slot="end"></ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+
+
+
+
+
+<ion-content class="ion-padding">
+  <ion-datetime-button datetime="datetime"></ion-datetime-button>
+
+    <!-- Empty State -->
+  <div *ngIf="orders.length === 0" class="empty-state">
+    <ion-icon name="receipt-outline"></ion-icon>
+    <p>No orders found for selected date</p>
+  </div>
+
+  <!-- Orders List -->
+  <ion-card *ngFor="let order of orders" class="order-card">
+
+    <!-- Order Header -->
+    <ion-card-header>
+      <div class="order-header">
+        <div>
+          <h3>{{ order.vendor?.store_name }}</h3>
+          <p class="order-date">
+            {{ order.created_at | date:'dd MMM yyyy, hh:mm a' }}
+          </p>
+        </div>
+
+        <ion-badge [color]="getOrderStatusColor(order.order_status)">
+        {{ getOrderStatusText(order.order_status) }}
+      </ion-badge>
+      </div>
+    </ion-card-header>
+
+    <ion-card-content>
+
+      <!-- Products -->
+      <div class="product-row" *ngFor="let product of order.products">
+        <img
+          [src]="product.featured_image"
+          class="product-image"
+          alt="product"
+        />
+
+        <div class="product-info">
+          <h4>{{ product.name }}</h4>
+          <p>Qty: {{ product.product_quantity }}</p>
+          <p *ngIf="product.variants?.length">
+            Variant: {{ product.variants[0]?.variant_type }}
+          </p>
+        </div>
+
+        <div class="product-price">
+          ₹{{ product.total_item_price }}
+        </div>
+      </div>
+
+      <ion-divider></ion-divider>
+
+      <!-- Address -->
+      <div class="info-row">
+        <ion-icon name="location-outline"></ion-icon>
+        <p>{{ order.address?.address }}</p>
+      </div>
+
+      <!-- Payment -->
+      <div class="info-row">
+        <ion-icon name="card-outline"></ion-icon>
+        <p>{{ order.payment_method }}</p>
+      </div>
+
+      <!-- Total -->
+      <div class="total-row">
+        <span>Total</span>
+        <strong>₹{{ order.total_price }}</strong>
+      </div>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+
+<ion-modal [keepContentsMounted]="true">
+  <ng-template>
+    <ion-datetime id="datetime" presentation="date" 
+    [value]="selectedDate"
+    (ionChange)="onDateChange($event)"></ion-datetime>
+  </ng-template>
+</ion-modal>
+
+
+<app-footer-tabs></app-footer-tabs>
+

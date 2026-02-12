@@ -1,0 +1,110 @@
+ion-toolbar {
+  background: #fff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 44px 0px 9px 0px;
+}
+
+.profile {
+  margin: 0;
+  font-weight: 700;
+  font-size: 20px;
+  color: #005528;
+  font-family: "Open Sans", serif;
+}
+
+.outer_box_padding {
+  padding: 0 20px 60px 20px;
+}
+
+/* Day Group */
+.day-section {
+  margin-top: 18px;
+}
+.day-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.day-text {
+  font-weight: 600;
+  font-size: 14px;
+  color: #088B46;
+}
+.day-line {
+  flex: 1;
+  height: 1px;
+  background: #ECEDF2;
+  margin-left: 10px;
+}
+
+/* Notification Item */
+.notification-item {
+  display: flex;
+  gap: 12px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.notification-item.unread {
+  background: #f0faf5;
+  box-shadow: 0 2px 12px rgba(0, 128, 0, 0.08);
+}
+
+.bell-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.notification-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.notification-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-title-text {
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.notification-time-text {
+  font-size: 10px;
+  color: #888;
+}
+
+.notification-message {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #333;
+  line-height: 1.4;
+}
+
+/* Details Page Card */
+.notification-detail-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  padding: 18px;
+  margin: 20px 0;
+}
+.notification-detail-body {
+  background: #f0faf5;
+  border-radius: 12px;
+  padding: 14px;
+}

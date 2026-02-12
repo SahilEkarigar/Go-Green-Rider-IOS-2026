@@ -1,0 +1,144 @@
+
+@use 'theme/mixins' as mix;
+
+.my_common_header {
+  padding: 5px 25px 12px 25px;
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid #ededed;
+}
+
+.zero_padding {
+  padding: 0px;
+}
+
+.check_right {
+  text-align: right;
+}
+
+.check_right i {
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+.zero_padding {
+  padding: 0px;
+}
+
+.common_header {
+  text-align: left;
+  padding: 0px !important;
+}
+
+.back_arrow_div {
+  background: #00552b;
+  @include mix.size(30px); 
+  @include mix.flex-center;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px #cdcdcd;
+}
+
+.back_arrow_div i {
+  color: #fff;
+  font-size: 18px;
+}
+
+
+.order-card {
+  margin-bottom: 24px;
+}
+
+.order-header {
+  @include mix.flex-between;
+}
+
+.order-date {
+  font-size: 12px;
+  color: #777;
+}
+
+.product-row {
+  @include mix.flex-center;
+  margin-bottom: 10px;
+}
+
+.product-image {
+  width: 55px;
+  height: 55px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.product-info {
+  flex: 1;
+
+  h4 {
+    margin: 0;
+    font-size: 14px;
+  }
+
+  p {
+    margin: 2px 0;
+    font-size: 12px;
+    color: #666;
+  }
+}
+
+.product-price {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  margin-top: 6px;
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.empty-state {
+  text-align: center;
+  margin-top: 40%;
+
+  ion-icon {
+    font-size: 48px;
+    color: #ccc;
+  }
+
+  p {
+    color: #999;
+    margin-top: 10px;
+  }
+}
+
+.center-toolbar {
+  position: relative;
+}
+
+.absolute-center-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  pointer-events: none; // prevents blocking buttons
+  text-align: center;
+  bottom: 12px;
+}
+ion-button{
+    color: var(--primary-color);
+    font-size: 23px;
+}
+ion-title{
+    color: var(--primary-color);
+    font-weight: 600;
+}

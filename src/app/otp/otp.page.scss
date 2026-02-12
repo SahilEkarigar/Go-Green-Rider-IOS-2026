@@ -1,0 +1,146 @@
+.header-md {
+    -webkit-box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0);
+    box-shadow: 0 0px 0px 0px rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0), 0 0px 0px 0 rgba(0, 0, 0, 0);}
+
+.logo {
+    text-align: center;
+    margin-top: 20px;
+}
+.curved-bg {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height:67%;
+    background: #08813f;
+    border-top-left-radius: 100% 33%;
+    border-top-right-radius: 100% 33%;
+    box-shadow: 0px -10px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .content {
+    text-align: center;
+    padding-top: 30px;
+}
+span.code {
+    font-weight: 600;
+}
+.verification{
+    color: white;
+    font-size: 25px;
+    font-family: "Open Sans", serif;
+    font-weight: 300;
+}
+p.sendcode {
+    color: white;
+    font-family: "Open Sans", serif;
+    font-weight: 300;
+    line-height: 26px;
+    font-size: 15px;
+}
+span.number {
+    font-weight: 500;
+}
+
+
+.otp-container {
+    justify-content: center;
+    
+    padding: 2px 2px;
+    border: 1px solid white !important;
+    border-radius: 50px;
+    width: -moz-fit-content;
+    
+  }
+  
+  .otp-input {
+    width: 50px;
+    height: 50px;
+    margin: 2px 8px 2px 8px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 50%;
+    border: 0px solid white;
+    background: white;
+    color: black;
+    outline: none;
+    pointer-events: auto;
+  }
+  .otpnumber {
+    /* text-align: center !important; */
+    display: flex
+;
+    justify-content: center;
+}
+
+
+.texttimer p {
+    font-size: 11px;
+    color: white;
+    font-family: "Open Sans", serif;
+}
+.texttimer {
+    display: flex
+;
+    justify-content: space-around;
+    padding-top: 10px;
+}
+
+// button
+.login_welcome a {
+    margin-top: 20px;
+    font-family: opensans_semibold;
+    text-decoration: none;
+    border-radius: 30px;
+    display: block;
+    padding: 10px;
+    width: 80%;
+    color: #08813f;
+}
+
+.bg_gogreen{
+    background: white;
+}
+
+//button
+
+
+ion-toolbar.ios.in-toolbar.hydrated {
+    background: #ffffff;
+    /* opacity: -0.2; */
+}
+.header {
+    display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0px 20px 0px 20px;
+}
+ion-header.undefined.header-undefined.header-translucent.header-collapse-none.header-translucent-undefined{
+    z-index: 99;
+    padding-top: 12px;
+
+}
+.col2 p {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: "Open Sans", serif;
+    color: #08813f;
+    font-weight: 600;
+}
+@supports ((-webkit-backdrop-filter: blur(0)) or (backdrop-filter: blur(0))) {
+    .header-translucent-ios ion-toolbar {
+        --opacity: -0.2!important;
+    }
+}
+ion-header.ios.header-ios.header-translucent.header-collapse-none.header-translucent-ios.hydrated {
+    padding-top: 14px !important;
+}
+img.otplogo {
+    width: 50%;
+}
+a {
+    color: white;
+    text-decoration: none;
+}

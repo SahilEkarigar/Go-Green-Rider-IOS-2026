@@ -1,0 +1,115 @@
+import { Component, NgZone } from '@angular/core';
+import { Platform } from '@ionic/angular';
+import { App } from '@capacitor/app';
+import { FcmService } from './services/fcm.service';
+import { SocketManager } from './services/socket-manager';
+import { LocationTracker } from './services/location-tracker';
+import { NotificationHandler } from './services/notification-handler';
+import { Storage } from '@ionic/storage-angular';
+import { StatusBar } from '@capacitor/status-bar';
+@Component({
+  selector: 'app-root',
+  templateUrl: 'app.component.html',
+  styleUrls: ['app.component.scss'],
+  standalone: false,
+})
+export class AppComponent {
+  isAppActive = true;
+
+  constructor(
+    private platform: Platform,
+    private fcm: FcmService,
+    private socketManager: SocketManager,
+    private locationTracker: LocationTracker,
+    private notificationHandler: NotificationHandler,
+    private ngZone: NgZone,
+    private storage: Storage
+  ) {
+    this.platform.ready().then(() => this.initializeApp());
+    this.platform.ready().then(() => {
+    StatusBar.setOverlaysWebView({ overlay: false });
+  });
+  }
+
+  async initializeApp() {
+    await this.platform.ready();
+    await this.storage.create();
+
+    // ✅ Initialize FCM safely
+    try {
+      await this.fcm.initPush();
+    } catch (err) {
+      console.error('❌ FCM initialization failed, retrying in 3s...', err);
+      setTimeout(() => this.fcm.initPush(), 3000);
+    }
+
+    // ✅ Track app state (foreground/background)
+    App.addListener('appStateChange', ({ isActive }) => {
+      this.ngZone.run(() => {
+        this.isAppActive = isActive;
+        // console.log(`📱 App state changed: ${isActive ? 'FOREGROUND' : 'BACKGROUND'}`);
+        this.socketManager.handleAppStateChange(isActive);
+      });
+    });
+
+
+    // ✅ Handle app pause (background or about to be killed)
+    App.addListener('pause', async () => {
+      // console.log('⏸️ App paused — disconnecting socket to save battery');
+      this.socketManager['socketService']?.disconnect();
+    });
+
+    // ✅ Handle browser/tab close or PWA termination (optional for web testing)
+    window.addEventListener('beforeunload', () => {
+      // console.log('🧹 Cleaning up before app unload');
+      this.socketManager['socketService']?.disconnect();
+    });
+
+    // ✅ Redundant fallback (Platform events)
+    this.platform.pause.subscribe(() => {
+      this.ngZone.run(() => {
+        this.isAppActive = false;
+        // console.log('⏸️ Platform PAUSE detected — disconnecting socket');
+        this.socketManager.handleAppStateChange(false);
+      });
+    });
+
+    this.platform.resume.subscribe(() => {
+      this.ngZone.run(() => {
+        this.isAppActive = true;
+        // console.log('▶️ Platform RESUME detected — reconnecting socket');
+        this.socketManager.handleAppStateChange(true);
+      });
+    });
+
+    // ✅ Handle FCM push tap events
+    this.fcm.onNotificationTapped$.subscribe((data) => {
+      if (!data) return;
+      // this.ngZone.run(() => {
+        console.log('📩 Push notification tapped:', data);
+        this.notificationHandler.handleNewOrderNotification({ ...data, source: 'push_notification' });
+      // });
+    });
+    
+    let userId = await this.storage.get('user_id');
+
+    while (!userId) {
+      console.log('⏳ Waiting for user_id...');
+      await new Promise(r => setTimeout(r, 500));
+      userId = await this.storage.get('user_id');
+    }
+
+    // ✅ Initialize socket and background management
+    this.socketManager.initialize(this.notificationHandler, this.isAppActive);
+
+    // ✅ Start GPS tracking
+    try {
+      this.locationTracker.startTracking();
+      // console.log('🛰️ Location tracking started');
+    } catch (err) {
+      console.error('⚠️ Location tracking failed:', err);
+    }
+
+    console.log('✅ App initialization complete.');
+  }
+}

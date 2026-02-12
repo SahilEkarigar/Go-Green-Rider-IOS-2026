@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+
+ion-content {
+  font-family: 'Open Sans', sans-serif;
+  background: #fff;
+}
+
+.welcome_main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 0px 20px 0px 20px ;
+  text-align: center;
+}
+
+.delivery_man_main img {
+  margin-bottom: 20px;
+}
+
+.content_welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+
+.review-text{
+  font-size: 12px;
+  font-weight: 500;
+  color: black;
+  margin: 10px 0px 20px 0px;
+  padding: 0 15px;
+  text-align: center;
+  font-family: opensans_regular;
+}
+
+.ok-button {
+  background-color: #005528	;
+  color: #ffffff;
+  border: none;
+  border-radius: 30px;
+  padding: 14px 0;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: opensans_semibold!important;
+
+}
+
+
+//header
+ion-toolbar.ios.in-toolbar.hydrated {
+  background: #ffffff;
+  /* opacity: -0.2; */
+}
+.header {
+  display: flex
+;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px 0px 20px;
+}
+ion-header.undefined.header-undefined.header-translucent.header-collapse-none.header-translucent-undefined{
+  z-index: 99;
+  padding-top: 20px;
+
+}
+i.fa-solid.fa-arrow-left {
+  color: #005528	;
+  font-size: 18px;
+  font-weight: bold;
+}
+.col2 p {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-family: "Open Sans", serif;
+  color: #005528;
+  font-weight: 600;
+}
+@supports ((-webkit-backdrop-filter: blur(0)) or (backdrop-filter: blur(0))) {
+  .header-translucent-ios ion-toolbar {
+      --opacity: -0.2!important;
+  }
+}
+ion-header.ios.header-ios.header-translucent.header-collapse-none.header-translucent-ios.hydrated {
+  padding-top: 14px !important;
+}
+img.otplogo {
+  width: 50%;
+}
+a {
+  color: white;
+  text-decoration: none;
+}
+

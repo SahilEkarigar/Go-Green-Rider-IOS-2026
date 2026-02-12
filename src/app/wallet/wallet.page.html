@@ -1,0 +1,51 @@
+<ion-header [translucent]="true" class="mineee">
+  <div class="container zero_padding">
+    <div class="row header_row">
+      <div class="my_common_header">
+        <ion-col size="2" class="common_header">
+          <div (click)="goBack()" class="back_arrow_div">
+            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+          </div>
+        </ion-col>
+        <ion-col size="8" class="upload_product_heading">
+          <h2>Balance & History</h2>
+        </ion-col>
+        <ion-col size="2" class="check_right">
+          <i class="fa fa-check" aria-hidden="true"></i>
+        </ion-col>
+      </div>
+    </div>
+  </div>
+
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="wallet-container">
+    <div class="wallet-sub">
+      <div class="wallet-header">
+        <div class="gain-btn">
+          <p>Current Balance</p>
+          <button class="gain">
+            <i class="fa fa-caret-up" aria-hidden="true"></i> 3.4%
+          </button>
+        </div>
+        <h1>$ 1,250.00</h1>
+        <button class="add-money-btn">Withdraw</button>
+      </div>
+    </div>
+    <div class="transactions">
+      <h3>Recent Transactions</h3>
+      <ul>
+        <li>
+          <div class="transaction-item">
+            <span>Order #12345</span>
+            <span class="debit">- $150</span>
+          </div>
+          <small>26 June, 2025</small>
+        </li> 
+      </ul>
+    </div>
+
+
+  </div>
+</ion-content>

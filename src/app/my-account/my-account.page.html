@@ -1,0 +1,87 @@
+<ion-header [translucent]="true" class="mineee">
+  <ion-toolbar>
+    <div class="header">
+      <div class="col1">
+        <a href="../home" class="">
+        <img src="../../assets/home/backbutton.svg" class="avatarprofile" alt="avatarprofile" title="avatarprofile">
+      </a>
+      </div>
+      <div class="col2">
+        <p class="profile">PROFILE</p>
+      </div>
+      <div class="col2"></div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ioncontent">
+  <div class="container main">
+    <div class="create_account">
+      <img src="../../assets/home/profileimage.svg" class="order_in_seconds" alt="order_in_seconds" title="order_in_seconds">
+      <h6>Hudson's Bay</h6>
+      <p class="department">albert florest</p>
+      <!-- <div class="storediv">
+        <a class="bg_red text_white text_center" href="../registrer" id="store">Store</a>
+      </div> -->
+    </div>
+
+    <div class="fields row">
+
+      <a href="../edit-account" class="account_list_link">
+      <div class="input-container">
+        <div class="label"><img src="../../assets/account/accounticon.svg"></div>
+        <p class="input-field"><a href="../edit-account">Edit Account</a></p>
+        <div><img src="../../assets/account/nextstep.svg"></div>
+      </div>
+      </a>
+      
+
+      <a href="../changepassword" class="account_list_link">
+      <div class="input-container">
+        <div class="label"><img src="../../assets/account/lock.svg"></div>
+        <p class="input-field"><a href="../changepassword">Change Password</a></p>
+        <div><img src="../../assets/account/nextstep.svg"></div>
+      </div>
+      </a>
+
+
+
+
+      <a href="../" class="account_list_link">
+      <div class="input-container">
+        
+        <div class="label"><img src="../../assets/account/customercare.svg"></div>
+        
+        <p class="input-field">Help & Support</p>
+        <div><img src="../../assets/account/nextstep.svg"></div>
+      
+      </div>
+    </a>
+
+
+    <a href="../" class="account_list_link">
+      <div class="input-container">
+        <div class="label"><img src="../../assets/account/privacy.svg"></div>
+        <p class="input-field"><a href="../">Privacy</a></p>
+        <div><img src="../../assets/account/nextstep.svg"></div>
+      </div>
+      </a>
+      
+
+      <a href="../" class="account_list_link">
+      <div class="input-container">
+        <div class="label"><img src="../../assets/account/exchange.svg"></div>
+        <p class="input-field"><a href="../">Terms & Conditions</a></p>
+        <div><img src="../../assets/account/nextstep.svg"></div>
+      </div>
+      </a>
+
+    </div>
+
+    <div class="login_welcome d_flex justify_content_center">
+      <a class="bg_red text_white text_center" href="../registrer">LOG OUT</a>
+    </div>
+  </div>
+  
+  <app-footer-tabs></app-footer-tabs>
+</ion-content>

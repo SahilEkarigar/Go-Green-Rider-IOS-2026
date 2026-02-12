@@ -1,0 +1,295 @@
+ion-content {
+  --background: #f5f7fb;
+  --padding-top: 0;
+  overflow: hidden;
+
+  .store-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    height: 100%;
+    padding-top: calc(env(safe-area-inset-top, 24px) + 10px);
+
+    /* ---------------- MAP SECTION ---------------- */
+
+    .map-wrapper {
+      position: sticky;
+      top: 0;
+      height: clamp(230px, 40vh, 320px);
+      margin: 72px 16px 14px;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(34, 68, 146, 0.18);
+      z-index: 5;
+
+      .map-canvas {
+        height: 100%;
+        width: 100%;
+      }
+
+      .map-toolbar {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        right: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 2;
+        padding: 10px 14px;
+
+        .back-btn,
+        .drive-btn {
+          border: none;
+          background: #fff;
+          border-radius: 10px;
+          padding: 8px 12px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          font-weight: 600;
+          font-size: 12px;
+          text-transform: uppercase;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .drive-btn {
+          background: #088B46;
+          color: #fff;
+        }
+
+        .map-info {
+          text-align: center;
+
+          &__title {
+            display: block;
+            font-weight: 600;
+            color: #222;
+            font-size: 20px;
+          }
+
+          &__coords {
+            display: block;
+            font-size: 11px;
+            color: #6b6b6b;
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+
+    /* ---------------- DETAILS PANEL ---------------- */
+
+    .details-panel {
+      background: #fff;
+      border-top-left-radius: 24px;
+      border-top-right-radius: 24px;
+      margin-top: 0;
+      padding: 24px 20px 32px;
+      flex: 1;
+      overflow-y: auto;
+      box-shadow: 0 -12px 32px rgba(17, 36, 84, 0.1);
+        .heading_route{
+          display: flex;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        border-bottom: 1px solid #f1f1f1;
+        padding-bottom: 16px;
+
+        .panel-label {
+          font-size: 12px;
+          text-transform: uppercase;
+          color: #088B46;
+          font-weight: 700;
+          margin-bottom: 6px;
+        }
+
+        .panel-address {
+          font-size: 13px;
+          color: #6d6d6d;
+          margin-bottom: 0;
+        }
+
+        .panel-store-img {
+          width: 60px;
+          height: 60px;
+          border-radius: 16px;
+          object-fit: cover;
+          border: 1px solid #f0f0f0;
+        }
+      }
+
+      /* ---------------- PAYMENT STATUS ---------------- */
+
+      .payment-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .label {
+          font-size: 14px;
+          font-weight: 600;
+        }
+
+        .status {
+          padding: 4px 12px;
+          font-size: 13px;
+          font-weight: 600;
+          border-radius: 8px;
+
+          &.pending {
+            background: #FFE8E8;
+            color: #E53935;
+          }
+
+          &.done {
+            background: #E0F7E9;
+            color: #088B46;
+          }
+        }
+      }
+
+      /* ---------------- ACCORDION SECTION ---------------- */
+
+      .accordion_box {
+        margin-top: 12px;
+
+        .accordion-item {
+          .accordion-button {
+            &::after {
+              background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%2328a745' viewBox='0 0 16 16'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            }
+          }
+
+          .accordion-orderdetals-swiper::after {
+            filter: brightness(0) invert(1);
+          }
+
+          .accordion-body {
+            .order-items {
+              .item {
+                display: flex;
+                justify-content: space-between;
+
+                .dot {
+                  &.green-dot {
+                    width: 8px;
+                    height: 8px;
+                    background: #088B46;
+                    border-radius: 50%;
+                  }
+                }
+
+                .text-products {
+                  font-size: 14px;
+                }
+
+                .amount-items {
+                  font-weight: 600;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      /* ---------------- CHAT SECTION ---------------- */
+
+      .chat-section {
+        position: relative;
+        z-index: 1000;
+        top: 8px;
+
+        .chat-header {
+          background-color: #f4f4f4;
+          padding: 6px 17px;
+          border-radius: 10px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+
+          p {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+          }
+
+          .chat_icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+
+            img {
+              width: 28px;
+              height: 28px;
+              object-fit: contain;
+            }
+          }
+        }
+      }
+
+      /* ---------------- OTP & BUTTONS ---------------- */
+
+      .otp-container {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+
+        .otp-box {
+          width: 40px;
+          height: 50px;
+          background-color: #088B46;
+          color: #fff;
+          font-size: 1.5rem;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 6px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+          letter-spacing: 2px;
+        }
+      }
+
+      .button-row {
+        display: flex;
+        gap: 10px;
+
+        .btn-red {
+          background-color: #dc3545;
+          border: none;
+          color: #fff;
+        }
+
+        .btn-green {
+          background-color: #088B46;
+          border: none;
+          color: #fff;
+        }
+      }
+
+      .reached_pickup_btn {
+        width: 100%;
+        color: #fff;
+        background-color: #088B46;
+        font-family: Open Sans;
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 100%;
+        text-align: center;
+      }
+    }
+  }
+}
