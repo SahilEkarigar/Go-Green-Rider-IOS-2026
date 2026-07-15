@@ -6,7 +6,10 @@ import { SocketManager } from './services/socket-manager';
 import { LocationTracker } from './services/location-tracker';
 import { NotificationHandler } from './services/notification-handler';
 import { Storage } from '@ionic/storage-angular';
-import { StatusBar } from '@capacitor/status-bar';
+import { StatusBar, Style } from '@capacitor/status-bar';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -23,17 +26,43 @@ export class AppComponent {
     private locationTracker: LocationTracker,
     private notificationHandler: NotificationHandler,
     private ngZone: NgZone,
-    private storage: Storage
+    private storage: Storage,
+    private router: Router
   ) {
     this.platform.ready().then(() => this.initializeApp());
-    this.platform.ready().then(() => {
-    StatusBar.setOverlaysWebView({ overlay: false });
-  });
+    this.platform.ready().then(async () => {
+      try {
+        await StatusBar.setOverlaysWebView({ overlay: false });
+      } catch (err) {
+        console.error('StatusBar error', err);
+      }
+    });
   }
 
   async initializeApp() {
     await this.platform.ready();
     await this.storage.create();
+
+    // Listen to router navigation events to dynamically change status bar style/color
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: any) => {
+      const url = event.urlAfterRedirects || event.url;
+      const isSignupPage = url.includes('/signup') || url.includes('/signup-step');
+      
+      try {
+        if (isSignupPage) {
+          StatusBar.setBackgroundColor({ color: '#ffffff' });
+          StatusBar.setStyle({ style: Style.Light });
+        } else {
+          // Brand green for all other screens
+          StatusBar.setBackgroundColor({ color: '#005528' });
+          StatusBar.setStyle({ style: Style.Dark });
+        }
+      } catch (err) {
+        // StatusBar is only active on native platforms
+      }
+    });
 
     // ✅ Initialize FCM safely
     try {

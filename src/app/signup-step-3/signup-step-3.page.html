@@ -1,75 +1,95 @@
-<ion-content [fullscreen]="true">
-  <div class="container">
-    <div class="row signup_steps_row">
-      <div class="container my_common_header">
-        <div class="row">
-          <ion-col size="12" class="common_header">
-            <!-- <div (click)="goBack()" class="back_arrow_div">
-              <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-            </div> -->
-          </ion-col>
+<ion-header class="ion-no-border bg_white">
+  <div class="container my_common_header" style="margin-top: 0px;">
+    <ion-row>
+      <ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
+        <div (click)="goBack()" class="back_arrow_div">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>
         </div>
-      </div>
-      <div class="signup_steps ">
-        <ion-col size="12">
-          <h2 class="text-center">Sign Up</h2>
-          <div class="step_counts">
-            <div class="stepper">
-              <div class="step active">
-                <div class="circle">1</div>
-              </div>
-              <div class="step active">
-                <div class="circle">2</div>
-              </div>
-              <div class="step active">
-                <div class="circle">3</div>
-              </div>
-              <div class="step active">
-                <div class="circle">4</div>
-              </div>
-            </div>
-          </div>
-          <h4 class="text-center">Bank Details (for Payouts)</h4>
-          <div class="form_box">
-            <div class="form_input_box">
-              <label for="account_holder_name">Account Holder Name</label>
-              <input type="text" [(ngModel)]="account_holder_name" [ngClass]="{'input-error': isAccount_holder_nameInvalid}" id="account_holder_name" name="account_holder_name" class="form-control"
-                placeholder="Enter Account Holder Name">
-            </div>
-            <div class="form_input_box">
-              <label for="institution_number">Institution Number</label>
-              <input type="number" [(ngModel)]="institution_number" [ngClass]="{'input-error': isInstitution_numberInvalid}" id="institution_number" name="institution_number" class="form-control"
-                placeholder="Enter 3-digit Institution Number">
-            </div>
-            <div class="form_input_box">
-              <label for="transit_number">Transit Number</label>
-              <input type="number" [(ngModel)]="transit_number" [ngClass]="{'input-error': isTransit_numberInvalid}" id="transit_number" name="transit_number" class="form-control"
-                placeholder="Enter 5-digit Transit Number">
-            </div>
-            <div class="form_input_box">
-              <label for="account_number">Account Number</label>
-              <input type="number" [(ngModel)]="account_number" [ngClass]="{'input-error': isAccount_numberInvalid}" id="account_number" name="account_number" class="form-control"
-                placeholder="Enter 7–12 digit Account Number">
-            </div>
-            <div class="form_input_box">
-              <label for="void_cheque">Void Cheque or Direct Deposit Form (Optional)</label>
-              <input type="file" (change)="onFileSelected($event)" [ngClass]="{'input-error': isVoid_chequeInvoice}" id="void_cheque" name="void_cheque" class="form-control"
-                placeholder="Upload Void Cheque or Direct Deposit Form">
-            </div>
-          </div>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-header>
 
-        </ion-col>
-      </div>
-      <div class="container my_common_header">
-        <div class="row">
-          <ion-col size="12" class="common_footer">
-            <div class="button_group">
-              <button type="button" class="btn theme_button_light mr_10" (click)="skip_Step()">Skip</button>
-              <button type="button" class="btn theme_button" (click)="NextStep()">Submit</button>
+<ion-content class="ioncontent container">
+  <div class="container">
+    <div class="row signup_steps_row" style="padding-bottom: 20px;">
+      <div class="signup_steps">
+        <ion-row>
+          <ion-col size="12">
+            <h2 class="text-center">Sign Up</h2>
+            <div class="step_counts">
+              <div class="stepper">
+                <div class="step active">
+                  <div class="circle">1</div>
+                </div>
+                <div class="step active">
+                  <div class="circle">2</div>
+                </div>
+                <div class="step active">
+                  <div class="circle">3</div>
+                </div>
+                <div class="step active">
+                  <div class="circle">4</div>
+                </div>
+              </div>
+            </div>
+            <h4 class="text-center mt-2">Bank Details (for Payouts)</h4>
+            
+            <div class="form_box">
+              <div class="form_input_box">
+                <label for="account_holder_name">Account Holder Name</label>
+                <input type="text" [(ngModel)]="account_holder_name" [ngClass]="{'input-error': isAccount_holder_nameInvalid}" id="account_holder_name" name="account_holder_name" class="form-control"
+                  placeholder="Enter Account Holder Name">
+                <div *ngIf="isAccount_holder_nameInvalid" class="error-message mt-1">Account Holder Name is required.</div>
+              </div>
+              
+              <div class="form_input_box">
+                <label for="institution_number">Institution Number</label>
+                <input type="number" [(ngModel)]="institution_number" [ngClass]="{'input-error': isInstitution_numberInvalid}" id="institution_number" name="institution_number" class="form-control"
+                  placeholder="Enter 3-digit Institution Number">
+                <div *ngIf="isInstitution_numberInvalid" class="error-message mt-1">Institution Number is required.</div>
+              </div>
+              
+              <div class="form_input_box">
+                <label for="transit_number">Transit Number</label>
+                <input type="number" [(ngModel)]="transit_number" [ngClass]="{'input-error': isTransit_numberInvalid}" id="transit_number" name="transit_number" class="form-control"
+                  placeholder="Enter 5-digit Transit Number">
+                <div *ngIf="isTransit_numberInvalid" class="error-message mt-1">Transit Number is required.</div>
+              </div>
+              
+              <div class="form_input_box">
+                <label for="account_number">Account Number</label>
+                <input type="number" [(ngModel)]="account_number" [ngClass]="{'input-error': isAccount_numberInvalid}" id="account_number" name="account_number" class="form-control"
+                  placeholder="Enter 7–12 digit Account Number">
+                <div *ngIf="isAccount_numberInvalid" class="error-message mt-1">Account Number is required.</div>
+              </div>
+              
+              <div class="form_input_box">
+                <label for="void_cheque">Void Cheque or Direct Deposit Form (Optional)</label>
+                <input type="file" (change)="onFileSelected($event)" [ngClass]="{'input-error': isVoid_chequeInvoice}" id="void_cheque" name="void_cheque" class="form-control"
+                  placeholder="Upload Void Cheque or Direct Deposit Form">
+                <div *ngIf="isVoid_chequeInvoice" class="error-message mt-1">Void Cheque is required.</div>
+              </div>
+            </div>
+            <div>
+              <p class="error-message">{{generalError}}</p>
             </div>
           </ion-col>
-        </div>
+        </ion-row>
       </div>
     </div>
   </div>
 </ion-content>
+
+<ion-footer class="ion-no-border bg_white">
+  <div class="container" style="padding: 10px 15px;">
+    <ion-row>
+      <ion-col size="12" class="ion-no-padding">
+        <div class="button_group">
+          <button type="button" class="btn theme_button_light mr_10" (click)="skip_Step()">Skip</button>
+          <button type="button" class="btn theme_button" (click)="NextStep()">Submit</button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-footer>

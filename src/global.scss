@@ -227,10 +227,4 @@ textarea {
   appearance: none !important;
   -webkit-appearance: none !important;
 }
-
-/* 🔒 Prevent native date picker UI */
-input[type="date"],
-input[type="time"],
-input[type="datetime-local"] {
-  display: none !important;
-}
+

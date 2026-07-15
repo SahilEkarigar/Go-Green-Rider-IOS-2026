@@ -89,11 +89,13 @@ ion-content {
       flex: 1;
       overflow-y: auto;
       box-shadow: 0 -12px 32px rgba(17, 36, 84, 0.1);
-        .heading_route{
-          display: flex;
-          justify-content: center;
-          margin-bottom: 12px;
-        }
+
+      .heading_route {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+
       .panel-header {
         display: flex;
         justify-content: space-between;
@@ -271,6 +273,9 @@ ion-content {
           background-color: #dc3545;
           border: none;
           color: #fff;
+          width: 100%;
+          padding: 12px;
+          border-radius: 6px;
         }
 
         .btn-green {
@@ -289,7 +294,14 @@ ion-content {
         font-size: 15px;
         line-height: 100%;
         text-align: center;
+        border-radius: 6px;
+        padding: 12px;
       }
     }
   }
+}
+
+
+.btn-outer-div {
+  margin-top: 16px;
 }

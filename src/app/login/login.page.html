@@ -1,76 +1,74 @@
 <ion-content [fullscreen]="true">
-  <ion-toolbar>
-    <div class="welcome_main bg_gogreen">
-      <div>
-        <img src="../../assets/welcome/welcome_ingredients.svg" class="welcome_ingredients" alt="welcome_ingredients"
-          title="welcome_ingredients">
-      </div>
-      <div class="welcome_second">
-        <div class="delivery_man_main">
-          <img src="../../assets/welcome/delivery_man.svg" class="delivery_man" alt="delivery_man" title="delivery_man">
-        </div>
-        <div class="content_welcome">
-          <div class="order_in_seconds_main text_center">
-            <img src="../../assets/welcome/order_in_seconds.svg" class="order_in_seconds" alt="order_in_seconds"
-              title="order_in_seconds">
-          </div>
-
-          <div class="fieldscontainer">
-            <div class="input-container">
-              <label for="email" class="label">ID</label>
-              <input type="mail" [(ngModel)]="email" [ngClass]="{'input-error': isEmailInvalid}" class="input-field customeINputEmail"
-                placeholder="enter your id">
-
-            </div>
-            <!-- <div *ngIf="isUserIdInvalid" class="error-message">{{ userIdError }}</div> -->
-            <div class="input-container">
-              <div class="label"><img src="../../assets/welcome/lock.svg"></div>
-              <input type="password" [(ngModel)]="password" [ngClass]="{'input-error': isPasswordInvalid}"
-                class="input-field" placeholder=" ********">
-
-            </div>
-            <!-- <div *ngIf="isPasswordInvalid" class="error-message">{{ passwordError }}</div> -->
-            <div class="d-flex">
-              <div class="col-7">
-                <p *ngIf="generalError" class="col-8 error-message customeErrorMsg mb-0">{{ generalError }}</p>
-              </div>
-              <p (click)="forgetPassword()" class="col-4 forgetpassword mb-2 text-nowrap">Forget Password</p>
-              <!-- <p class="forgetpassword">Sign up</p> -->
-            </div>
-          </div>
-
-          <div class="login_welcome d_flex justify_content_center">
-            <a class="bg_gogreen text_white text_center" (click)="loginApi()">Log in</a>
-          </div>
-          <!-- <div class="login_welcome d_flex justify_content_center">
-            <a class="bg_lightgreen text_white text_center" (click)="loginOrSignupWithGoogle()">
-              <img src="../../assets/welcome/google.svg" class="google_logo"> Sign In with Google
-            </a>
-          </div> -->
-
-          <div class="login_welcome d_flex justify_content_center" *ngIf="isAppleAvailable">
-            <a class="bg_black text_white text_center" (click)="appleSignIn()">
-              <img src="../../assets/welcome/apple.svg" class="google_logo"> Sign In with Apple
-            </a>
-          </div>
-
-          <div class="sign_up_welcome d_flex justify_content_center mt-1">
-            <a class="text_center text_grey mt-0">Don't have an account? <span class="text_gogreen"
-                (click)="goSignupPage()">Register Now</span></a>
-          </div>
-
-          <!-- <span (click)="openOrderAcceptedModal()">click me</span> -->
-
-          <div class="welcome_footer mt-1">
-            <p class="text_grey opensans_semibold">
-              By logging in or registering, you agree to our <br>
-              <a class="text_gogreen text_dec_none" href="../login">Terms of service</a> and <a
-                class="text_gogreen text_dec_none" href="../login">Privacy policy</a>.
-            </p>
-          </div>
-        </div>
-
-      </div>
+  <div class="welcome_main bg_gogreen">
+    <div>
+      <img src="../../assets/welcome/welcome_ingredients.svg" class="welcome_ingredients" alt="welcome_ingredients"
+        title="welcome_ingredients">
     </div>
-  </ion-toolbar>
+    <div class="welcome_second">
+      <div class="delivery_man_main">
+        <img src="../../assets/welcome/delivery_man.svg" class="delivery_man" alt="delivery_man" title="delivery_man">
+      </div>
+      <div class="content_welcome">
+        <div class="order_in_seconds_main text_center">
+          <img src="../../assets/welcome/order_in_seconds.svg" class="order_in_seconds" alt="order_in_seconds"
+            title="order_in_seconds">
+        </div>
+
+        <div class="fieldscontainer">
+          <div class="input-container">
+            <label for="email" class="label">ID</label>
+            <input type="mail" [(ngModel)]="email" [ngClass]="{'input-error': isEmailInvalid}" class="input-field customeINputEmail"
+              placeholder="enter your id">
+
+          </div>
+          <!-- <div *ngIf="isUserIdInvalid" class="error-message">{{ userIdError }}</div> -->
+          <div class="input-container">
+            <div class="label"><img src="../../assets/welcome/lock.svg"></div>
+            <input type="password" [(ngModel)]="password" [ngClass]="{'input-error': isPasswordInvalid}"
+              class="input-field" placeholder=" ********">
+
+          </div>
+          <!-- <div *ngIf="isPasswordInvalid" class="error-message">{{ passwordError }}</div> -->
+          <div class="d-flex">
+            <div class="col-7">
+              <p *ngIf="generalError" class="col-8 error-message customeErrorMsg mb-0">{{ generalError }}</p>
+            </div>
+            <p (click)="forgetPassword()" class="col-4 forgetpassword mb-2 text-nowrap">Forget Password</p>
+            <!-- <p class="forgetpassword">Sign up</p> -->
+          </div>
+        </div>
+
+        <div class="login_welcome d_flex justify_content_center">
+          <a class="bg_gogreen text_white text_center" (click)="loginApi()">Log in</a>
+        </div>
+        <!-- <div class="login_welcome d_flex justify_content_center">
+          <a class="bg_lightgreen text_white text_center" (click)="loginOrSignupWithGoogle()">
+            <img src="../../assets/welcome/google.svg" class="google_logo"> Sign In with Google
+          </a>
+        </div> -->
+
+        <div class="login_welcome d_flex justify_content_center" *ngIf="isAppleAvailable">
+          <a class="bg_black text_white text_center" (click)="appleSignIn()">
+            <img src="../../assets/welcome/apple.svg" class="google_logo"> Sign In with Apple
+          </a>
+        </div>
+
+        <div class="sign_up_welcome d_flex justify_content_center mt-1">
+          <a class="text_center text_grey mt-0">Don't have an account? <span class="text_gogreen"
+              (click)="goSignupPage()">Register Now</span></a>
+        </div>
+
+        <!-- <span (click)="openOrderAcceptedModal()">click me</span> -->
+
+        <div class="welcome_footer mt-1">
+          <p class="text_grey opensans_semibold">
+            By logging in or registering, you agree to our <br>
+            <a class="text_gogreen text_dec_none" href="../login">Terms of service</a> and <a
+              class="text_gogreen text_dec_none" href="../login">Privacy policy</a>.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </ion-content>

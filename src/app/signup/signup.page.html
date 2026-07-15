@@ -1,147 +1,138 @@
+<ion-header class="ion-no-border bg_white">
+  <div class="container my_common_header" style="margin-top: 0px;">
+    <ion-row>
+      <ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
+        <div (click)="goBack()" class="back_arrow_div">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-header>
+
 <ion-content class="ioncontent container">
   <div class="container">
-    <div class="row signup_steps_row">
-      <div class="container my_common_header">
-        <div class="row">
-          <ion-col size="12" class="common_header">
-            <div (click)="goBack()" class="back_arrow_div">
-              <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+    <div class="row signup_steps_row" style="padding-bottom: 20px;">
+      <div class="signup_steps">
+        <ion-row>
+          <ion-col size="12">
+            <h2 class="text-center">Sign Up</h2>
+            <div class="step_counts">
+              <div class="stepper">
+                <div class="step active">
+                  <div class="circle">1</div>
+                </div>
+                <div class="step">
+                  <div class="circle">2</div>
+                </div>
+                <div class="step">
+                  <div class="circle">3</div>
+                </div>
+                <div class="step">
+                  <div class="circle">4</div>
+                </div>
+              </div>
+            </div>
+            <h4 class="text-center mt-2">Basic Details</h4>
+            <form class="form_box">
+              <div class="form_input_box">
+                <ion-row class="ion-no-padding">
+                  <ion-col size="6" class="ion-no-padding" style="padding-right: 8px;">
+                    <label for="fname">First Name</label>
+                    <input type="text" [(ngModel)]="fname" [ngClass]="{'input-error': isFnameInvalid}" id="fname"
+                      name="fname" class="form-control" placeholder="Enter First Name">
+                    <div *ngIf="isFnameInvalid" class="error-message mt-1">First Name is required.</div>
+                  </ion-col>
+                  <ion-col size="6" class="ion-no-padding" style="padding-left: 8px;">
+                    <label for="lname">Last Name</label>
+                    <input type="text" [(ngModel)]="lname" [ngClass]="{'input-error': isLnameInvalid}" id="lname"
+                      name="lname" class="form-control" placeholder="Enter Last Name">
+                    <div *ngIf="isLnameInvalid" class="error-message mt-1">Last Name is required.</div>
+                  </ion-col>
+                </ion-row>
+              </div>
+              <div class="form_input_box">
+                <label for="email">Email</label>
+                <input
+                  type="email"
+                  [(ngModel)]="email"
+                  [ngClass]="{'input-error': isEmailInvalid || (emailTouched && !isValidEmail(email))}"
+                  id="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="Enter Email"
+                  (blur)="onEmailBlur()"
+                >
+                <div *ngIf="isEmailInvalid" class="error-message mt-1">Email is required.</div>
+                <div *ngIf="emailTouched && !isEmailInvalid && !isValidEmail(email)" class="error-message mt-1">
+                  Please enter a valid email address.
+                </div>
+              </div>
+              <div class="form_input_box">
+                <label for="phone">Mobile No</label>
+                <div class="prefix_phone_box">
+                  <select [(ngModel)]="prefix" id="prefix" name="prefix" class="form-control">
+                    <option value="+1">+1</option>
+                  </select>
+                  <input type="tel" [(ngModel)]="phone" [ngClass]="{'input-error': isPhoneInvalid}" id="phone"
+                    name="phone" class="form-control" placeholder="Enter Mobile No">
+                </div>
+                <div *ngIf="isPhoneInvalid" class="error-message mt-1">Mobile No is required.</div>
+              </div>
+              <div class="form_input_box">
+                <label for="password">Password</label>
+                <div class="psw_box">
+                  <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
+                    [ngClass]="{'input-error': isPSWInvalid}" id="password" name="password" class="form-control"
+                    placeholder="Enter Password">
+                  <span class="eye_box" (click)="togglePassword()">
+                    <i class="fa" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <div *ngIf="isPSWInvalid" class="error-message mt-1">Password is required.</div>
+              </div>
+              <div class="form_input_box">
+                <label for="cpassword">Confirm Password</label>
+                <div class="psw_box">
+                  <input [type]="showCPassword ? 'text' : 'password'" [(ngModel)]="cpassword"
+                    [ngClass]="{'input-error': isCPSWInvalid}" id="cpassword" name="cpassword" class="form-control"
+                    placeholder="Enter Confirm Password">
+                  <span class="eye_box" (click)="toggleCPassword()">
+                    <i class="fa" [ngClass]="showCPassword ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
+                  </span>
+                </div>
+                <div *ngIf="isCPSWInvalid" class="error-message mt-1">Confirm Password is required.</div>
+                <div *ngIf="errorMsg" class="error-message mt-1">
+                  {{ errorMsg }}
+                </div>
+              </div>
+            </form>
+            <div *ngIf="generalError" class="error-message mt-1 text-center">
+              {{ generalError }}
             </div>
           </ion-col>
-        </div>
-      </div>
-      <div class="signup_steps ">
-        <ion-col size="12">
-          <h2 class="text-center">Sign Up</h2>
-          <div class="step_counts">
-            <div class="stepper">
-              <div class="step active">
-                <div class="circle">1</div>
-              </div>
-              <div class="step">
-                <div class="circle">2</div>
-              </div>
-              <div class="step">
-                <div class="circle">3</div>
-              </div>
-              <div class="step">
-                <div class="circle">4</div>
-              </div>
-              <!-- <div class="step">
-                <div class="circle">4</div>
-              </div>
-              <div class="step">
-                <div class="circle">5</div>
-              </div> -->
-            </div>
-          </div>
-          <h4 class="text-center mt-2">Basic Details</h4>
-          <form class="form_box">
-            <!-- <h3>Basic : </h3> -->
-            <div class="form_input_box">
-              <div class="row">
-                <ion-col size="6">
-                  <label for="fname">First Name</label>
-                  <input type="text" [(ngModel)]="fname" [ngClass]="{'input-error': isFnameInvalid}" id="fname"
-                    name="fname" class="form-control" placeholder="Enter First Name">
-                </ion-col>
-                <ion-col size="6" class="padding_left_zero">
-                  <label for="lname">Last Name</label>
-                  <input type="text" [(ngModel)]="lname" [ngClass]="{'input-error': isLnameInvalid}" id="lname"
-                    name="lname" class="form-control" placeholder="Enter Last Name">
-                </ion-col>
-              </div>
-            </div>
-            <div class="form_input_box">
-              <label for="email">Email</label>
-              <input
-                type="email"
-                [(ngModel)]="email"
-                [ngClass]="{'input-error': emailTouched && !isValidEmail(email)}"
-                id="email"
-                name="email"
-                class="form-control"
-                placeholder="Enter Email"
-                (blur)="onEmailBlur()"
-              >
-              <div *ngIf="emailTouched && !isValidEmail(email)" class="error-message">
-                Please enter a valid email address.
-              </div>
-            </div>
-            <div class="form_input_box">
-              <label for="phone">Mobile No</label>
-              <div class="prefix_phone_box">
-                <select [(ngModel)]="prefix" id="prefix" name="prefix" class="form-control">
-                  <option value="+1">+1</option>
-                </select>
-                <input type="tel" [(ngModel)]="phone" [ngClass]="{'input-error': isPhoneInvalid}" id="phone"
-                  name="phone" class="form-control" placeholder="Enter Mobile No">
-              </div>
-            </div>
-            <div class="form_input_box">
-              <label for="password">Password</label>
-              <div class="psw_box">
-                <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
-                  [ngClass]="{'input-error': isPSWInvalid}" id="password" name="password" class="form-control"
-                  placeholder="Enter Password">
-                <span class="eye_box" (click)="togglePassword()">
-                  <i class="fa" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
-                </span>
-              </div>
-            </div>
-            <div class="form_input_box">
-              <label for="cpassword">Confirm Password</label>
-              <div class="psw_box">
-                <input [type]="showCPassword ? 'text' : 'password'" [(ngModel)]="cpassword"
-                  [ngClass]="{'input-error': isCPSWInvalid}" id="cpassword" name="cpassword" class="form-control"
-                  placeholder="Enter Confirm Password">
-                <span class="eye_box" (click)="toggleCPassword()">
-                  <i class="fa" [ngClass]="showCPassword ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
-                </span>
-              </div>
-              <div *ngIf="errorMsg" class="error-message">
-                {{ errorMsg }}
-              </div>
-            </div>
-          </form>
-          <div *ngIf="generalError" class="error-message mt-1 text-center">
-            {{ generalError }}
-          </div>
-        </ion-col>
-      </div>
-      <div class="container my_common_header">
-        <div class="row">
-          <ion-col size="12" class="common_footer">
-            <div class="button_group">
-              <button type="button" class="btn theme_button" (click)="NextStep()">Next</button>
-              <!--<button type="button" class="btn theme_button" (click)="loader()">Check Loader</button>-->
-            </div>
-          </ion-col>
-        </div>
-      </div>
-
-      <div class="container my_common_header">
-        <div class="row">
-          <ion-col size="12" class="common_footer">
-            <!-- <div class="button_group">
-              <div class="login_welcome d_flex justify_content_center flex_column">
-                <a class="google_signin_button" (click)="loginOrSignupWithGoogle()">
-                  <img src="../../assets/welcome/google.svg" class="google_logo" alt="Google">
-                  Sign Up with Google
-                </a>
-              </div>
-            </div> -->
-            <div class="button_group" *ngIf="isAppleAvailable">
-              <div class="login_welcome d_flex justify_content_center flex_column">
-                <a class="apple_signin_button" (click)="appleSignIn()">
-                  <img src="../../assets/welcome/apple.svg" class="google_logo" alt="Google">
-                  Sign Up with Apple
-                </a>
-              </div>
-            </div>
-          </ion-col>
-        </div>
+        </ion-row>
       </div>
     </div>
   </div>
 </ion-content>
+
+<ion-footer class="ion-no-border bg_white">
+  <div class="container" style="padding: 10px 15px;">
+    <ion-row class="ion-align-items-center">
+      <ion-col [size]="isAppleAvailable ? 6 : 12" *ngIf="isAppleAvailable" class="ion-no-padding" style="padding-right: 6px;">
+        <div class="login_welcome d_flex justify_content_center flex_column">
+          <a class="apple_signin_button" (click)="appleSignIn()" style="margin-top: 0px; height: 44px;">
+            <img src="../../assets/welcome/apple.svg" class="google_logo" alt="Apple logo">
+            Apple Sign Up
+          </a>
+        </div>
+      </ion-col>
+      <ion-col [size]="isAppleAvailable ? 6 : 12" class="ion-no-padding" [style.padding-left]="isAppleAvailable ? '6px' : '0px'">
+        <div class="button_group">
+          <button type="button" class="btn theme_button" (click)="NextStep()">Next</button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-footer>

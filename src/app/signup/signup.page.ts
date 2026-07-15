@@ -180,7 +180,17 @@ export class SignupPage implements OnInit {
   //   return passwordRegex.test(password);
   // }
 
-  NextStep(): void {
+  private async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      color: 'danger',
+      position: 'bottom'
+    });
+    await toast.present();
+  }
+
+  async NextStep() {
     this.isFnameInvalid = !this.fname.trim();
     this.isLnameInvalid = !this.lname.trim();
     this.isEmailInvalid = !this.email.trim();
@@ -213,10 +223,7 @@ export class SignupPage implements OnInit {
       this.isCPSWInvalid;
 
     if (hasAnyInvalid) {
-      this.errorMsg = 'All fields are required.';
-      setTimeout(() => {
-        this.errorMsg = '';
-      }, 2000);
+      this.presentToast('All fields are required.');
       return;
     }
 
@@ -224,33 +231,17 @@ export class SignupPage implements OnInit {
     // Email validation
     if (!this.isValidEmail(this.email)) {
       this.isEmailInvalid = true;
-      this.errorMsg = 'Please enter a valid email address.';
-      setTimeout(() => {
-        this.errorMsg = '';
-      }, 2000);
+      this.presentToast('Please enter a valid email address.');
       (document.getElementById('email') as HTMLInputElement).focus();
       return;
     } else {
       this.isEmailInvalid = false;
     }
 
-    // Password validation
-    // if (!this.isValidPassword(this.password)) {
-    //   this.errorMsg = 'Password must be at least 6 characters, include one uppercase letter, one number, and one special character.';
-    //   setTimeout(() => {
-    //     this.errorMsg = '';
-    //   }, 3000);
-    //   return;
-    // }
-
     if (this.password !== this.cpassword) {
-      this.errorMsg = 'Passwords do not match!';
-      setTimeout(() => {
-        this.errorMsg = '';
-      }, 2000);
+      this.isCPSWInvalid = true;
+      this.presentToast('Passwords do not match!');
       return;
-    } else {
-      this.errorMsg = '';
     }
 
     const data = {
@@ -262,23 +253,35 @@ export class SignupPage implements OnInit {
       phonenumber: this.phone,
       prefix: "+1"
     };
-    this.authservice.registerRider(data).subscribe(async (response) => {
-      if (response && response.token) {
-        await this.storage.set('token', response.token);
-        this.handleSignUpSuccess(response);
-        this.fname = '';
-        this.lname = '';
-        this.email = '';
-        this.phone = '';
-        this.password = '';
-        this.cpassword = '';
-        this.prefix = '+1';
-        this.router.navigate(['signup-step-4']);
-        // console.log('Form submit API response:', response);
-      } else {
-        console.log(response.message);
+
+    await this.presentLoading('Signing up...');
+    this.authservice.registerRider(data).subscribe(
+      async (response) => {
+        await this.dismissLoading();
+        if (response && response.token) {
+          await this.storage.set('token', response.token);
+          await this.handleSignUpSuccess(response);
+          this.fname = '';
+          this.lname = '';
+          this.email = '';
+          this.phone = '';
+          this.password = '';
+          this.cpassword = '';
+          this.prefix = '+1';
+          this.router.navigate(['signup-step-4']);
+        } else {
+          console.log(response.message);
+          this.generalError = response?.message || 'Registration failed. Please try again.';
+          this.presentToast(this.generalError);
+        }
+      },
+      async (error) => {
+        await this.dismissLoading();
+        console.error('Registration API error:', error);
+        this.generalError = error?.error?.message || 'An error occurred during registration. Please try again.';
+        this.presentToast(this.generalError);
       }
-    });
+    );
   }
 
   async handleSignUpSuccess(response: any) {

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ToastController, Platform } from '@ionic/angular';
+import { IonicModule, ToastController, Platform, LoadingController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -51,7 +51,7 @@ export class SignupStep2Page implements OnInit {
     private location: Location,
     private authservice: AuthserviceService,
     private storage: Storage,
-
+    private loadingController: LoadingController
   ) { }
 
   async ngOnInit() {
@@ -60,17 +60,46 @@ export class SignupStep2Page implements OnInit {
   }
 
 
-  // goBack(): void {
-  //   this.location.back();
-  // }
+  goBack(): void {
+    this.location.back();
+  }
+
+  private async presentLoading(message: string = 'Please wait...') {
+    const loading = await this.loadingController.create({ message });
+    await loading.present();
+  }
+
+  private async dismissLoading() {
+    try { await this.loadingController.dismiss(); } catch {}
+  }
+
+  private async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      color: 'danger',
+      position: 'bottom'
+    });
+    await toast.present();
+  }
+
+  private errorMsgShow(msg: string) {
+    this.generalError = msg;
+    this.presentToast(msg);
+    setTimeout(() => {
+      this.generalError = '';
+    }, 3000);
+  }
 
   onFileSelected(event: any, type: string) {
     const file: File = event.target.files[0];
     if (type === 'license') {
       this.licence_Image = file;
+      this.isLicenceImageInvalid = false;
       console.log('licenceIMg', this.licence_Image)
     } else if (type === 'registration') {
       this.registrationDocument = file;
+      this.isRegistrationDocumentInvalid = false;
     }
   }
 
@@ -79,7 +108,8 @@ export class SignupStep2Page implements OnInit {
   async NextStep() {
     const token = await this.storage.get('token');
     if (!token || typeof token !== 'string') {
-      console.error('No valid rider_ini_token found in storage.');
+      console.error('No valid token found in storage.');
+      this.presentToast('Session expired. Please log in again.');
       return;
     }
     const decoded: any = jwtDecode(token);
@@ -94,10 +124,7 @@ export class SignupStep2Page implements OnInit {
     this.isRegistrationExpiryDateInvalid = !this.registrationExpiryDate;
     this.isRegistrationDocumentInvalid = !this.registrationDocument;
 
-
-
     if (!this.drivers_licenseNumber && !this.licenseExpiryDate && !this.licence_Image && !this.vehicelOwnerName && !this.vehicelRegistrationNumber && !this.vehicelType && !this.registrationExpiryDate && !this.registrationDocument) {
-      this.generalError = 'fill all data';
       this.isDrivers_licenseNumberInvalid = true;
       this.isLicenseExpiryDateInvalid = true;
       this.isLicenceImageInvalid = true;
@@ -106,58 +133,49 @@ export class SignupStep2Page implements OnInit {
       this.isVehicelTypeInvalid = true;
       this.isRegistrationExpiryDateInvalid = true;
       this.isRegistrationDocumentInvalid = true;
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
+      this.errorMsgShow('All fields are required.');
+      return;
     } else if (!this.drivers_licenseNumber) {
       this.isDrivers_licenseNumberInvalid = true;
-      this.generalError = 'Driver license number is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('Driver license number is required.');
       return;
     }
     else if (!this.licenseExpiryDate) {
       this.isLicenseExpiryDateInvalid = true;
-      this.generalError = 'License expiry date is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('License expiry date is required.');
       return;
     }
     else if (!this.licence_Image) {
       this.isLicenceImageInvalid = true;
-      this.generalError = 'License image is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('License image is required.');
       return;
     }
     else if (!this.vehicelOwnerName) {
       this.isVehicelOwnerNameInvalid = true;
-      this.generalError = 'Vehicle owner name is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('Vehicle owner name is required.');
       return;
     }
     else if (!this.vehicelRegistrationNumber) {
       this.isVehicelRegistrationNumberInvalid = true;
-      this.generalError = 'Vehicle registration number is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('Vehicle registration number is required.');
       return;
     }
     else if (!this.vehicelType) {
       this.isVehicelTypeInvalid = true;
-      this.generalError = 'Vehicle type is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('Vehicle type is required.');
       return;
     }
     else if (!this.registrationExpiryDate) {
       this.isRegistrationExpiryDateInvalid = true;
-      this.generalError = 'Registration expiry date is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('Registration expiry date is required.');
       return;
     }
     else if (!this.registrationDocument) {
       this.isRegistrationDocumentInvalid = true;
-      this.generalError = 'Registration document is required.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+      this.errorMsgShow('Registration document is required.');
       return;
     }
-    // If any field is invalid, stop here
+
     if (
       this.isDrivers_licenseNumberInvalid ||
       this.isLicenseExpiryDateInvalid ||
@@ -168,7 +186,6 @@ export class SignupStep2Page implements OnInit {
       this.isRegistrationExpiryDateInvalid ||
       this.isRegistrationDocumentInvalid
     ) {
-      // Optionally show a toast or alert here
       return;
     }
 
@@ -188,33 +205,26 @@ export class SignupStep2Page implements OnInit {
       formData.append('registration_doc', this.registrationDocument);
     }
 
-
-    formData.forEach((value, key) => {
-      if (value instanceof File) {
-        console.log(`${key}: [File] ${value.name}`);
-      } else {
-        console.log(`${key}: ${value}`);
-      }
-    });
-
-
-    (await this.authservice.registerRiderStep2(formData)).subscribe(async (response) => {
-      if (response && response.success) {
-        this.router.navigate(['signup-step-3']);
-        console.log('Step 2 API response:', response.message);
-      } else {
-        console.log(response.message || 'Submission failed');
-      }
-    },
-      (error) => {
+    await this.presentLoading('Saving details...');
+    (await this.authservice.registerRiderStep2(formData)).subscribe(
+      async (response) => {
+        await this.dismissLoading();
+        if (response && response.success) {
+          this.router.navigate(['signup-step-3']);
+          console.log('Step 2 API response:', response.message);
+        } else {
+          console.log(response.message || 'Submission failed');
+          this.generalError = response.message || 'Submission failed. Please try again.';
+          this.presentToast(this.generalError);
+        }
+      },
+      async (error) => {
+        await this.dismissLoading();
         console.error('API error:', error);
-        // this.generalError = 'Registration document is required.';
         this.generalError = error?.error?.message || 'An error occurred. Please try again later.';
-        setTimeout(() => { this.generalError = ''; }, 2000);
+        this.presentToast(this.generalError);
       }
     );
   }
-
-
 
 }

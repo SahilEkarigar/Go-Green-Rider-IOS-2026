@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ToastController, Platform } from '@ionic/angular';
+import { IonicModule, ToastController, Platform, LoadingController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -34,6 +34,7 @@ export class SignupStep3Page implements OnInit {
 
   role_id = 4;
   isIos = false;
+  generalError = '';
 
   constructor(
     private platform: Platform,
@@ -42,7 +43,7 @@ export class SignupStep3Page implements OnInit {
     private location: Location,
     private authservice: AuthserviceService,
     private storage: Storage,
-
+    private loadingController: LoadingController
   ) { }
 
   async ngOnInit() {
@@ -55,18 +56,38 @@ export class SignupStep3Page implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.void_cheque = file;
+      this.isVoid_chequeInvoice = false;
     }
   }
 
-  // goBack(): void {
-  //   this.location.back();
-  // } 
+  goBack(): void {
+    this.location.back();
+  } 
+
+  private async presentLoading(message: string = 'Please wait...') {
+    const loading = await this.loadingController.create({ message });
+    await loading.present();
+  }
+
+  private async dismissLoading() {
+    try { await this.loadingController.dismiss(); } catch {}
+  }
+
+  private async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      color: 'danger',
+      position: 'bottom'
+    });
+    await toast.present();
+  }
 
   async NextStep() {
     const token = await this.storage.get('token');
-    console.log("tototo", token)
     if (!token || typeof token !== 'string') {
-      console.error('No valid vendor_ini_token found in storage.');
+      console.error('No valid token found in storage.');
+      this.presentToast('Session expired. Please log in again.');
       return;
     }
     const decoded: any = jwtDecode(token);
@@ -85,6 +106,7 @@ export class SignupStep3Page implements OnInit {
       this.isAccount_numberInvalid ||
       this.isVoid_chequeInvoice
     ) {    
+      this.presentToast('Please fill all required fields.');
       return;
     }
 
@@ -100,29 +122,23 @@ export class SignupStep3Page implements OnInit {
       formData.append('void_cheque', this.void_cheque);
     }
 
-
-
-    formData.forEach((value, key) => {
-      if (value instanceof File) {
-        console.log(`${key}: [File] ${value.name}`);
-      } else {
-        console.log(`${key}: ${value}`);
-      }
-    });
-
-
-
-    (await this.authservice.addBankDetails(formData)).subscribe(async (response) => {
-      if (response && response.success) {
-        this.router.navigate(['application-review']);
-        await this.storage.remove('token');
-        console.log('Step 2 API response:', response.message);
-      } else {
-        console.log(response.message || 'Submission failed');
-      }
-    },
-      (error) => {
+    await this.presentLoading('Saving bank details...');
+    (await this.authservice.addBankDetails(formData)).subscribe(
+      async (response) => {
+        await this.dismissLoading();
+        if (response && response.success) {
+          this.router.navigate(['application-review']);
+          await this.storage.remove('token');
+          console.log('Step 3 API response:', response.message);
+        } else {
+          console.log(response.message || 'Submission failed');
+          this.presentToast(response.message || 'Submission failed. Please try again.');
+        }
+      },
+      async (error) => {
+        await this.dismissLoading();
         console.error('API error:', error);
+        this.presentToast(error?.error?.message || 'An error occurred. Please try again later.');
       }
     );
 

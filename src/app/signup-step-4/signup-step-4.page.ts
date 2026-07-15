@@ -1,6 +1,6 @@
 // import { Storage } from '@ionic/storage-angular';
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, ToastController, Platform } from '@ionic/angular';
+import { IonicModule, ToastController, Platform, LoadingController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -44,6 +44,7 @@ export class SignupStep4Page implements OnInit {
     private location: Location,
     private authservice: AuthserviceService,
     private storage: Storage,
+    private loadingController: LoadingController
   ) { }
 
 
@@ -52,20 +53,39 @@ export class SignupStep4Page implements OnInit {
     const token = await this.storage.get('user_token');
   }
 
+  goBack(): void {
+    this.location.back();
+  }
 
+  private async presentLoading(message: string = 'Please wait...') {
+    const loading = await this.loadingController.create({ message });
+    await loading.present();
+  }
 
-  // goBack(): void {
-  //   this.location.back();
-  // }
+  private async dismissLoading() {
+    try { await this.loadingController.dismiss(); } catch {}
+  }
+
+  private async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 3000,
+      color: 'danger',
+      position: 'bottom'
+    });
+    await toast.present();
+  }
 
   onProfileImageSelected(event: any) {
     const file: File = event.target.files[0];
     this.profileImage = file;
+    this.isProfileImagevalid = false;
   }
 
   onIdentityProofSelected(event: any) {
     const file: File = event.target.files[0];
     this.identityProof = file;
+    this.isIdentityProofInvalid = false;
   }
 
 
@@ -73,6 +93,7 @@ export class SignupStep4Page implements OnInit {
     const token = await this.storage.get('token');
     if (!token || typeof token !== 'string') {
       this.generalError = 'No valid token found. Please log in again.';
+      this.presentToast(this.generalError);
       return;
     }
     const decoded: any = jwtDecode(token);
@@ -85,41 +106,27 @@ export class SignupStep4Page implements OnInit {
     this.generalError = '';
 
     if (!this.address && !this.dob && !this.identityProof && !this.profileImage) {
-      this.generalError = 'fill all data';
       this.isAddressInvalid = true;
       this.isDobInvalid = true;
       this.isIdentityProofInvalid = true;
       this.isProfileImagevalid = true;
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
+      this.errorMsgShow('All fields are required.');
+      return;
     } else if (!this.address) {
       this.isAddressInvalid = true;
-      this.generalError = 'Address is required.';
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
+      this.errorMsgShow('Address is required.');
       return;
     } else if (!this.dob) {
       this.isDobInvalid = true;
-      this.generalError = 'Date of birth is required.';
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
+      this.errorMsgShow('Date of birth is required.');
       return;
     } else if (!this.identityProof) {
       this.isIdentityProofInvalid = true;
-      this.generalError = 'Identity proof is required.';
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
+      this.errorMsgShow('Identity proof is required.');
       return;
     } else if (!this.profileImage) {
       this.isProfileImagevalid = true;
-      this.generalError = 'Profile image is required.';
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
+      this.errorMsgShow('Profile image is required.');
       return;
     }
 
@@ -145,24 +152,34 @@ export class SignupStep4Page implements OnInit {
       formData.append('profile_pic', this.profileImage);
     }
 
-    (await this.authservice.personlaData(formData)).subscribe(async (response: { success: any; message: any; }) => {
-      if (response && response.success) {
-        this.router.navigate(['signup-step-2']);
-        console.log('Step 2 API response:', response.message);
-      } else {
-        console.log(response.message || 'Submission failed');
-      }
-    },
-      (error) => {
+    await this.presentLoading('Saving details...');
+    (await this.authservice.personlaData(formData)).subscribe(
+      async (response: { success: any; message: any; }) => {
+        await this.dismissLoading();
+        if (response && response.success) {
+          this.router.navigate(['signup-step-2']);
+          console.log('Step 2 API response:', response.message);
+        } else {
+          console.log(response.message || 'Submission failed');
+          this.generalError = response.message || 'Submission failed. Please try again.';
+          this.presentToast(this.generalError);
+        }
+      },
+      async (error) => {
+        await this.dismissLoading();
         console.error('API error:', error);
         this.generalError = error?.error?.message || 'An error occurred. Please try again later.';
-        setTimeout(() => {
-          this.generalError = '';
-        }, 2000);
+        this.presentToast(this.generalError);
       }
     );
+  }
 
-    // Submit formData here (e.g., call your service)
+  private errorMsgShow(msg: string) {
+    this.generalError = msg;
+    this.presentToast(msg);
+    setTimeout(() => {
+      this.generalError = '';
+    }, 3000);
   }
 
 

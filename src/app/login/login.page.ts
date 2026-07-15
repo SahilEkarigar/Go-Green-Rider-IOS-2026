@@ -11,7 +11,8 @@ import { SignInWithApple, ASAuthorizationAppleIDRequest } from '@ionic-native/si
 import { GoogleAuthService } from '../services/google-auth.service';
 import { UserService } from '@app/services/user.service';
 import { Capacitor } from '@capacitor/core';
-import { FirebaseMessaging } from '@capacitor-firebase/messaging';
+import { FCM } from '@capacitor-community/fcm';
+import { PushNotifications } from '@capacitor/push-notifications';
 
 @Component({
   selector: 'app-login',
@@ -59,14 +60,17 @@ export class LoginPage implements OnInit {
 
   async requestPermissionAndToken() {
     try {
-      // Request permission
-      const perm = await FirebaseMessaging.requestPermissions();
-      console.log('🔐 Permission:', perm);
-
-      // Register device for FCM
-      const token = await FirebaseMessaging.getToken();
-      this.fcmToken = token.token;
-      console.log('✅ FCM Token:', this.fcmToken);
+      if (Capacitor.getPlatform() === 'web') return;
+      let perm = await PushNotifications.checkPermissions();
+      if (perm.receive === 'prompt') {
+        perm = await PushNotifications.requestPermissions();
+      }
+      if (perm.receive === 'granted') {
+        await PushNotifications.register();
+        const { token } = await FCM.getToken();
+        this.fcmToken = token;
+        console.log('✅ FCM Token:', this.fcmToken);
+      }
     } catch (err) {
       console.error('❌ Error getting FCM token:', err);
     }
