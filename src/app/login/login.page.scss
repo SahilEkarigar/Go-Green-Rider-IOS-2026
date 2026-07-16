@@ -102,15 +102,17 @@
 }
 
 .delivery_man {
-    width: 80%;
+    width: 55%;
+    max-width: 220px;
 }
 
 .delivery_man_main {
     text-align: center;
     position: absolute;
-    bottom: 64%;
+    bottom: 74%;
     width: 100%;
     animation: leafZoom 1.5s ease-out forwards;
+    transition: all 0.3s ease-in-out;
 }
 
 @keyframes leafZoom {
@@ -192,6 +194,10 @@
 
 .input-field:focus {
     outline: none;
+}
+
+.login_welcome {
+    margin-bottom: 12px;
 }
 
 .login_welcome a {
@@ -303,19 +309,28 @@
 }
 
 .welcome_second {
-    // background-image: url(../../assets/welcome/white_ellipse_square.webp);
     background-size: 140%;
     background-position: top center;
     background-repeat: no-repeat;
     position: fixed;
-    // top: 20%;
-    padding-top: 180px;
+    padding-top: 130px;
     bottom: 0;
     width: 100%;
-    // position: relative;
-
     background: #ffffff;
     border-radius: 20px 20px 0px 0px;
+    transition: all 0.3s ease-in-out;
+}
+
+.welcome_main.keyboard-open {
+    .delivery_man_main {
+        display: none !important;
+    }
+    .welcome_second {
+        padding-top: 30px !important;
+    }
+    .order_in_seconds_main {
+        display: none !important;
+    }
 }
 
 .forgetpassword {

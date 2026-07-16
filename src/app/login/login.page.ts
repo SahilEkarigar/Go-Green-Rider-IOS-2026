@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IonicModule, Platform, NavController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { UserService } from '@app/services/user.service';
 import { Capacitor } from '@capacitor/core';
 import { FCM } from '@capacitor-community/fcm';
 import { PushNotifications } from '@capacitor/push-notifications';
+import { Keyboard } from '@capacitor/keyboard';
 
 @Component({
   selector: 'app-login',
@@ -21,7 +22,7 @@ import { PushNotifications } from '@capacitor/push-notifications';
   standalone: true,
   imports: [IonicModule, FormsModule, CommonModule],
 })
-export class LoginPage implements OnInit {
+export class LoginPage implements OnInit, OnDestroy {
   email: string = '';
   password: string = '';
   isEmailInvalid = false;
@@ -34,6 +35,10 @@ export class LoginPage implements OnInit {
   isIos = false;
   isAppleAvailable = false;
   fcmToken: string = '';
+  isKeyboardOpen = false;
+
+  private keyboardShowHandle: any;
+  private keyboardHideHandle: any;
 
   constructor(
     private platform: Platform,
@@ -50,8 +55,6 @@ export class LoginPage implements OnInit {
     this.navCtrl.navigateBack('/home');
   }
 
-
-
   async ngOnInit() {
     await this.storage.create();
     this.isIos = this.platform.is('ios');
@@ -61,6 +64,24 @@ export class LoginPage implements OnInit {
         this.platform.is('capacitor') ||
         this.platform.is('cordova'));
     this.requestPermissionAndToken();
+
+    if (Capacitor.isNativePlatform()) {
+      this.keyboardShowHandle = await Keyboard.addListener('keyboardWillShow', () => {
+        this.isKeyboardOpen = true;
+      });
+      this.keyboardHideHandle = await Keyboard.addListener('keyboardWillHide', () => {
+        this.isKeyboardOpen = false;
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.keyboardShowHandle) {
+      this.keyboardShowHandle.remove();
+    }
+    if (this.keyboardHideHandle) {
+      this.keyboardHideHandle.remove();
+    }
   }
 
   async requestPermissionAndToken() {
