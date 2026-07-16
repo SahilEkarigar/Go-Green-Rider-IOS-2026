@@ -13,14 +13,12 @@ import { jwtDecode } from 'jwt-decode';
   templateUrl: './edit-account.page.html',
   styleUrls: ['./edit-account.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, FooterTabsComponent,CommonModule], 
+  imports: [IonicModule, FormsModule, CommonModule], 
 
 })
 export class EditAccountPage implements OnInit {
 
-
-
-  riderProfilePicture: File | null = null;
+  riderProfilePicture: any = null;
   uploadFileRiderProfilePicture: File | null = null;
 
   userName = '';
@@ -55,7 +53,17 @@ export class EditAccountPage implements OnInit {
   }
 
   onImageError(event: Event) {
-    (event.target as HTMLImageElement).src = 'assets/home/shop.jpeg';
+    (event.target as HTMLImageElement).src = 'assets/home/rider_profile.png';
+  }
+
+  getProfileImage(): string {
+    if (typeof this.riderProfilePicture === 'string' && this.riderProfilePicture) {
+      if (this.riderProfilePicture.includes('maps.googleapis.com')) {
+        return 'assets/home/rider_profile.png';
+      }
+      return this.riderProfilePicture;
+    }
+    return 'assets/home/rider_profile.png';
   }
 
   onImageSelected(event: any) {

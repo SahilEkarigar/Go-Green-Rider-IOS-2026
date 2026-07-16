@@ -3,21 +3,28 @@
   align-items: center;
   justify-content: center;
 }
-
 @mixin flex-between {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
+
 @mixin text-small($size: 12px, $color: #777) {
   font-size: $size;
   color: $color;
 }
+
 @mixin title-text { 
   font-weight: 600;
   color: var(--primary-color);
 }
+
 @mixin size($width, $height: $width) { /* Width + Height */
   width: $width;
   height: $height;
+}
+
+/* Added transition mixin for reusable animations */
+@mixin transition($prop: all, $time: 0.25s) {
+  transition: $prop $time cubic-bezier(0.4, 0, 0.2, 1);
 }

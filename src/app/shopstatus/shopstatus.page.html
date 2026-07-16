@@ -1,56 +1,49 @@
-<ion-content>
-  <div class="container zero_padding">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>Rider Status</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right">
-          <i class="fa fa-check" aria-hidden="true" (click)="saveRiderStatus()"></i>
-        </ion-col>
-      </div>
-    </div>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Rider Status</h1>
+    <button class="save-btn-header" (click)="saveRiderStatus()">
+      <i class="fa fa-check" aria-hidden="true"></i>
+    </button>
   </div>
+</ion-header>
 
-  <div class="content-shop-status">
-    <div class="main-shop">
-      <div class="form_input_box">
-        <div class="ttt">
-          <div>
-            <label for="shopStatusToggle">Rider Status</label>
-          </div>
-          <div>
-          <ion-toggle 
-            [(ngModel)]="shopStatus" 
-            id="shopStatusToggle" 
-            color="success">
-          </ion-toggle>
-          </div>
-        </div>
-        <p class="status-display">
-          Current Status:
-          <strong [style.color]="shopStatus ? 'green' : 'red'">
-            {{ shopStatus ? 'Online' : 'Offline' }}
-          </strong>
-        </p>
+<ion-content class="ioncontent">
+  <div class="container body_container">
+    
+    <!-- 1. Rider Status Card -->
+    <div class="profile-card status-card" [ngClass]="{'online-mode': shopStatus, 'offline-mode': !shopStatus}">
+      <div class="status-header">
+        <span class="status-label">Rider Status</span>
+        <ion-toggle [(ngModel)]="shopStatus" id="shopStatusToggle" color="success" class="custom-toggle"></ion-toggle>
       </div>
-
-      <div class="form_input_box">
-        <label for="openTime">Start Delivery Time</label>
-        <input type="time" [(ngModel)]="openTime" id="openTime" class="form-control" />
-      </div>
-
-      <div class="form_input_box">
-        <label for="closeTime">End Delivery Time</label>
-        <input type="time" [(ngModel)]="closeTime" id="closeTime" class="form-control" />
+      <div class="status-badge-container">
+        <span class="status-text-prefix">Current Status:</span>
+        <span class="status-badge" [ngClass]="{'badge-online': shopStatus, 'badge-offline': !shopStatus}">
+          {{ shopStatus ? 'Online' : 'Offline' }}
+        </span>
       </div>
     </div>
+
+    <!-- 2. Delivery Timings Card -->
+    <div class="profile-card timings-card">
+      <h3 class="card-title">Delivery Timings</h3>
+      <div class="form-container">
+        
+        <div class="form-group">
+          <label for="openTime">Start Delivery Time</label>
+          <input type="time" [(ngModel)]="openTime" id="openTime" class="form-control" />
+        </div>
+
+        <div class="form-group">
+          <label for="closeTime">End Delivery Time</label>
+          <input type="time" [(ngModel)]="closeTime" id="closeTime" class="form-control" />
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </ion-content>
-
-<app-footer-tabs></app-footer-tabs>

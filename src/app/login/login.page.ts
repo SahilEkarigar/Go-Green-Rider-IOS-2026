@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule, Platform } from '@ionic/angular';
+import { IonicModule, Platform, NavController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -42,10 +42,15 @@ export class LoginPage implements OnInit {
     private storage: Storage,
     private googleAuthService: GoogleAuthService,
     private signInWithApple: SignInWithApple,
-    private userService: UserService
-  ) {
+    private userService: UserService,
+    private navCtrl: NavController
+  ) { }
 
+  goBack() {
+    this.navCtrl.navigateBack('/home');
   }
+
+
 
   async ngOnInit() {
     await this.storage.create();
@@ -85,7 +90,7 @@ export class LoginPage implements OnInit {
       await this.storage.set('role_id', this.role_id);
       await this.storage.set('token', response.token);
       localStorage.setItem('user_id', user_id);
-      console.log('user id:',user_id)
+      console.log('user id:', user_id)
       // fetch user profile
       this.userService.fetchUserInfo(response.token);
 

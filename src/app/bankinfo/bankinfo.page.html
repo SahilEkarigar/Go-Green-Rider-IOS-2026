@@ -1,97 +1,70 @@
-<ion-header [translucent]="true" class="mineee">
-  <ion-toolbar>
-    <div class="container zero_padding">
-      <div class="row header_row">
-        <div class="my_common_header">
-          <ion-col size="2" class="common_header">
-            <div (click)="goBack()" class="back_arrow_div">
-              <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-            </div>
-          </ion-col>
-          <ion-col size="8" class="upload_product_heading">
-            <h2>Bank Account Info</h2>
-          </ion-col>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Bank Info</h1>
+    <div class="header-right-placeholder"></div>
+  </div>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="bank-container">
+    <!-- Digital Credit/Debit Card graphic -->
+    <div class="digital-bank-card">
+      <div class="card-glass-glow"></div>
+      <div class="card-header-view">
+        <span class="bank-brand">{{ bankName || 'My Bank' }}</span>
+        <div class="chip-icon">
+          <div class="chip-line"></div>
+          <div class="chip-line"></div>
+          <div class="chip-line"></div>
+        </div>
+      </div>
+      
+      <div class="card-number">
+        ••••  ••••  ••••  {{ accountNumber ? accountNumber.slice(-4) : '••••' }}
+      </div>
+      
+      <div class="card-footer-view">
+        <div class="card-holder-info">
+          <span class="label">Card Holder</span>
+          <span class="name">{{ accountHolderName || 'Rider Name' }}</span>
+        </div>
+        <div class="card-type-icon">
+          <span class="gogreen-logo">GGL</span>
         </div>
       </div>
     </div>
-  </ion-toolbar>
-</ion-header>
 
-<ion-content>
-  <div class="container">
-    <div class="contain-bank">
-      <div class="img-bank">
-        <img class="banking" src="../../assets/home/bank_pic.jpg" />
-      </div>
-
-      <div class="content-bank">
-        <div class="form_input_box">
-          <label for="accountHolderName">Account Holder Name</label>
-          <input
-            type="text"
-            [(ngModel)]="accountHolderName"
-            [ngClass]="{ 'input-error': isAccountHolderNameInvalid }"
-            id="accountHolderName"
-            name="accountHolderName"
-            class="form-control"
-            placeholder="Enter Account Holder Name"
-            readonly
-          />
+    <!-- Readonly account fields -->
+    <div class="bank-details-pane">
+      <h2 class="pane-title">Account Details</h2>
+      
+      <div class="details-list">
+        <div class="detail-item">
+          <span class="detail-label">Account Holder</span>
+          <span class="detail-value">{{ accountHolderName }}</span>
         </div>
 
-        <div class="form_input_box">
-          <label for="bankName">Bank Name</label>
-          <input
-            type="text"
-            [(ngModel)]="bankName"
-            id="bankName"
-            name="bankName"
-            class="form-control"
-            placeholder="Enter Bank Name"
-            readonly
-          />
+        <div class="detail-item">
+          <span class="detail-label">Bank Name</span>
+          <span class="detail-value">{{ bankName }}</span>
         </div>
 
-        <div class="form_input_box">
-          <label for="transitNumber">Transit Number</label>
-          <input
-            type="text"
-            [(ngModel)]="transitNumber"
-            [ngClass]="{ 'input-error': isTransitNumberInvalid }"
-            id="transitNumber"
-            name="transitNumber"
-            class="form-control"
-            placeholder="Enter Transit Number"
-            readonly
-          />
+        <div class="detail-item">
+          <span class="detail-label">Transit Number</span>
+          <span class="detail-value">{{ transitNumber }}</span>
         </div>
 
-        <div class="form_input_box">
-          <label for="institutionNumber">Institution Number</label>
-          <input
-            type="text"
-            [(ngModel)]="institutionNumber"
-            [ngClass]="{ 'input-error': isInstitutionNumberInvalid }"
-            id="institutionNumber"
-            name="institutionNumber"
-            class="form-control"
-            placeholder="Enter Institution Number"
-            readonly
-          />
+        <div class="detail-item">
+          <span class="detail-label">Institution Number</span>
+          <span class="detail-value">{{ institutionNumber }}</span>
         </div>
 
-        <div class="form_input_box">
-          <label for="accountNumber">Account Number</label>
-          <input
-            type="text"
-            [(ngModel)]="accountNumber"
-            [ngClass]="{ 'input-error': isAccountNumberInvalid }"
-            id="accountNumber"
-            name="accountNumber"
-            class="form-control"
-            placeholder="Enter Account Number"
-            readonly
-          />
+        <div class="detail-item">
+          <span class="detail-label">Account Number</span>
+          <span class="detail-value">{{ accountNumber }}</span>
         </div>
       </div>
     </div>

@@ -1,320 +1,288 @@
-.rating-container {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  background: #00552d1f;
-  box-shadow: 0px 2px 10px #cdcdcd;
-  border-radius: 10px;
-  padding: 12px;
-}
-.toolbar {
-  border-bottom: 1px solid #e0e0e0;
-  box-shadow: none !important;
-}
-.left {
-  text-align: center;
-  width: 35%;
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import '../../theme/variables.scss';
 
-  h1 {
-    font-size: 3rem;
-    margin-bottom: 4px;
-  }
-
-  .stars {
-    color: #ffd700;
-    font-size: 20px;
-  }
-
-  p {
-    font-size: 14px;
-    color: #888;
-  }
+// Mixins
+@mixin transition($prop: all, $time: 0.25s) {
+  transition: $prop $time cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.right {
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+// Reset rules locally
+p, h1, h2, h3, span {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+}
 
-  .bar-group {
+// Header styles
+.custom-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: $white;
+  border-bottom: 1px solid #eef0f2;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+  padding-top: calc(env(safe-area-inset-top, 24px) + 12px);
+
+  .header-container {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    width: 100%;
 
-    .bar-label {
-      font-size: 12px;
-      margin-bottom: 4px;
-      color: #444;
+    .back-btn {
+      border: none;
+      background: $primary-color;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(8, 139, 70, 0.15);
+      cursor: pointer;
+      @include transition(transform);
+
+      i {
+        font-size: 14px;
+        color: $white;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
     }
 
-    .bar {
-      width: 88%;
-      height: 8px;
-      background-color: #e0e0e0;
-      border-radius: 4px;
-      overflow: hidden;
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #212529;
+      text-align: center;
+      flex: 1;
+    }
 
-      .fill {
-        height: 100%;
-        background-color: #088b46;
-        border-radius: 4px 0 0 4px;
-        transition: width 0.4s ease-in-out;
+    .header-right-placeholder {
+      width: 32px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Content container styles
+ion-content {
+  --background: #f8fafc;
+}
+
+.main-container {
+  padding: 8px 4px 40px 4px;
+}
+
+/* ---------------- SUMMARY CARD ---------------- */
+
+.rating-summary-card {
+  background-color: $white;
+  border-radius: 16px;
+  border: 1px solid #eef0f2;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  gap: 20px;
+
+  .summary-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex-shrink: 0;
+    width: 35%;
+
+    .rating-score {
+      font-size: 40px;
+      font-weight: 700;
+      color: #212529;
+      line-height: 1;
+    }
+
+    .stars-row {
+      color: #ffc107; // elegant warm gold
+      font-size: 15px;
+      display: flex;
+      gap: 2px;
+      margin: 8px 0;
+    }
+
+    .rating-count {
+      font-size: 12px;
+      font-weight: 600;
+      color: #868e96;
+    }
+  }
+
+  .summary-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .progress-bar-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .star-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #495057;
+        width: 36px;
+        text-align: right;
+      }
+
+      .progress-track {
+        height: 6px;
+        background-color: #f1f3f5;
+        border-radius: 3px;
+        overflow: hidden;
+        flex: 1;
+        position: relative;
+
+        .progress-fill {
+          height: 100%;
+          background-color: $primary-color;
+          border-radius: 3px;
+          @include transition(width, 0.5s);
+        }
       }
     }
   }
 }
 
-.stars-small {
-  font-size: 14px;
-  color: gold;
-}
-.rating-slider {
-  --bar-background: #e0e0e0;
-  --bar-height: 8px;
-  --knob-size: 0px;
-  pointer-events: none;
-  margin-top: -4px;
+.section-divider {
+  height: 1px;
+  background-color: #eef0f2;
+  margin: 24px 0;
 }
 
-.card-1 {
-  display: flex;
-  background: #fff;
-  border-radius: 12px;
-  padding: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  margin-bottom: 12px;
-}
-.card-2 {
-  background-color: #ffffff;
-  box-shadow: 1px 1px 40px 0px rgba(222, 222, 222, 0.3607843137);
-  padding: 14px;
-  border-radius: 24px;
-  margin-bottom: 10px;
-}
-img.avatarprofile {
-  width: 20px;
-}
+/* ---------------- COMMENTS LIST ---------------- */
 
-.write-review {
-  margin: 12px 0;
-  --border-radius: 20px;
-}
-.reply-input-box {
-  margin-top: 8px;
-}
-
-.reply-input-box input {
-  padding: 5px;
-  width: 70%;
-  margin-right: 6px;
-}
-
-.reply-input-box button {
-  padding: 6px 8px;
-  background: none;
-  color: green;
-  font-size: 22px;
-}
-
-.review-card {
-  margin-bottom: 16px;
-
-  ion-card-header {
-    // display: flex;
-    // justify-content: space-between;
-    // align-items: center;
-    // flex-direction: column;
-    // text-align: left;
-
-    ion-card-title {
-      font-size: 1rem;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-
-    .stars.small ion-icon {
-      font-size: 16px;
-      color: #ffd700;
-    }
+.comments-section {
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 16px;
+    padding-left: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
-  ion-card-content {
-    font-size: 14px;
+  .review-card {
+    background-color: $white;
+    border-radius: 16px;
+    border: 1px solid #e9ecef;
+    padding: 18px;
+    margin-bottom: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+    @include transition(transform);
 
-    strong {
-      display: block;
-      margin-bottom: 4px;
-    }
+    .card-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
 
-    p {
-      color: #666;
-      margin-top: 2px;
-    }
-  }
-}
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px;
-}
-.col1 {
-  display: flex;
-  align-items: center;
-}
+      .reviewer-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 1px solid #eef0f2;
+        flex-shrink: 0;
+      }
 
-.col2 p {
-  font-size: 20px;
-  margin: 0 !important;
-  padding: 0 !important;
-  font-family: "Open Sans", serif;
-  color: #005528;
-  font-weight: 600;
-}
-.reply-link {
-  color: #717171;
-}
-.input-text {
-  display: flex;
-  height: 40px;
-}
-textarea.ng-untouched.ng-pristine.ng-valid {
-  width: 89%;
-  border-radius: 20px;
-  padding: 8px;
-  height: 44px;
-}
-ion-header.ios.header-ios.header-translucent.header-collapse-none.header-translucent-ios.hydrated {
-  padding-top: 14px !important;
-}
-textarea {
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-  resize: none;
-}
+      .reviewer-info {
+        flex: 1;
+        min-width: 0; // support text overflow
 
-textarea:focus {
-  outline: none;
-  border-radius: 25px;
-  border: 1px solid #ccc;
-  box-shadow: none;
-}
-.mineee {
-  z-index: 999;
-  position: sticky;
-  background: white;
-  border-bottom: 2px solid #e7e7e7 !important;
-  box-shadow: 0px 0px 0px red !important;
-}
-.staring {
-  color: black;
-  margin-left: 6px;
-}
-.seperatr {
-  border: 1px solid #f2f2f2;
-}
-.reply-box {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
+        .reviewer-top {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
 
-.reply-input {
-  width: 100%;
-  height: 43px;
-  border: 1px solid #ccc;
-  border-radius: 25px;
-  padding: 0 15px;
-  line-height: 40px;
-  box-sizing: border-box;
-  resize: none;
-  font-size: 14px;
-}
+          .reviewer-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #212529;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+          }
 
-.reply-input:focus {
-  outline: none;
-  border: 1px solid #aaa;
-  line-height: 40px;
-}
+          .review-date {
+            font-size: 11px;
+            color: #868e96;
+            font-weight: 500;
+            flex-shrink: 0;
+          }
+        }
 
-.btn-reply {
-  background: none;
-  color: #088b46;
-  font-size: 22px;
-}
-.user-name {
-  font-weight: 600;
-}
-.profile-section {
-  display: flex;
-  align-items: flex-start;
-}
+        .review-meta {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          margin-top: 2px;
 
-.profile-pic {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-  margin-right: 10px;
-  flex-shrink: 0;
-  margin-top: 5px;
-}
+          .stars-mini {
+            color: #ffc107;
+            font-size: 11px;
+            display: flex;
+            gap: 1px;
+          }
 
-
-// Start bottom css for header section 
-.row.header_row {
-  .my_common_header {
-    padding: 5px 25px 12px 25px;
-    display: flex;
-    width: 100%;
-    border-bottom: 1px solid #ededed;
-
-    .common_header {
-      text-align: left;
-      padding: 0px !important;
-
-      .back_arrow_div {
-        background: #00552b;
-        width: 30px;
-        height: 30px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 5px;
-        box-shadow: 0px 2px 5px #cdcdcd;
-
-        i {
-          color: #fff;
-          font-size: 18px;
+          .score-value {
+            font-size: 11px;
+            color: #212529;
+            font-weight: 700;
+          }
         }
       }
     }
 
-    .upload_product_heading {
-      h2 {
-        margin-top: 0px;
-        margin-bottom: 0px;
-        font-size: 20px;
-        font-weight: 600;
-        text-align: center;
-        text-wrap: nowrap;
+    .card-body {
+      .review-text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: #495057;
       }
     }
 
-    .check_right {
-      text-align: right;
-
-      i {
-        font-size: 20px;
-        color: #005528;
-      }
+    &:active {
+      transform: translateY(1px);
     }
   }
 }
 
-.zero_padding {
-  padding: 0px;
-}
+// Media responsive tweaks
+@media (max-width: 360px) {
+  .custom-header {
+    .header-container {
+      padding: 10px 14px;
+      .header-title {
+        font-size: 16px;
+      }
+    }
+  }
 
-// End bottom css for header section 
+  .rating-summary-card {
+    padding: 16px 12px;
+    gap: 12px;
+
+    .summary-left {
+      .rating-score {
+        font-size: 32px;
+      }
+    }
+  }
+}

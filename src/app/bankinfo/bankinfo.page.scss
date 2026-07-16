@@ -1,185 +1,270 @@
-.mineee {
-  z-index: 999;
-  position: sticky;
-  background: white;
-  border-bottom: 2px solid #e7e7e7 !important;
-  box-shadow: 0px 0px 0px red !important;
-}
-.header {
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import '../../theme/variables.scss';
+
+// Mixins
+@mixin flex-center {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px 10px 20px;
-}
-.backbutton {
-  width: 20px;
-}
-.col2 {
-  margin-right: 10px;
-  font-size: 18px;
-}
-.col2 p {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-family: "Open Sans", serif;
-  color: #005528;
-  font-weight: 600;
-}
-.col3 {
-  font-size: 20px;
-  color: #005528;
-}
-.signup_steps_row {
-  padding: 0px 15px 50px;
-}
-.signup_steps {
-  background: #00552d1f;
-  border-radius: 5px;
-  box-shadow: 0px 2px 10px #cdcdcd;
-  margin-top: 34px;
-}
-.signup_steps h2 {
-  margin-top: 0px;
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 5px;
-  color: #00552b;
-  text-transform: uppercase;
-}
-.signup_steps h3 {
-  margin-top: 0px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 0px;
-  color: #000;
-}
-.signup_steps h4 {
-  margin-top: 0px;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 0px;
-  background: green;
-  width: 34%;
-  color: white;
-  height: 36px;
-  border-radius: 20px;
-}
-.form_box {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-.form_input_box input {
-  border-bottom: 1px solid #00552d !important;
-  border-radius: 0px;
-  font-size: 15px;
-  padding: 5px 5px 10px 0px;
-  background: #e0eae6;
-  border: none;
-  color: #000;
-  font-weight: 600 !important;
-}
-.form_input_box select {
-  border-bottom: 1px solid #00552d !important;
-  border-radius: 0px;
-  font-size: 14px;
-  padding: 5px 5px 5px 0px;
-  background: #e0eae6;
-  border: none;
-  color: #000;
-  font-weight: 600 !important;
-}
-.form_input_box input::placeholder {
-  color: #9f9a9a;
-}
-.form-control:focus {
-  box-shadow: none !important;
-  border: none !important;
-}
-.form_input_box {
-  margin-bottom: 5px;
-}
-.form_input_box label {
-  font-size: 16px;
-  font-weight: 600 !important;
-  color: #00552d;
-}
-.contain-bank {
-  padding: 23px;
-  background: #e0eae6;
-  margin-top: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 2px 9px 2px #cdcdcd;
-}
-.banking {
-  width: 90px;
-}
-.img-bank {
-  text-align: center;
-}
-.content-bank {
-  margin-top: 36px;
-}
-.container {
-  padding: 0px 16px;
+  justify-content: center;
 }
 
+@mixin transition($prop: all, $time: 0.25s) {
+  transition: $prop $time cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-// Start bottom css for header section 
-.row.header_row {
-  .my_common_header {
-    padding: 5px 25px 12px 25px;
+// Reset rules locally
+p, h1, h2, h3, span {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+// Header styles
+.custom-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: $white;
+  border-bottom: 1px solid #eef0f2;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+  padding-top: calc(env(safe-area-inset-top, 24px) + 12px);
+
+  .header-container {
     display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
     width: 100%;
-    border-bottom: 1px solid #ededed;
 
-    .common_header {
-      text-align: left;
-      padding: 0px !important;
+    .back-btn {
+      border: none;
+      background: $primary-color;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(8, 139, 70, 0.15);
+      cursor: pointer;
+      @include transition(transform);
 
-      .back_arrow_div {
-        background: #00552b;
-        width: 30px;
-        height: 30px;
+      i {
+        font-size: 14px;
+        color: $white;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #212529;
+      text-align: center;
+      flex: 1;
+    }
+
+    .header-right-placeholder {
+      width: 32px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+// Content container styles
+ion-content {
+  --background: #f8fafc;
+}
+
+.bank-container {
+  padding: 8px 4px 40px 4px;
+
+  /* ---------------- DIGITAL BANK CARD ---------------- */
+
+  .digital-bank-card {
+    height: 180px;
+    width: 100%;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #005528 0%, #088b46 100%);
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    color: $white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(8, 139, 70, 0.22);
+    margin-bottom: 24px;
+
+    .card-glass-glow {
+      position: absolute;
+      top: -60px;
+      right: -60px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      filter: blur(25px);
+      pointer-events: none;
+    }
+
+    .card-header-view {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .bank-brand {
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .chip-icon {
+        width: 34px;
+        height: 25px;
+        background: linear-gradient(135deg, #e5c07b 0%, #d1a851 100%);
+        border-radius: 4px;
+        padding: 2px 4px;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 5px;
-        box-shadow: 0px 2px 5px #cdcdcd;
+        flex-direction: column;
+        justify-content: space-around;
+        box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2);
 
-        i {
-          color: #fff;
-          font-size: 18px;
+        .chip-line {
+          height: 1px;
+          background-color: rgba(0, 0, 0, 0.25);
         }
       }
     }
 
-    .upload_product_heading {
-      h2 {
-        margin-top: 0px;
-        margin-bottom: 0px;
-        font-size: 20px;
-        font-weight: 600;
-        text-align: center;
-        text-wrap: nowrap;
-      }
+    .card-number {
+      font-size: 21px;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      letter-spacing: 2px;
+      margin: auto 0;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    .check_right {
-      text-align: right;
+    .card-footer-view {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
 
-      i {
-        font-size: 20px;
-        color: #005528;
+      .card-holder-info {
+        display: flex;
+        flex-direction: column;
+
+        .label {
+          font-size: 9px;
+          text-transform: uppercase;
+          color: rgba(255, 255, 255, 0.7);
+          letter-spacing: 0.5px;
+          margin-bottom: 2px;
+        }
+
+        .name {
+          font-size: 13px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+      }
+
+      .card-type-icon {
+        background-color: rgba(255, 255, 255, 0.15);
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        .gogreen-logo {
+          font-size: 12px;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+      }
+    }
+  }
+
+  /* ---------------- DETAILS LIST PANE ---------------- */
+
+  .bank-details-pane {
+    background-color: $white;
+    border-radius: 16px;
+    border: 1px solid #eef0f2;
+    padding: 20px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+
+    .pane-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #212529;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+
+      .detail-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f8fafc;
+
+        .detail-label {
+          font-size: 13px;
+          font-weight: 600;
+          color: #868e96;
+        }
+
+        .detail-value {
+          font-size: 13px;
+          font-weight: 700;
+          color: #212529;
+          text-align: right;
+          word-break: break-all;
+          max-width: 60%;
+        }
+
+        &:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
       }
     }
   }
 }
 
-.zero_padding {
-  padding: 0px;
-}
-.my_common_header{
-  margin-top: 10px;
-}
+// Media responsive tweaks
+@media (max-width: 360px) {
+  .custom-header {
+    .header-container {
+      padding: 10px 14px;
+      .header-title {
+        font-size: 16px;
+      }
+    }
+  }
 
-// End bottom css for header section 
+  .bank-container {
+    .digital-bank-card {
+      height: 160px;
+      padding: 18px;
+      .card-number {
+        font-size: 18px;
+      }
+    }
+    .bank-details-pane {
+      padding: 16px;
+    }
+  }
+}

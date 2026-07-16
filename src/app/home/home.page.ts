@@ -33,7 +33,7 @@ export class HomePage implements OnInit {
   receivedOrders: any[] = [];
   completedOrders: any[] = [];
   orderExpanded: {
-    [orderId: string]: { customer: boolean; store: boolean } | undefined
+    [orderId: string]: { [section: string]: boolean } | undefined
   } = {};
 
   loading: HTMLIonLoadingElement | null = null; // ✅ Store loading reference
@@ -187,11 +187,16 @@ export class HomePage implements OnInit {
   //   await modal.present();
   // }
 
-  toggleSection(orderId: string, section: 'customer' | 'store') {
-    if (!this.orderExpanded[orderId]) {
-      this.orderExpanded[orderId] = { customer: false, store: false };
+  toggleSection(orderId: any, section: string) {
+    const id = String(orderId);
+    if (!this.orderExpanded[id]) {
+      this.orderExpanded[id] = {};
     }
-    this.orderExpanded[orderId][section] = !this.orderExpanded[orderId][section];
+    this.orderExpanded[id][section] = !this.orderExpanded[id][section];
+  }
+
+  isExpanded(orderId: any, section: string): boolean {
+    return !!this.orderExpanded[String(orderId)]?.[section];
   }
 
   // Test notification flow

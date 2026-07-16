@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { Location } from '@angular/common';
-import { FooterTabsComponent } from "../components/footer-tabs/footer-tabs.component";
+import { CommonModule, Location } from '@angular/common';
 import { jwtDecode } from 'jwt-decode';
 import { AuthserviceService } from '../services/authservice.service';
 import { Storage } from '@ionic/storage-angular';
@@ -16,7 +15,7 @@ import { LoadingController } from '@ionic/angular';
   templateUrl: './vehicel-details.page.html',
   styleUrls: ['./vehicel-details.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, FooterTabsComponent], // Import IonicModule here
+  imports: [IonicModule, FormsModule, CommonModule], // Import IonicModule here
 })
 export class VehicelDetailsPage implements OnInit {
   // store = {
@@ -41,7 +40,7 @@ export class VehicelDetailsPage implements OnInit {
   regExpiryDate = '';
   regDocument = '';
   regDocumentName: File | null = null;
-  regDocumentPreview: File | null = null;
+  regDocumentPreview: any = null;
   // regDocumentPreview='';
 
   role_id = 4;

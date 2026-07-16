@@ -1,91 +1,65 @@
-<ion-header [translucent]="true" class="mineee">
-  <!-- <ion-toolbar>
-    <div class="header">
-      <div class="col1">
-        <a href="javascript:void(0)" (click)="goBackToScreen()">
-          <img
-            src="../../assets/home/backbutton.svg"
-            class="avatarprofile"
-            alt="avatarprofile"
-            title="avatarprofile"
-          />
-        </a>
-      </div>
-      <div class="col2">
-        <p class="profile">Reviews & Ratings</p>
-      </div>
-      <div class="col2"></div>
-    </div>
-  </ion-toolbar> -->
-  <div class="zero_padding">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>Reviews & Ratings</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right">
-          <i class="fa fa-check" aria-hidden="true"></i>
-        </ion-col>
-      </div>
-    </div>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Reviews & Ratings</h1>
+    <div class="header-right-placeholder"></div>
   </div>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div class="rating-container">
-    <div class="left">
-      <h1>4.5</h1>
-      <div class="stars">
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star-half"></i>
+  <div class="main-container">
+    <!-- Ratings Summary Card -->
+    <div class="rating-summary-card">
+      <div class="summary-left">
+        <h1 class="rating-score">4.5</h1>
+        <div class="stars-row">
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star"></i>
+          <i class="fa fa-star-half-o"></i>
+        </div>
+        <p class="rating-count">43 Ratings</p>
       </div>
-      <p>43 Ratings</p>
-    </div>
 
-    <div class="right">
-      <div *ngFor="let rating of ratings" class="bar-group">
-        <span class="bar-label">{{ rating.stars }} stars</span>
-        <div class="bar">
-          <div
-            class="fill"
-            [ngStyle]="{ width: (rating.percent * 100) + '%' }"
-          ></div>
+      <div class="summary-right">
+        <div *ngFor="let rating of ratings" class="progress-bar-group">
+          <span class="star-label">{{ rating.stars }} ★</span>
+          <div class="progress-track">
+            <div class="progress-fill" [ngStyle]="{ width: (rating.percent * 100) + '%' }"></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <!-- close rating-container -->
 
-  <div class="seperatr"></div>
+    <div class="section-divider"></div>
 
-  <div class="main-ratings">
-    <div *ngFor="let comment of comments; let i = index" class="card-1">
-      <img [src]="comment.profile" alt="Profile" class="profile-pic" />
-      <div class="profile-section">
-        <div class="review-card">
-          <div>
-            <div class="user-name">{{ comment.user }}</div>
-            <div class="stars-small">
-              <i
-                class="fa fa-star"
-                *ngFor="let s of [].constructor(comment.rating)"
-              ></i>
-              <strong class="staring"
-                >{{ comment.rating | number:'1.1-1' }}</strong
-              >
+    <!-- Review Comments List -->
+    <div class="comments-section">
+      <h2 class="section-title">Latest Reviews</h2>
+      
+      <div *ngFor="let comment of comments; let i = index" class="review-card">
+        <div class="card-header">
+          <img [src]="comment.profile" alt="Profile" class="reviewer-avatar" />
+          <div class="reviewer-info">
+            <div class="reviewer-top">
+              <h3 class="reviewer-name">{{ comment.user }}</h3>
+              <span class="review-date">{{ comment.date }}</span>
+            </div>
+            
+            <div class="review-meta">
+              <div class="stars-mini">
+                <i class="fa fa-star" *ngFor="let s of [].constructor(comment.rating)"></i>
+              </div>
+              <strong class="score-value">{{ comment.rating | number:'1.1-1' }}</strong>
             </div>
           </div>
-          <div>
-            <p>{{ comment.text }}</p>
-          </div>
+        </div>
+
+        <div class="card-body">
+          <p class="review-text">{{ comment.text }}</p>
         </div>
       </div>
     </div>

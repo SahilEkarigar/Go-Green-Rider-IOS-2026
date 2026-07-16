@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, NavController } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,15 +12,15 @@ import { AuthserviceService } from '../services/authservice.service';
   templateUrl: './notification.page.html',
   styleUrls: ['./notification.page.scss'],
   standalone: true,
-  
-  imports: [IonicModule, CommonModule, FormsModule,FooterTabsComponent]
+
+  imports: [IonicModule, CommonModule, FormsModule, FooterTabsComponent]
 })
 export class NotificationPage implements OnInit {
   selectedNotification: { day: string, idx: number } | null = null;
   selectedNotificationItem: any | null = null;
   notifications: Array<{ day: string, items: any[] }> = [];
 
-  constructor(private auth: AuthserviceService) {}
+  constructor(private auth: AuthserviceService, private navCtrl: NavController,) { }
 
   ngOnInit() {
     const userId = localStorage.getItem('user_id') || '';
@@ -82,5 +82,8 @@ export class NotificationPage implements OnInit {
   closeDetails() {
     this.selectedNotification = null;
     this.selectedNotificationItem = null;
+  }
+  goBack() {
+    this.navCtrl.navigateBack('/home');
   }
 }

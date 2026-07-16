@@ -1,3 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import '../../theme/variables.scss';
+
+// Utility mixins
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin transition($prop: all, $time: 0.25s) {
+  transition: $prop $time cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+// Reset within store details component
+p, h2, h3, span {
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
 ion-content {
   --background: #f5f7fb;
   --padding-top: 0;
@@ -8,7 +28,7 @@ ion-content {
     flex-direction: column;
     min-height: 100%;
     height: 100%;
-    padding-top: calc(env(safe-area-inset-top, 24px) + 10px);
+    padding-top: 0;
 
     /* ---------------- MAP SECTION ---------------- */
 
@@ -16,11 +36,12 @@ ion-content {
       position: sticky;
       top: 0;
       height: clamp(230px, 40vh, 320px);
-      margin: 72px 16px 14px;
+      margin: calc(env(safe-area-inset-top, 24px) + 12px) 16px 14px;
       border-radius: 26px;
       overflow: hidden;
-      box-shadow: 0 8px 25px rgba(34, 68, 146, 0.18);
+      box-shadow: 0 8px 25px rgba(8, 139, 70, 0.12);
       z-index: 5;
+      border: 1px solid rgba(0, 0, 0, 0.05);
 
       .map-canvas {
         height: 100%;
@@ -36,43 +57,47 @@ ion-content {
         align-items: center;
         justify-content: space-between;
         z-index: 2;
-        padding: 10px 14px;
+        padding: 0;
 
-        .back-btn,
-        .drive-btn {
+        .back-btn {
           border: none;
           background: #fff;
-          border-radius: 10px;
-          padding: 8px 12px;
+          border-radius: 12px;
+          width: 40px;
+          height: 40px;
+          @include flex-center;
           box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-          font-weight: 600;
-          font-size: 12px;
-          text-transform: uppercase;
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
+          cursor: pointer;
+          @include transition(transform);
 
-        .drive-btn {
-          background: #088B46;
-          color: #fff;
-        }
-
-        .map-info {
-          text-align: center;
-
-          &__title {
-            display: block;
-            font-weight: 600;
-            color: #222;
-            font-size: 20px;
+          i {
+            color: $primary-color;
+            font-size: 18px;
           }
 
-          &__coords {
-            display: block;
-            font-size: 11px;
-            color: #6b6b6b;
-            margin-top: 2px;
+          &:active {
+            transform: scale(0.92);
+          }
+        }
+
+        .drive-btn-floating {
+          border: none;
+          background: #fff;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          @include flex-center;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          cursor: pointer;
+          @include transition(transform);
+
+          .drive-btn-icon {
+            width: 22px;
+            height: 22px;
+          }
+
+          &:active {
+            transform: scale(0.92);
           }
         }
       }
@@ -82,18 +107,32 @@ ion-content {
 
     .details-panel {
       background: #fff;
-      border-top-left-radius: 24px;
-      border-top-right-radius: 24px;
+      border-top-left-radius: 28px;
+      border-top-right-radius: 28px;
       margin-top: 0;
-      padding: 24px 20px 32px;
+      padding: 24px 20px 36px;
       flex: 1;
       overflow-y: auto;
-      box-shadow: 0 -12px 32px rgba(17, 36, 84, 0.1);
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.04);
+      border: 1px solid #f1f3f5;
 
       .heading_route {
         display: flex;
         justify-content: center;
-        margin-bottom: 12px;
+        margin-bottom: 20px;
+
+        .map-info__title {
+          font-size: 13px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.8px;
+          color: $primary-color;
+          background-color: rgba($primary-color, 0.08);
+          border: 1px solid rgba($primary-color, 0.15);
+          padding: 6px 18px;
+          border-radius: 20px;
+          box-shadow: 0 2px 8px rgba(8, 139, 70, 0.05);
+        }
       }
 
       .panel-header {
@@ -101,101 +140,91 @@ ion-content {
         justify-content: space-between;
         align-items: flex-start;
         gap: 16px;
-        border-bottom: 1px solid #f1f1f1;
+        border-bottom: 1px solid #f1f3f5;
         padding-bottom: 16px;
+        margin-bottom: 16px;
+
+        .store-text-info {
+          min-width: 0;
+          flex: 1;
+        }
 
         .panel-label {
-          font-size: 12px;
+          font-size: 11px;
           text-transform: uppercase;
-          color: #088B46;
+          color: #868e96;
           font-weight: 700;
           margin-bottom: 6px;
+          letter-spacing: 0.5px;
+        }
+
+        .store-name {
+          font-size: 20px;
+          font-weight: 700;
+          color: #212529;
+          line-height: 1.3;
         }
 
         .panel-address {
           font-size: 13px;
-          color: #6d6d6d;
-          margin-bottom: 0;
+          color: #6c757d;
+          margin-top: 5px;
+          line-height: 1.4;
         }
 
         .panel-store-img {
-          width: 60px;
-          height: 60px;
+          width: 64px;
+          height: 64px;
           border-radius: 16px;
           object-fit: cover;
-          border: 1px solid #f0f0f0;
+          border: 1px solid #eef0f2;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+          flex-shrink: 0;
         }
       }
 
-      /* ---------------- PAYMENT STATUS ---------------- */
+      /* ---------------- INFO SEGMENT ---------------- */
 
-      .payment-status {
+      .info-segment {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        gap: 12px;
+        border-bottom: 1px solid #f1f3f5;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
 
-        .label {
+        .payment-status-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
           font-size: 14px;
-          font-weight: 600;
-        }
 
-        .status {
-          padding: 4px 12px;
-          font-size: 13px;
-          font-weight: 600;
-          border-radius: 8px;
-
-          &.pending {
-            background: #FFE8E8;
-            color: #E53935;
+          .label {
+            font-weight: 600;
+            color: #495057;
           }
 
-          &.done {
-            background: #E0F7E9;
-            color: #088B46;
+          .value {
+            font-weight: 700;
+            color: #212529;
           }
-        }
-      }
 
-      /* ---------------- ACCORDION SECTION ---------------- */
+          .status-badge {
+            padding: 4px 12px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 20px;
 
-      .accordion_box {
-        margin-top: 12px;
-
-        .accordion-item {
-          .accordion-button {
-            &::after {
-              background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%2328a745' viewBox='0 0 16 16'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            &.pending {
+              background-color: rgba($red, 0.1);
+              color: $red;
+              border: 1px solid rgba($red, 0.15);
             }
-          }
 
-          .accordion-orderdetals-swiper::after {
-            filter: brightness(0) invert(1);
-          }
-
-          .accordion-body {
-            .order-items {
-              .item {
-                display: flex;
-                justify-content: space-between;
-
-                .dot {
-                  &.green-dot {
-                    width: 8px;
-                    height: 8px;
-                    background: #088B46;
-                    border-radius: 50%;
-                  }
-                }
-
-                .text-products {
-                  font-size: 14px;
-                }
-
-                .amount-items {
-                  font-weight: 600;
-                }
-              }
+            &.done {
+              background-color: rgba($primary-color, 0.1);
+              color: $primary-color;
+              border: 1px solid rgba($primary-color, 0.15);
             }
           }
         }
@@ -203,39 +232,167 @@ ion-content {
 
       /* ---------------- CHAT SECTION ---------------- */
 
-      .chat-section {
-        position: relative;
-        z-index: 1000;
-        top: 8px;
+      .chat-action-bar {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 14px;
+        padding: 10px 16px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        @include transition(all);
 
-        .chat-header {
-          background-color: #f4f4f4;
-          padding: 6px 17px;
-          border-radius: 10px;
+        .chat-bar-content {
           display: flex;
           align-items: center;
-          gap: 10px;
+          justify-content: space-between;
 
-          p {
-            margin: 0;
+          .chat-bar-text {
             font-size: 14px;
             font-weight: 600;
-            color: #333;
+            color: #495057;
           }
 
-          .chat_icon {
-            width: 50px;
-            height: 50px;
+          .chat-bar-icon-wrapper {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: auto;
+            background-color: rgba($primary-color, 0.1);
+            @include flex-center;
 
-            img {
-              width: 28px;
-              height: 28px;
+            .chat-bar-icon {
+              width: 18px;
+              height: 18px;
               object-fit: contain;
+            }
+          }
+        }
+
+        &:active {
+          background-color: #f1f3f5;
+          border-color: #dee2e6;
+          transform: translateY(1px);
+        }
+      }
+
+      /* ---------------- ACCORDION SECTION ---------------- */
+
+      .accordion-item-details {
+        border: 1px solid #e9ecef;
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        @include transition(all);
+
+        .accordion-header-details {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 14px 16px;
+          cursor: pointer;
+          background-color: #fafbfc;
+          @include transition(background-color);
+
+          .accordion-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #495057;
+          }
+
+          .arrow-icon {
+            width: 12px;
+            height: 12px;
+            opacity: 0.6;
+            @include transition(transform);
+          }
+
+          &:active {
+            background-color: #f1f3f5;
+          }
+        }
+
+        .accordion-body-details {
+          padding: 16px;
+          background-color: #fff;
+          border-top: 1px solid #e9ecef;
+
+          .order-items-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .item-row {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              font-size: 13px;
+
+              .item-left {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                min-width: 0;
+
+                .item-name {
+                  color: #343a40;
+                  font-weight: 500;
+                  white-space: nowrap;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                }
+              }
+
+              .item-price {
+                font-weight: 600;
+                color: #212529;
+                flex-shrink: 0;
+              }
+
+              // Veg / Non-Veg custom dot indicator
+              .food-dot {
+                width: 14px;
+                height: 14px;
+                border: 1.5px solid currentColor;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+
+                &::after {
+                  content: "";
+                  width: 5px;
+                  height: 5px;
+                  border-radius: 50%;
+                  background-color: currentColor;
+                }
+
+                &.green-dot {
+                  color: #199e45;
+                }
+
+                &.red-dot {
+                  color: #d62828;
+                }
+              }
+            }
+          }
+        }
+
+        // Expanded state
+        &.expanded {
+          border-color: rgba($primary-color, 0.25);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+
+          .accordion-header-details {
+            background-color: rgba($primary-color, 0.03);
+
+            .accordion-title {
+              color: $primary-color;
+            }
+
+            .arrow-icon {
+              transform: rotate(90deg);
+              opacity: 0.8;
             }
           }
         }
@@ -246,61 +403,62 @@ ion-content {
       .otp-container {
         display: flex;
         justify-content: center;
-        gap: 10px;
-        margin-bottom: 20px;
+        gap: 8px;
+        margin-bottom: 24px;
 
         .otp-box {
-          width: 40px;
-          height: 50px;
-          background-color: #088B46;
-          color: #fff;
-          font-size: 1.5rem;
-          font-weight: bold;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 6px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-          letter-spacing: 2px;
+          width: 42px;
+          height: 52px;
+          background-color: rgba($primary-color, 0.08);
+          border: 2px solid $primary-color;
+          color: $primary-color;
+          font-size: 22px;
+          font-weight: 700;
+          font-family: 'Courier New', Courier, monospace;
+          @include flex-center;
+          border-radius: 8px;
+          box-shadow: 0 2px 8px rgba(8, 139, 70, 0.05);
+          letter-spacing: 0;
+        }
+      }
+
+      .primary-action-btn {
+        width: 100%;
+        height: 46px;
+        background-color: $primary-color;
+        color: $white;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        @include flex-center;
+        box-shadow: 0 4px 12px rgba(8, 139, 70, 0.2);
+        @include transition(all, 0.2s);
+        cursor: pointer;
+
+        &.send-otp-again-btn {
+          background-color: $secondary-color;
+          box-shadow: 0 4px 12px rgba(202, 44, 44, 0.2);
+
+          &:active {
+            background-color: #aa1e1e;
+            box-shadow: 0 2px 6px rgba(202, 44, 44, 0.15);
+          }
+        }
+
+        &:active {
+          transform: scale(0.98);
+          background-color: #067038;
+          box-shadow: 0 2px 6px rgba(8, 139, 70, 0.15);
         }
       }
 
       .button-row {
-        display: flex;
-        gap: 10px;
-
-        .btn-red {
-          background-color: #dc3545;
-          border: none;
-          color: #fff;
-          width: 100%;
-          padding: 12px;
-          border-radius: 6px;
-        }
-
-        .btn-green {
-          background-color: #088B46;
-          border: none;
-          color: #fff;
-        }
-      }
-
-      .reached_pickup_btn {
         width: 100%;
-        color: #fff;
-        background-color: #088B46;
-        font-family: Open Sans;
-        font-weight: 700;
-        font-size: 15px;
-        line-height: 100%;
-        text-align: center;
-        border-radius: 6px;
-        padding: 12px;
       }
     }
   }
 }
-
 
 .btn-outer-div {
   margin-top: 16px;

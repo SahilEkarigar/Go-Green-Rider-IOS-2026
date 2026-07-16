@@ -4,7 +4,6 @@ import { Location } from '@angular/common';
 import { AuthserviceService } from '../services/authservice.service';
 import { Storage } from '@ionic/storage-angular';
 import { UserService } from '../services/user.service';
-import { FooterTabsComponent } from "../components/footer-tabs/footer-tabs.component";
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -13,7 +12,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './shopstatus.page.html',
   styleUrls: ['./shopstatus.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, CommonModule, FooterTabsComponent],
+  imports: [IonicModule, FormsModule, CommonModule],
 })
 export class ShopstatusPage implements OnInit {
 

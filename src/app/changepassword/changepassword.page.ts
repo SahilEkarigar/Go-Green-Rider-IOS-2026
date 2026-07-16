@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule, NavController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { Location } from '@angular/common';
-import { FooterTabsComponent } from '../components/footer-tabs/footer-tabs.component';
+import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthserviceService } from '../services/authservice.service';
 import { Storage } from '@ionic/storage-angular';
@@ -13,7 +12,7 @@ import { jwtDecode } from 'jwt-decode';
   templateUrl: './changepassword.page.html',
   styleUrls: ['./changepassword.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, FooterTabsComponent],
+  imports: [IonicModule, FormsModule, CommonModule],
 })
 
 export class ChangepasswordPage implements OnInit {

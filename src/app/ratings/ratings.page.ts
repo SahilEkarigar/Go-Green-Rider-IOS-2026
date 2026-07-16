@@ -12,48 +12,54 @@ import { Location } from '@angular/common';
 })
 export class RatingsPage implements OnInit {
   comments = [
-
     {
       user: 'Joan Perkins',
       rating: 5.0,
       text: 'This app is a fantastic addition! Intuitive, clean UI and everything just works. Highly recommended.',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/women/3.jpg',
+      date: '2 days ago'
     },
     {
       user: 'Frank Garrett',
       rating: 4.0,
       text: 'Overall solid experience. Some features could use polish, but it’s definitely useful and fast.',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/men/4.jpg',
+      date: '3 days ago'
     },
     {
       user: 'Randy Palmer',
       rating: 4.0,
       text: 'App runs smoothly and gets the job done. Would love dark mode in future updates!',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/men/5.jpg',
+      date: '5 days ago'
     },
     {
       user: 'Ashley Moore',
       rating: 2.0,
       text: 'Interface is confusing and some screens take too long to load. Needs improvement.',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/women/6.jpg',
+      date: '1 week ago'
     },
     {
       user: 'Liam Rogers',
       rating: 5.0,
       text: 'Simple, powerful, and effective. Love how easy it is to manage everything in one place.',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/men/7.jpg',
+      date: '1 week ago'
     },
     {
       user: 'Emily Foster',
       rating: 3.0,
       text: 'The idea is great but execution needs a bit of work. Looking forward to updates.',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/women/8.jpg',
+      date: '2 weeks ago'
     },
     {
       user: 'Carlos Diaz',
       rating: 1.0,
       text: 'Crashes on login. Tried reinstalling but still no luck. Needs urgent fix.',
-      profile: 'https://randomuser.me/api/portraits/men/3.jpg'
+      profile: 'https://randomuser.me/api/portraits/men/9.jpg',
+      date: '3 weeks ago'
     }
   ];
 

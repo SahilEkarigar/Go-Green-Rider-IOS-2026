@@ -1,51 +1,48 @@
-<ion-header [translucent]="true" class="mineee">
-  <div class="container zero_padding">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>Balance & History</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right">
-          <i class="fa fa-check" aria-hidden="true"></i>
-        </ion-col>
-      </div>
-    </div>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Balance & History</h1>
+    <div class="header-right-placeholder"></div>
   </div>
-
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <div class="wallet-container">
-    <div class="wallet-sub">
-      <div class="wallet-header">
-        <div class="gain-btn">
-          <p>Current Balance</p>
-          <button class="gain">
-            <i class="fa fa-caret-up" aria-hidden="true"></i> 3.4%
-          </button>
+    <!-- Balance Card Layout -->
+    <div class="balance-card">
+      <div class="card-glow"></div>
+      <div class="balance-header">
+        <span class="balance-label">Current Balance</span>
+        <div class="trend-badge">
+          <i class="fa fa-caret-up" aria-hidden="true"></i> 3.4%
         </div>
-        <h1>$ 1,250.00</h1>
-        <button class="add-money-btn">Withdraw</button>
+      </div>
+      <h1 class="balance-amount">$ 1,250.00</h1>
+      <div class="balance-actions">
+        <button class="withdraw-card-btn">Withdraw Funds</button>
       </div>
     </div>
-    <div class="transactions">
-      <h3>Recent Transactions</h3>
-      <ul>
-        <li>
-          <div class="transaction-item">
-            <span>Order #12345</span>
-            <span class="debit">- $150</span>
+
+    <!-- Recent Transactions List -->
+    <div class="transactions-section">
+      <h3 class="section-title">Recent Transactions</h3>
+      
+      <div class="transactions-list">
+        <div class="transaction-item-card">
+          <div class="item-icon-wrapper debit">
+            <i class="fa fa-minus" aria-hidden="true"></i>
           </div>
-          <small>26 June, 2025</small>
-        </li> 
-      </ul>
+          
+          <div class="item-info">
+            <span class="item-name">Order #12345</span>
+            <span class="item-date">26 June, 2025</span>
+          </div>
+          
+          <span class="transaction-amount debit">- $150.00</span>
+        </div>
+      </div>
     </div>
-
-
   </div>
 </ion-content>

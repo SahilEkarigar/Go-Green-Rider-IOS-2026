@@ -1,41 +1,22 @@
-<!-- <ion-header [translucent]="true" class="mineee">
-  <ion-toolbar>
-    <div class="header">
-      <div class="col1">
-        <img src="../../assets/home/backbutton.svg" class="backbutton" alt="backbutton" title="backbutton" >
-      </div>
-      <div class="col2">
-        <p class="profile">EDIT ACCOUNT</p>
-      </div>
-      <div class="col2"></div>
-    </div>
-  </ion-toolbar>
-</ion-header> -->
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">User Profile</h1>
+    <button class="save-btn-header" (click)="updateProfile()">
+      <i class="fa fa-check" aria-hidden="true"></i>
+    </button>
+  </div>
+</ion-header>
 
 <ion-content class="ioncontent">
-  <div class="zero_padding">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>User Profile</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right" (click)="updateProfile()">
-          <i class="fa fa-check" aria-hidden="true"></i>
-        </ion-col>
-      </div>
-    </div>
-  </div>
 
   <div class="container body_container">
-    <div class="contain-bank">
+    <div class="profile-card">
       <div class="create_account">
         <div class="profile-wrapper">
-          <img [src]="riderProfilePicture || 'assets/home/shop.jpeg'" (error)="onImageError($event)"
+          <img [src]="getProfileImage()" (error)="onImageError($event)"
             class="profile-image" alt="Profile" />
           <div class="camera-icon" (click)="fileInput.click()">
             <img src="../../assets/home/camera.svg" alt="Camera Icon" />
@@ -43,80 +24,68 @@
           </div>
         </div>
       </div>
-      <div class="content-business">
-        <div class="form_input_box d-flex gap-1">
 
-          <!-- <div *ngIf="isSkeleton" class="skeleton-input"></div> -->
-
-          <div>
+      <div class="form-container">
+        <!-- First Name & Last Name horizontal layout -->
+        <div class="form-row-2">
+          <div class="form-group">
             <label for="fname">First Name</label>
             <input type="text" [(ngModel)]="fname" id="fname" name="fname" class="form-control"
               placeholder="Enter First Name" />
           </div>
-          <div >
+          <div class="form-group">
             <label for="lname">Last Name</label>
             <input type="text" [(ngModel)]="lname" id="lname" name="lname" class="form-control"
               placeholder="Enter Last Name" />
           </div>
         </div>
-        <div class="form_input_box">
+
+        <div class="form-group">
           <label for="userName">User Name</label>
           <input type="text" [(ngModel)]="userName" id="userName" name="userName" class="form-control"
             placeholder="Enter User Name" />
         </div>
 
-        <div class="form_input_box">
+        <div class="form-group">
           <label for="email">Email</label>
-          <input type="email" disabled [(ngModel)]="email" id="email" name="email" class="form-control"
+          <input type="email" disabled [(ngModel)]="email" id="email" name="email" class="form-control disabled-input"
             placeholder="Enter Email">
         </div>
 
-        <div class="form_input_box">
+        <div class="form-group">
           <label for="phone">Mobile No</label>
-          <div class="prefix_phone_box">
-            <select disabled [(ngModel)]="prefix" id="prefix" name="prefix" class="form-control">
+          <div class="phone-input-group">
+            <select disabled [(ngModel)]="prefix" id="prefix" name="prefix" class="prefix-select">
               <option value="+1">+1</option>
             </select>
-            <input type="tel" disabled [(ngModel)]="phone" id="phone" name="phone" class="form-control"
+            <input type="tel" disabled [(ngModel)]="phone" id="phone" name="phone" class="form-control phone-input disabled-input"
               placeholder="Enter Mobile No">
           </div>
         </div>
-        <div class="form_input_box">
+
+        <div class="form-group">
           <label for="otherPhone">Other Mobile No</label>
-          <div class="prefix_phone_box">
-            <select [(ngModel)]="prefix" id="prefix" name="prefix" class="form-control">
+          <div class="phone-input-group">
+            <select [(ngModel)]="prefix" id="prefix" name="prefix" class="prefix-select">
               <option value="+1">+1</option>
             </select>
-            <input type="tel" [(ngModel)]="otherPhone" id="otherPhone" name="otherPhone" class="form-control"
+            <input type="tel" [(ngModel)]="otherPhone" id="otherPhone" name="otherPhone" class="form-control phone-input"
               placeholder="Enter Other Mobile No">
           </div>
         </div>
 
-        <div class="form_input_box">
-          <label for="dob">DOB</label>
+        <div class="form-group">
+          <label for="dob">Date of Birth</label>
           <input type="date" [(ngModel)]="dob" id="dob" name="dob" class="form-control" placeholder="Enter DOB">
         </div>
-        <div class="form_input_box">
+
+        <div class="form-group">
           <label for="addressInfo">Address</label>
-          <textarea [(ngModel)]="addressInfo" id="addressInfo" name="addressInfo" class="form-control bg-transparent"
-            placeholder="Enter your address">
-          </textarea>
+          <textarea [(ngModel)]="addressInfo" id="addressInfo" name="addressInfo" class="form-control textarea-input"
+            placeholder="Enter your address"></textarea>
         </div>
       </div>
     </div>
-
-
-
-
-
-    <!-- <div class="map-wrapper">
-      <p class="map-label">Pin Your Shop Location</p>
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d22970125.388346937!2d-117.74801593995342!3d45.349410094059635!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89d502ce68257cd3%3A0x7497c11f024627b6!2sCanada%20Go%20Green!5e0!3m2!1sen!2sin!4v1751962035022!5m2!1sen!2sin"
-        width="100%" height="300" style="border: 0" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div> -->
   </div>
 
 </ion-content>
-<app-footer-tabs></app-footer-tabs>

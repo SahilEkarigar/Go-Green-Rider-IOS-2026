@@ -1,74 +1,64 @@
-<ion-content class="ioncontent">
-  <div class="zero_padding">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>Rider Documentation</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right">
-          <i class="fa fa-check" aria-hidden="true"></i>
-        </ion-col>
-      </div>
-    </div>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Rider Documentation</h1>
+    <button class="save-btn-header" (click)="saveDocumentation()">
+      <i class="fa fa-check" aria-hidden="true"></i>
+    </button>
   </div>
+</ion-header>
 
-  <div class="container body_container pBottom">
-    <div class="contain-bank">
-      <div class="content-vehicle">
-        <!-- Add Documents Button -->
-        <!-- Upload New Document -->
-        <div class="form_input_box">
-          <label>Add Documents</label>
-          <div class="document-upload">
-            <input type="file" class="upload-input" (change)="handleInitialFileUpload($event)"
-              accept=".jpg,.jpeg,.png,.pdf" />
+<ion-content class="ioncontent">
+  <div class="container body_container">
+    <div class="profile-card">
+      <div class="form-container">
+
+        <!-- 1. Add Documents Button Card -->
+        <div class="form-group">
+          <label>Upload New Document</label>
+          <div class="initial-upload-container">
+            <label for="initialDocInput" class="upload-trigger-btn">
+              <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+              <span>Select File to Upload</span>
+            </label>
+            <input type="file" id="initialDocInput" class="upload-input" (change)="handleInitialFileUpload($event)"
+              accept=".jpg,.jpeg,.png,.pdf" style="display: none;" />
           </div>
         </div>
 
-        <!-- List of Uploaded Documents -->
-        <div class="form_input_box" *ngFor="let document of uploadedDocs">
-          <div class="document-upload">
-            <div class="image-preview-container">
-              <img [src]="document.preview" alt="Document" class="preview-image"
-                (error)="handleImageFallback($event)" />
+        <!-- 2. Dynamic Uploaded Documents List -->
+        <div class="uploaded-docs-section" *ngIf="uploadedDocs.length > 0">
+          <label class="section-subtitle">Uploaded Files</label>
+          <div class="docs-grid">
+            <div class="doc-preview-card" *ngFor="let document of uploadedDocs">
+              <div class="image-preview-container">
+                <img [src]="document.preview" alt="Document" class="preview-image"
+                  (error)="handleImageFallback($event)" />
 
-              <!-- Edit and Delete Icons -->
-              <div class="image-actions">
-                <!-- Edit: triggers hidden input -->
-                <label [attr.for]="'upload_doc_' + document.id" class="edit-icon">
-                  <i class="fa fa-pencil" aria-hidden="true"></i>
-                </label>
+                <div class="image-actions">
+                  <label [attr.for]="'upload_doc_' + document.id" class="edit-icon">
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                  </label>
+                  <button type="button" class="remove-icon" (click)="deleteUploadedDocument(document.id)">
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </button>
+                </div>
 
-                <!-- Delete: removes document -->
-                <button type="button" class="remove-icon" (click)="deleteUploadedDocument(document.id)">
-                  <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
+                <input type="file" [id]="'upload_doc_' + document.id" accept=".jpg,.jpeg,.png,.pdf"
+                  (change)="updateExistingDocument($event, document.id)" style="display: none;" />
               </div>
-
-              <!-- Hidden file input for edit -->
-              <input type="file" [id]="'upload_doc_' + document.id" accept=".jpg,.jpeg,.png,.pdf"
-                (change)="updateExistingDocument($event, document.id)" style="display: none;" />
-            </div>
-
-            <!-- File name below preview -->
-            <div *ngIf="document.name" class="file-name">
-              <i class="fa fa-paperclip" aria-hidden="true"></i> {{ document.name }}
+              <div *ngIf="document.name" class="file-name">
+                <i class="fa fa-paperclip" aria-hidden="true"></i>
+                <span>{{ document.name }}</span>
+              </div>
             </div>
           </div>
         </div>
 
-
-
-        <!-- Dynamic Documents Section -->
-
-
-        <!-- Driving Licence Upload Section -->
-        <div class="form_input_box">
+        <!-- 3. Driving Licence Section -->
+        <div class="form-group">
           <label>Driving Licence</label>
           <div class="document-upload">
             <div class="image-preview-container">
@@ -88,13 +78,14 @@
                 (change)="onDrivingLicenceChange($event)" style="display: none;" />
             </div>
             <div *ngIf="drivingLicenceName" class="file-name">
-              <i class="fa fa-paperclip" aria-hidden="true"></i> {{ drivingLicenceName }}
+              <i class="fa fa-paperclip" aria-hidden="true"></i>
+              <span>{{ drivingLicenceName }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Registration Document Upload Section -->
-        <div class="form_input_box">
+        <!-- 4. Registration Document Section -->
+        <div class="form-group">
           <label>Registration Document</label>
           <div class="document-upload">
             <div class="image-preview-container">
@@ -114,12 +105,13 @@
                 (change)="onRegDocumentChange($event)" style="display: none;" />
             </div>
             <div *ngIf="regDocumentName" class="file-name">
-              <i class="fa fa-paperclip" aria-hidden="true"></i> {{ regDocumentName }}
+              <i class="fa fa-paperclip" aria-hidden="true"></i>
+              <span>{{ regDocumentName }}</span>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 </ion-content>
-<app-footer-tabs></app-footer-tabs>

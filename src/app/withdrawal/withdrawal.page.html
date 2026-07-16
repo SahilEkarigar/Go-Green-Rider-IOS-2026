@@ -1,63 +1,44 @@
-<ion-header [translucent]="true" class="mineee">
-  <!-- <ion-toolbar>
-    <div class="header">
-      <div class="col1">
-        <a href="javascript:void(0)" (click)="goBackToScreen()">
-          <img
-            src="../../assets/home/backbutton.svg"
-            class="avatarprofile"
-            alt="avatarprofile"
-            title="avatarprofile"
-          />
-        </a>
-      </div>
-      <div class="col2">
-        <p class="profile">Withdrawal History</p>
-      </div>
-      <div class="col2"></div>
-    </div>
-  </ion-toolbar> -->
-  <div class="container zero_padding ">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>Withdrawal History</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right">
-          <i class="fa fa-check" aria-hidden="true"></i>
-        </ion-col>
-      </div>
-    </div>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Withdrawal History</h1>
+    <div class="header-right-placeholder"></div>
   </div>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="wallet-container pBottom">
-    <div class="transactions">
-      <ul>
-        <li *ngFor="let tx of transactions">
-          <div class="transaction-item">
-            <div class="item-details">
-              <span class="order-id">{{ tx.amount }}</span>
+  <div class="withdrawal-container pBottom">
+    <div class="transactions-list-section">
+      <h2 class="section-title">Latest Withdrawals</h2>
+      
+      <div class="transactions-list">
+        <div *ngFor="let tx of transactions" class="transaction-card-item">
+          <!-- Left accent color bar based on transaction status -->
+          <div class="card-accent" [ngClass]="tx.status.toLowerCase()"></div>
+
+          <div class="card-details">
+            <div class="details-top">
+              <span class="amount-value">{{ tx.amount }}</span>
+              <!-- Status Badge -->
+              <span class="status-badge" [ngClass]="tx.status.toLowerCase()">
+                <ion-icon [name]="getStatusIcon(tx.status)" class="badge-icon"></ion-icon>
+                <span>{{ tx.status }}</span>
+              </span>
+            </div>
+
+            <div class="details-bottom">
+              <span class="time-meta">
+                <i class="fa fa-calendar-o" aria-hidden="true"></i> {{ tx.date }}
+              </span>
+              <span class="time-meta">
+                <i class="fa fa-clock-o" aria-hidden="true"></i> {{ tx.time }}
+              </span>
             </div>
           </div>
-          <div class="withdrw">
-            <small class="date">{{ tx.date }}</small>
-            <small class="date">{{ tx.time }}</small>
-          </div>
-          <div class="seperator"></div>
-          <div class="status-row" [ngClass]="tx.status.toLowerCase()">
-            <ion-icon [name]="getStatusIcon(tx.status)"></ion-icon>
-            <span class="status-text">Status. {{ tx.status }}</span>
-          </div>
-        </li>
-      </ul>
+        </div>
+      </div>
     </div>
   </div>
 </ion-content>
-<app-footer-tabs></app-footer-tabs>

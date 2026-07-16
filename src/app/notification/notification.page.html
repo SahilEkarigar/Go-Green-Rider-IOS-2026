@@ -1,17 +1,11 @@
-<ion-header class="mineee">
-  <ion-toolbar>
-    <div class="header">
-      <div class="col1" *ngIf="selectedNotification">
-        <a (click)="closeDetails()">
-          <img src="../../assets/home/backbutton.svg" class="avatarprofile" alt="Back">
-        </a>
-      </div>
-      <div class="col2 mx-auto">
-        <p class="profile">Notifications</p>
-      </div>
-      <div class="col2"></div>
-    </div>
-  </ion-toolbar>
+<ion-header class="custom-header" [translucent]="false">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Notifications</h1>
+    <div class="header-right-placeholder"></div>
+  </div>
 </ion-header>
 
 <ion-content>
@@ -32,16 +26,22 @@
 
     <!-- Notification list -->
     <ng-template #notificationList>
+      <div *ngIf="notifications.length === 0" class="no-data-container">
+        <div class="empty-icon-wrapper">
+          <i class="fa fa-bell-slash" aria-hidden="true"></i>
+        </div>
+        <h3>No notifications yet</h3>
+        <p>We'll notify you when you receive new updates, orders, or announcements.</p>
+      </div>
+
       <div *ngFor="let group of notifications" class="day-section">
         <div class="day-header">
           <p class="day-text">{{ group.day }}</p>
           <div class="day-line"></div>
         </div>
 
-        <div *ngFor="let n of group.items; let idx = index"
-             class="notification-item"
-             [ngClass]="{'unread': n.is_read === 0}"
-             (click)="showDetails(group.day, idx)">
+        <div *ngFor="let n of group.items; let idx = index" class="notification-item"
+          [ngClass]="{'unread': n.is_read === 0}" (click)="showDetails(group.day, idx)">
           <img src="../../assets/home/ringBell_icon.svg" class="bell-icon" alt="Bell">
           <div class="notification-info">
             <div class="notification-top">
@@ -55,5 +55,4 @@
     </ng-template>
   </div>
 </ion-content>
-
 <app-footer-tabs></app-footer-tabs>

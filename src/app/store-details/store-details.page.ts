@@ -29,6 +29,7 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
   pickupButtonText: string = 'Reached Pickup';
   headerText: string = 'Your Way To Vendor';
   hideButton: boolean = false;
+  isOrderDetailsExpanded: boolean = true;
 
   otp: string = '';
   otpDigits: string[] = [];
@@ -117,6 +118,10 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         rider_id: this.riderId,
       },
     });
+  }
+
+  toggleOrderDetails() {
+    this.isOrderDetailsExpanded = !this.isOrderDetailsExpanded;
   }
 
   initMap() {

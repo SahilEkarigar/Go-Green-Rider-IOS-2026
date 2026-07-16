@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
-import { Location } from '@angular/common';
-import { CommonModule } from '@angular/common';
-import { FooterTabsComponent } from "../components/footer-tabs/footer-tabs.component";
+import { CommonModule, Location } from '@angular/common';
 
 interface Document {
   id: number;
@@ -17,7 +15,7 @@ interface Document {
   templateUrl: './rider-details.page.html',
   styleUrls: ['./rider-details.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule,CommonModule, FooterTabsComponent],
+  imports: [IonicModule, FormsModule, CommonModule],
 })
 export class RiderDetailsPage implements OnInit {
   vehicleOwnerName: string = '';
@@ -47,6 +45,11 @@ export class RiderDetailsPage implements OnInit {
   }
 
   goBack(): void {
+    this.location.back();
+  }
+
+  saveDocumentation() {
+    alert('Documentation saved successfully!');
     this.location.back();
   }
 

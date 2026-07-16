@@ -53,7 +53,7 @@ export class SettingPage implements OnInit {
 
   profileData: any = null;
   storeProfilePicture: string = '';
-  defaultProfileImage: string = 'assets/home/user.jfif';
+  defaultProfileImage: string = 'assets/home/rider_profile.png';
   showSearch: boolean = false;
   storeName: string = '';
 
@@ -62,7 +62,7 @@ export class SettingPage implements OnInit {
     this.router.navigate(['/edit-account']);
   }
   changePassword() {
-    this.router.navigate(['/passwordchange']);
+    this.router.navigate(['/changepassword']);
   }
 
   onImageError(event: any) {
@@ -77,6 +77,9 @@ export class SettingPage implements OnInit {
   }
   goToChangePassword() {
     this.navCtrl.navigateBack('/changepassword');
+  }
+  goToVehicleDetails() {
+    this.navCtrl.navigateBack('/vehicel-details');
   }
   goToRatings() {
     this.navCtrl.navigateBack('/ratings');

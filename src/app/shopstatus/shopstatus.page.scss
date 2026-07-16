@@ -1,199 +1,232 @@
-.my_common_header{
-    padding: 5px 25px 12px 25px;
-    display: flex;
-    width: 100%;
-    border-bottom: 1px solid #ededed;
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
+@import '../../theme/variables.scss';
+
+@mixin transition($prop: all, $time: 0.25s) {
+  transition: $prop $time cubic-bezier(0.4, 0, 0.2, 1);
 }
-.zero_padding{
-   padding: 0px; 
-}
-.check_right{
-    text-align: right;
-}
-.check_right i{
-    font-size: 20px;
-    color: #005528;
-}
-.zero_padding{
-    padding: 0px;
-}
-.common_header{
-    text-align: left;
-    padding: 0px !important;
-}
-.back_arrow_div{
-    background: #00552b;
-    width: 30px;
-    height: 30px;
+
+// Header styles
+.custom-header {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background-color: $white;
+  border-bottom: 1px solid #eef0f2;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02) !important;
+  padding-top: calc(env(safe-area-inset-top, 24px) + 12px);
+
+  .header-container {
     display: flex;
     align-items: center;
-    justify-content: center;  
-    border-radius: 5px;
-    box-shadow: 0px 2px 5px #cdcdcd;
-}
-.back_arrow_div i{
-    color: #fff;
-    font-size: 18px;
-}
-.upload_product_heading h2{
-    margin-top: 0px;
-    margin-bottom: 0px;
-    font-size: 20px;
-    font-weight: 600;
-    text-align: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    width: 100%;
+
+    .back-btn {
+      border: none;
+      background: $primary-color;
+      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(8, 139, 70, 0.15);
+      cursor: pointer;
+      @include transition(transform);
+
+      i {
+        font-size: 14px;
+        color: $white;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #212529;
+      text-align: center;
+      flex: 1;
+    }
+
+    .save-btn-header {
+      background: none;
+      border: none;
+      color: $primary-color;
+      font-size: 20px;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      @include transition(all);
+
+      &:active {
+        transform: scale(0.9);
+        background-color: rgba(8, 139, 70, 0.05);
+      }
+    }
+  }
 }
 
-
-
-
-
-.content-shop-status {
-  padding: 25px 15px;
+.ioncontent {
+  --background: #f5f7fb;
 }
 
-.status-display {
-  margin-top: 10px;
-  font-size: 16px;
-}
-
-.btn-save {
-  background-color: #007f5f;
-  color: white;
-  padding: 10px 20px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 6px;
-}
-.mineee {
-  z-index: 999;
-  position: sticky;
-  background: white;
-  border-bottom: 2px solid #e7e7e7 !important;
-  box-shadow: 0px 0px 0px red !important;
-}
-.header {
+.body_container {
+  padding: 24px 20px 40px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 20px 10px 20px;
+  flex-direction: column;
+  gap: 20px;
 }
-.backbutton {
-  width: 20px;
-}
-.col2 p {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-family: "Open Sans", serif;
-  color: #005528;
-  font-weight: 600;
-}
-.col2 {
-  margin-right: 10px;
-  font-size: 18px;
-}
-.col3 {
-  font-size: 20px;
-  color: #005528;
-}
-.signup_steps_row {
-  padding: 0px 15px 50px;
-}
-.signup_steps {
-  background: #00552d1f;
-  border-radius: 5px;
-  box-shadow: 0px 2px 10px #cdcdcd;
-  margin-top: 34px;
-}
-.signup_steps h2 {
-  margin-top: 0px;
-  font-size: 26px;
-  font-weight: 700;
-  margin-bottom: 5px;
-  color: #00552b;
-  text-transform: uppercase;
-}
-.signup_steps h3 {
-  margin-top: 0px;
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 0px;
-  color: #000;
-}
-.signup_steps h4 {
-  margin-top: 0px;
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 0px;
-  background: green;
-  width: 34%;
-  color: white;
-  height: 36px;
+
+.profile-card {
+  background: $white;
   border-radius: 20px;
-}
-.form_box {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-.form_input_box input {
-  border-bottom: 1px solid #00552d !important;
-  border-radius: 0px;
-  font-size: 13px;
-  padding: 5px 5px 10px 0px;
-  background: #e0eae6;
-  border: none;
-  color: #000;
-  font-weight: 600 !important;
-}
-.form_input_box select {
-  border-bottom: 1px solid #00552d !important;
-  border-radius: 0px;
-  font-size: 13px;
-  padding: 5px 5px 5px 0px;
-  background: #e0eae6;
-  border: none;
-  color: #000;
-  font-weight: 600 !important;
-}
-.form_input_box input::placeholder {
-  color: #9f9a9a;
-}
-.form-control:focus {
-  box-shadow: none !important;
-  border: none !important;
-}
-.form_input_box {
-  margin-bottom: 5px;
-  margin-top: 20px;
-}
-.form_input_box label {
-  font-size: 16px;
-  font-weight: 600 !important;
-  color: #00552d;
-}
+  padding: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  @include transition(all);
 
-.contain-bank {
-  padding: 23px;
-  background: #e0eae6;
-  margin-top: 30px;
-  border-radius: 10px;
-  box-shadow: 0px 2px 9px 2px #cdcdcd;
-}
-.banking {
-  width: 90px;
-}
-.ttt {
-  display: flex;
-  justify-content: space-between;
-}
-.img-bank {
-  text-align: center;
-}
-.content-bank {
-  margin-top: 36px;
-}
-.main-shop {
-  background: #e0eae6;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 0px 19px 3px #cdcdcd;
+  &.status-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 6px;
+      background-color: #6c757d;
+      @include transition(background-color);
+    }
+
+    &.online-mode::before {
+      background-color: #2e7d32;
+    }
+
+    &.offline-mode::before {
+      background-color: #c62828;
+    }
+
+    .status-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+
+      .status-label {
+        font-size: 15px;
+        font-weight: 700;
+        color: #334155;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .custom-toggle {
+        --handle-background: #ffffff;
+        --handle-background-checked: #ffffff;
+        --background: #e2e8f0;
+        --background-checked: #2e7d32;
+        margin: 0;
+      }
+    }
+
+    .status-badge-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .status-text-prefix {
+        font-size: 14px;
+        font-weight: 500;
+        color: #64748b;
+      }
+
+      .status-badge {
+        font-size: 12px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &.badge-online {
+          background-color: rgba(46, 125, 50, 0.1);
+          color: #2e7d32;
+        }
+
+        &.badge-offline {
+          background-color: rgba(198, 40, 40, 0.1);
+          color: #c62828;
+        }
+      }
+    }
+  }
+
+  &.timings-card {
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #334155;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0 0 20px;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 12px;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 0;
+
+        label {
+          font-size: 13px;
+          font-weight: 600;
+          color: #6c757d;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          padding-left: 2px;
+        }
+
+        .form-control {
+          width: 100%;
+          border: 1px solid #e2e8f0 !important;
+          border-radius: 12px !important;
+          font-size: 14px;
+          font-weight: 500;
+          padding: 12px 16px;
+          background-color: #f8fafc;
+          color: #334155;
+          outline: none;
+          box-shadow: none !important;
+          @include transition(all);
+
+          &:focus {
+            border-color: $primary-color !important;
+            background-color: $white;
+            box-shadow: 0 0 0 3px rgba(8, 139, 70, 0.08) !important;
+          }
+        }
+      }
+    }
+  }
 }

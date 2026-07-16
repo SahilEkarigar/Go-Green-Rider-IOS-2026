@@ -1,122 +1,78 @@
-<ion-header [translucent]="true" class="mineee">
-  <!-- <ion-toolbar>
-    <div class="header header-centered">
-      <div class="col1">
-        <img
-          src="../../assets/home/backbutton.svg"
-          (click)=" goBackToScreen() "
-          class="avatarprofile"
-          alt="Go Back"
-        />
-      </div>
-      <div class="col2 title-center">
-        <p class="profile">Terms & Conditions</p>
-      </div>
-      <div class="col2"></div>
-    </div>
-  </ion-toolbar> -->
-
-  <div class="zero_padding">
-    <div class="row header_row">
-      <div class="my_common_header">
-        <ion-col size="2" class="common_header">
-          <div (click)="goBack()" class="back_arrow_div">
-            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
-          </div>
-        </ion-col>
-        <ion-col size="8" class="upload_product_heading">
-          <h2>Terms & Conditions</h2>
-        </ion-col>
-        <ion-col size="2" class="check_right">
-          <i class="fa fa-check" aria-hidden="true"></i>
-        </ion-col>
-      </div>
-    </div>
+<ion-header [translucent]="false" class="custom-header">
+  <div class="header-container">
+    <button class="back-btn" (click)="goBack()">
+      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+    </button>
+    <h1 class="header-title">Terms & Conditions</h1>
+    <div class="header-right-placeholder"></div>
   </div>
 </ion-header>
 
 <ion-content class="ion-padding content">
-  <div class="container">
-    <div class="create_account">
-      <h6>Terms & Conditions</h6>
-      <p class="text-center">
-        Welcome to Go Green Store! These Terms & Conditions govern your use of
-        our mobile application and services. Please read them carefully before
-        proceeding.
-      </p>
-
-      <div class="field_row_div">
-        <label>1. Eligibility:</label>
-        <p class="input-field text-center">
-          You must be at least 18 years old to use our services or have parental
-          consent if underage.
-        </p>
-
-        <label>2. User Conduct:</label>
-        <p class="input-field text-center">
-          You agree not to misuse the app, engage in fraud, or violate any
-          applicable laws while using our services.
-        </p>
-
-        <label>3. Account Registration:</label>
-        <p class="input-field text-center">
-          You are responsible for providing accurate and complete information
-          during account creation and keeping it updated.
-        </p>
-
-        <label>4. Product Information:</label>
-        <p class="input-field text-center">
-          We strive to display accurate product descriptions and prices.
-          However, we do not guarantee that all information is error-free.
-        </p>
-
-        <label>5. Delivery Terms:</label>
-        <p class="input-field text-center">
-          Estimated delivery dates are for reference only. Actual delivery times
-          may vary due to external factors.
-        </p>
-
-        <label>6. Promotions & Discounts:</label>
-        <p class="input-field text-center">
-          Promotional offers are subject to availability and can be modified or
-          discontinued at any time without notice.
-        </p>
-
-        <label>7. App Updates:</label>
-        <p class="input-field text-center">
-          We may update the app to improve functionality. You agree to install
-          updates for continued access to services.
-        </p>
-
-        <label>8. Limitation of Liability:</label>
-        <p class="input-field text-center">
-          Go Green Store is not liable for any indirect, incidental, or
-          consequential damages resulting from your use of the app.
-        </p>
-
-        <label>9. Modification of Terms:</label>
-        <p class="input-field text-center">
-          We reserve the right to modify these Terms & Conditions at any time.
-          Continued use of the app constitutes acceptance of the updated terms.
-        </p>
-
-        <label>10. Governing Law:</label>
-        <p class="input-field text-center">
-          These terms are governed by and construed in accordance with the laws
-          of [Your State/Country].
-        </p>
-
-        <label>11. Contact Us:</label>
-        <p class="input-field text-center">
-          For questions or concerns regarding these terms, please contact our
-          support team at supportgogreenstore.com.
-        </p>
+  <div class="policy-container">
+    <p class="intro-text">
+      Welcome to Go Green Store! These Terms & Conditions govern your use of our mobile application and services. Please read them carefully before proceeding.
+    </p>
+    
+    <div class="policy-sections">
+      <div class="policy-block">
+        <h3 class="section-label">1. Eligibility</h3>
+        <p class="section-text">You must be at least 18 years old to use our services or have parental consent if underage.</p>
       </div>
 
-      <p class="text-center" style="margin-top: 20px">
-        By using our services, you acknowledge that you have read and understood
-        these Terms & Conditions and agree to be bound by them.
-      </p>
+      <div class="policy-block">
+        <h3 class="section-label">2. User Conduct</h3>
+        <p class="section-text">You agree not to misuse the app, engage in fraud, or violate any applicable laws while using our services.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">3. Account Registration</h3>
+        <p class="section-text">You are responsible for providing accurate and complete information during account creation and keeping it updated.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">4. Product Information</h3>
+        <p class="section-text">We strive to display accurate product descriptions and prices. However, we do not guarantee that all information is error-free.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">5. Delivery Terms</h3>
+        <p class="section-text">Estimated delivery dates are for reference only. Actual delivery times may vary due to external factors.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">6. Promotions & Discounts</h3>
+        <p class="section-text">Promotional offers are subject to availability and can be modified or discontinued at any time without notice.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">7. App Updates</h3>
+        <p class="section-text">We may update the app to improve functionality. You agree to install updates for continued access to services.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">8. Limitation of Liability</h3>
+        <p class="section-text">Go Green Store is not liable for any indirect, incidental, or consequential damages resulting from your use of the app.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">9. Modification of Terms</h3>
+        <p class="section-text">We reserve the right to modify these Terms & Conditions at any time. Continued use of the app constitutes acceptance of the updated terms.</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">10. Governing Law</h3>
+        <p class="section-text">These terms are governed by and construed in accordance with the laws of [Your State/Country].</p>
+      </div>
+
+      <div class="policy-block">
+        <h3 class="section-label">11. Contact Us</h3>
+        <p class="section-text">For questions or concerns regarding these terms, please contact our support team at support&#64;gogreenstore.com.</p>
+      </div>
     </div>
+
+    <p class="consent-text">
+      By using our services, you acknowledge that you have read and understood these Terms & Conditions and agree to be bound by them.
+    </p>
   </div>
 </ion-content>
