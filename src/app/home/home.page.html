@@ -3,7 +3,8 @@
     <div class="header-container">
       <div class="profile-section">
         <div class="rider-profile">
-          <img [src]="user.data?.profile_pic || '../../assets/home/rider_profile.png'" class="avatar-img" alt="avatar" />
+          <img [src]="user.data?.profile_pic || '../../assets/home/rider_profile.png'" class="avatar-img"
+            alt="avatar" />
           <div class="profile-info">
             <h2>{{ user.data?.firstname }} {{ user.data?.lastname }}</h2>
             <p class="rider-address">{{ user.data?.address }}</p>
@@ -103,12 +104,12 @@
         <h3 class="orders-section-heading">New Orders</h3>
 
         <div *ngIf="!receivedOrders || receivedOrders.length === 0" class="empty-state">
-          No orders for this vendor
+          No orders found for this rider today.
         </div>
 
         <div class="order-card" *ngFor="let order of receivedOrders">
           <div class="card-accent-bar"></div>
-          
+
           <div class="order-card-header">
             <span class="order-id">ID: <strong>{{ order.order_uid }}</strong></span>
             <div class="delivery-badge" *ngIf="order.is_fast_delivery">
@@ -133,7 +134,8 @@
             <div class="items-list">
               <div class="item-row" *ngFor="let item of order.items">
                 <div class="item-left">
-                  <span class="food-dot" [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
+                  <span class="food-dot"
+                    [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
                   <span class="item-name">{{ item.product_quantity }} x {{ item.product_name }}</span>
                 </div>
                 <span class="item-price">$ {{ item.total_item_price || item.product_price }}</span>
@@ -152,7 +154,7 @@
                 </div>
                 <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
               </div>
-              
+
               <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'customer')">
                 <div class="details-grid">
                   <div class="details-row">
@@ -180,7 +182,7 @@
                 </div>
                 <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
               </div>
-              
+
               <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'store')">
                 <div class="details-grid">
                   <div class="details-row">
@@ -215,7 +217,7 @@
         <h3 class="orders-section-heading">Delivered Orders</h3>
 
         <div *ngIf="!completedOrders || completedOrders.length === 0" class="empty-state">
-          No delivered orders for this vendor
+          No delivered orders were found for this rider today.
         </div>
 
         <div class="order-card completed-state" *ngFor="let order of completedOrders">
@@ -250,12 +252,13 @@
                 </div>
                 <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
               </div>
-              
+
               <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'items')">
                 <div class="items-list pb-2">
                   <div class="item-row" *ngFor="let item of order.items">
                     <div class="item-left">
-                      <span class="food-dot" [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
+                      <span class="food-dot"
+                        [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
                       <span class="item-name">{{ item.product_quantity }} x {{ item.product_name }}</span>
                     </div>
                     <span class="item-price">$ {{ item.total_item_price }}</span>
@@ -273,7 +276,7 @@
                 </div>
                 <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
               </div>
-              
+
               <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'customer')">
                 <div class="details-grid">
                   <div class="details-row">
@@ -301,7 +304,7 @@
                 </div>
                 <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
               </div>
-              
+
               <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'store')">
                 <div class="details-grid">
                   <div class="details-row">

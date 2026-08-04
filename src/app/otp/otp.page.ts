@@ -46,15 +46,15 @@ export class OtpPage implements OnInit {
 
   moveToNext(event: any) {
     const input = event.target;
-    const value = input.value; 
+    const value = input.value;
     if (!/^\d$/.test(value)) {
       input.value = '';
       return;
-    }  
+    }
     const otpInputs = document.querySelectorAll('.otp-input') as NodeListOf<HTMLInputElement>;
     otpInputs.forEach((inp, index) => {
       this.otpDigits[index] = inp.value;
-    });    
+    });
     this.updateOtpValue();
     const nextInput = input.nextElementSibling;
     if (nextInput && value !== '') {
@@ -69,7 +69,7 @@ export class OtpPage implements OnInit {
       if (prevInput) {
         prevInput.focus();
       }
-    }  
+    }
     const otpInputs = document.querySelectorAll('.otp-input') as NodeListOf<HTMLInputElement>;
     otpInputs.forEach((inp, index) => {
       this.otpDigits[index] = inp.value;
@@ -123,13 +123,13 @@ export class OtpPage implements OnInit {
     //   }
     // });
   }
-  async verifyOtp() {   
+  async verifyOtp() {
     const otpInputs = document.querySelectorAll('.otp-input') as NodeListOf<HTMLInputElement>;
     otpInputs.forEach((inp, index) => {
       this.otpDigits[index] = inp.value;
     });
-    this.updateOtpValue();  
-    console.log('OTP Digits:', this.otpDigits);    
+    this.updateOtpValue();
+    console.log('OTP Digits:', this.otpDigits);
     if (!this.otpValue || this.otpValue.length !== 4) {
       alert('Please enter a complete 4-digit OTP.');
       return;
@@ -137,7 +137,7 @@ export class OtpPage implements OnInit {
     if (!this.email || !this.email.trim()) {
       alert('Please enter a valid email.');
       return;
-    }  
+    }
     console.log('Sending OTP to:', this.email);
     const data = {
       email: this.email,

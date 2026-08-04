@@ -27,16 +27,19 @@
     font-size: 16px;
     margin-right: 2px;
 }
-.signup_steps_row{
-    padding: 0px 15px 50px;
+
+.signup_steps_row {
+    padding: 50px 15px 50px;
 }
+
 .signup_steps {
     background: #00552d1f;
     border-radius: 12px;
     box-shadow: 0px 4px 15px rgba(0, 85, 45, 0.15);
     padding: 20px 15px;
 }
-.signup_steps h2{
+
+.signup_steps h2 {
     margin-top: 0px;
     font-size: 26px;
     font-weight: 700;
@@ -44,67 +47,77 @@
     color: #00552b;
     text-transform: uppercase;
 }
-.signup_steps h4{
+
+.signup_steps h4 {
     margin-top: 0px;
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 0px;
     color: #000;
 }
+
 .step_counts .stepper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 10px 0px;
-  font-family: Arial, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0px;
+    font-family: Arial, sans-serif;
 }
+
 .step_counts .step {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
 }
+
 .step_counts .step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  top: 12px;
-  left: calc(50% + 0px);
-  right: -50%;
-  height: 1px;
-  background: #ccc;
-  z-index: 1;
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: calc(50% + 0px);
+    right: -50%;
+    height: 1px;
+    background: #ccc;
+    z-index: 1;
 }
+
 .step_counts .circle {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  border: 1px solid #ccc;
-  background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
-  font-size: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    font-size: 12px;
 }
+
 .step_counts .step.active .circle {
-  background: #00552d;
-  border-color: #00552d;
-  color: white;
+    background: #00552d;
+    border-color: #00552d;
+    color: white;
 }
+
 .step_counts .label {
-  margin-top: 8px;
-  font-size: 0.9em;
-  color: #666;
-  text-align: center;
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
 }
+
 .step_counts .step.active .label {
-  font-weight: bold;
-  color: #000;
+    font-weight: bold;
+    color: #000;
 }
-.form_box{
+
+.form_box {
     margin-top: 15px;
 }
+
 ion-header,
 ion-footer {
     --background: #ffffff !important;
@@ -280,7 +293,7 @@ ion-footer {
 }
 
 .input-error {
-  border-color: red !important;
+    border-color: red !important;
 }
 
 .mr_10 {

@@ -1,11 +1,11 @@
 <ion-header class="ion-no-border bg_white">
   <div class="container my_common_header" style="margin-top: 0px;">
     <ion-row>
-      <ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
+      <!--<ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
         <div (click)="goBack()" class="back_arrow_div">
           <i class="fa fa-chevron-left" aria-hidden="true"></i>
         </div>
-      </ion-col>
+      </ion-col>-->
     </ion-row>
   </div>
 </ion-header>
@@ -17,99 +17,171 @@
         <ion-row>
           <ion-col size="12">
             <h2 class="text-center">Sign Up</h2>
+
             <div class="step_counts">
               <div class="stepper">
                 <div class="step active">
                   <div class="circle">1</div>
                 </div>
+
                 <div class="step active">
                   <div class="circle">2</div>
                 </div>
+
                 <div class="step active">
                   <div class="circle">3</div>
                 </div>
+
                 <div class="step">
                   <div class="circle">4</div>
                 </div>
               </div>
             </div>
-            <h4 class="text-center mt-2">Driving License & Vehicle Details</h4>
+
+            <!--<h4 class="text-center mt-2">
+              Driving License & Vehicle Details
+            </h4>-->
 
             <div class="form_box">
               <h3>Driver Details :</h3>
 
+              <!-- Driver License Number -->
               <div class="form_input_box">
-                <label for="drivers_licenseNumber">Driver’s License Number</label>
-                <input type="number" [(ngModel)]="drivers_licenseNumber"
-                  [ngClass]="{'input-error': isDrivers_licenseNumberInvalid}" id="drivers_licenseNumber"
-                  name="drivers_licenseNumber" class="form-control" placeholder="Enter License Number">
-                <div *ngIf="isDrivers_licenseNumberInvalid" class="error-message mt-1">Driver’s License Number is
-                  required.</div>
-              </div>
+                <label for="drivers_licenseNumber">
+                  Driver’s License Number
+                </label>
 
-              <div class="form_input_box">
-                <label for="licenseExpiryDate">License Expiry Date</label>
-                <input type="date" [(ngModel)]="licenseExpiryDate"
-                  [ngClass]="{'input-error': isLicenseExpiryDateInvalid}" id="licenseExpiryDate"
-                  name="licenseExpiryDate" class="form-control" placeholder="Enter Expiry Date">
-                <div *ngIf="isLicenseExpiryDateInvalid" class="error-message mt-1">License Expiry Date is required.
+                <input type="text" [(ngModel)]="drivers_licenseNumber" (input)="clearFieldError('licenseNumber')"
+                  [ngClass]="{
+                    'input-error': isDrivers_licenseNumberInvalid
+                  }" id="drivers_licenseNumber" name="drivers_licenseNumber" class="form-control"
+                  placeholder="Enter License Number" maxlength="30" autocomplete="off" />
+
+                <div *ngIf="isDrivers_licenseNumberInvalid" class="error-message mt-1">
+                  {{ driversLicenseErrorMessage }}
                 </div>
               </div>
 
+              <!-- License Expiry Date -->
               <div class="form_input_box">
-                <label for="licence_Image">License Image</label>
-                <input type="file" (change)="onFileSelected($event, 'license')"
-                  [ngClass]="{'input-error': isLicenceImageInvalid}" id="licence_Image" name="licence_Image"
-                  class="form-control" placeholder="Choose License Image">
-                <div *ngIf="isLicenceImageInvalid" class="error-message mt-1">License Image is required.</div>
+                <label for="licenseExpiryDate">
+                  License Expiry Date
+                </label>
+
+                <input type="date" [(ngModel)]="licenseExpiryDate" (change)="onExpiryDateChange('license')" [ngClass]="{
+                    'input-error': isLicenseExpiryDateInvalid
+                  }" id="licenseExpiryDate" name="licenseExpiryDate" class="form-control" [min]="minFutureDate" />
+
+                <div *ngIf="isLicenseExpiryDateInvalid" class="error-message mt-1">
+                  {{ licenseExpiryDateErrorMessage }}
+                </div>
+              </div>
+
+              <!-- License Image -->
+              <div class="form_input_box">
+                <label for="licence_Image">
+                  License Image
+                </label>
+
+                <input type="file" (change)="onFileSelected($event, 'license')" [ngClass]="{
+                    'input-error': isLicenceImageInvalid
+                  }" id="licence_Image" name="licence_Image" class="form-control"
+                  accept="image/jpeg,image/png,image/webp" />
+
+                <div *ngIf="isLicenceImageInvalid" class="error-message mt-1">
+                  {{ licenceImageErrorMessage }}
+                </div>
               </div>
 
               <h3>Vehicle Details :</h3>
 
+              <!-- Vehicle Owner Name -->
               <div class="form_input_box">
-                <label for="vehicelOwnerName">Vehicle Owner Name</label>
-                <input type="text" [(ngModel)]="vehicelOwnerName" [ngClass]="{'input-error': isVehicelOwnerNameInvalid}"
-                  id="vehicelOwnerName" name="vehicelOwnerName" class="form-control" placeholder="Enter Owner Name">
-                <div *ngIf="isVehicelOwnerNameInvalid" class="error-message mt-1">Vehicle Owner Name is required.</div>
+                <label for="vehicelOwnerName">
+                  Vehicle Owner Name
+                </label>
+
+                <input type="text" [(ngModel)]="vehicelOwnerName" (input)="clearFieldError('ownerName')" [ngClass]="{
+                    'input-error': isVehicelOwnerNameInvalid
+                  }" id="vehicelOwnerName" name="vehicelOwnerName" class="form-control" placeholder="Enter Owner Name"
+                  maxlength="100" autocomplete="name" />
+
+                <div *ngIf="isVehicelOwnerNameInvalid" class="error-message mt-1">
+                  {{ vehicleOwnerNameErrorMessage }}
+                </div>
               </div>
 
+              <!-- Vehicle Registration Number -->
               <div class="form_input_box">
-                <label for="vehicelRegistrationNumber">Vehicle Registration Number</label>
-                <input type="number" [(ngModel)]="vehicelRegistrationNumber"
-                  [ngClass]="{'input-error': isVehicelRegistrationNumberInvalid}" id="vehicelRegistrationNumber"
-                  name="vehicelRegistrationNumber" class="form-control" placeholder="Enter Registration Number">
-                <div *ngIf="isVehicelRegistrationNumberInvalid" class="error-message mt-1">Vehicle Registration Number
-                  is required.</div>
+                <label for="vehicelRegistrationNumber">
+                  Vehicle Registration Number
+                </label>
+
+                <input type="text" [(ngModel)]="vehicelRegistrationNumber" (input)="onRegistrationNumberInput($event)"
+                  [ngClass]="{
+                    'input-error': isVehicelRegistrationNumberInvalid
+                  }" id="vehicelRegistrationNumber" name="vehicelRegistrationNumber" class="form-control"
+                  placeholder="Enter Registration Number" maxlength="25" autocomplete="off" />
+
+                <div *ngIf="isVehicelRegistrationNumberInvalid" class="error-message mt-1">
+                  {{ vehicleRegistrationErrorMessage }}
+                </div>
               </div>
 
+              <!-- Vehicle Type -->
               <div class="form_input_box">
-                <label for="vehicelType">Vehicle Type</label>
-                <input type="text" [(ngModel)]="vehicelType" [ngClass]="{'input-error': isVehicelTypeInvalid}"
-                  id="vehicelType" name="vehicelType" class="form-control"
-                  placeholder="Enter Vehicle Type (Car, Bike, Truck)">
-                <div *ngIf="isVehicelTypeInvalid" class="error-message mt-1">Vehicle Type is required.</div>
+                <label for="vehicelType">
+                  Vehicle Type
+                </label>
+
+                <input type="text" [(ngModel)]="vehicelType" (input)="clearFieldError('vehicleType')" [ngClass]="{
+                    'input-error': isVehicelTypeInvalid
+                  }" id="vehicelType" name="vehicelType" class="form-control"
+                  placeholder="Enter Vehicle Type (Car, Bike, Truck)" maxlength="50" />
+
+                <div *ngIf="isVehicelTypeInvalid" class="error-message mt-1">
+                  {{ vehicleTypeErrorMessage }}
+                </div>
               </div>
 
+              <!-- Registration Expiry Date -->
               <div class="form_input_box">
-                <label for="registrationExpiryDate">Registration Expiry Date</label>
-                <input type="date" [(ngModel)]="registrationExpiryDate"
-                  [ngClass]="{'input-error': isRegistrationExpiryDateInvalid}" id="registrationExpiryDate"
-                  name="registrationExpiryDate" class="form-control" placeholder="Enter Registration Expiry Date">
-                <div *ngIf="isRegistrationExpiryDateInvalid" class="error-message mt-1">Registration Expiry Date is
-                  required.</div>
+                <label for="registrationExpiryDate">
+                  Registration Expiry Date
+                </label>
+
+                <input type="date" [(ngModel)]="registrationExpiryDate" (change)="onExpiryDateChange('registration')"
+                  [ngClass]="{
+                    'input-error': isRegistrationExpiryDateInvalid
+                  }" id="registrationExpiryDate" name="registrationExpiryDate" class="form-control"
+                  [min]="minFutureDate" />
+
+                <div *ngIf="isRegistrationExpiryDateInvalid" class="error-message mt-1">
+                  {{ registrationExpiryDateErrorMessage }}
+                </div>
               </div>
 
+              <!-- Registration Document -->
               <div class="form_input_box">
-                <label for="registrationDocument">Registration Document</label>
-                <input type="file" (change)="onFileSelected($event, 'registration')"
-                  [ngClass]="{'input-error': isRegistrationDocumentInvalid}" id="registrationDocument"
-                  name="registrationDocument" class="form-control" placeholder="Choose Registration Document">
-                <div *ngIf="isRegistrationDocumentInvalid" class="error-message mt-1">Registration Document is required.
+                <label for="registrationDocument">
+                  Registration Document
+                </label>
+
+                <input type="file" (change)="onFileSelected($event, 'registration')" [ngClass]="{
+                    'input-error': isRegistrationDocumentInvalid
+                  }" id="registrationDocument" name="registrationDocument" class="form-control"
+                  accept="image/jpeg,image/png,image/webp,application/pdf" />
+
+                <div *ngIf="isRegistrationDocumentInvalid" class="error-message mt-1">
+                  {{ registrationDocumentErrorMessage }}
                 </div>
               </div>
             </div>
+
             <div>
-              <p class="error-message">{{generalError}}</p>
+              <p *ngIf="generalError" class="error-message">
+                {{ generalError }}
+              </p>
             </div>
           </ion-col>
         </ion-row>
@@ -123,7 +195,9 @@
     <ion-row>
       <ion-col size="12" class="ion-no-padding">
         <div class="button_group">
-          <button type="button" class="btn theme_button" (click)="NextStep()">Next</button>
+          <button type="button" class="btn theme_button" (click)="NextStep()">
+            Next
+          </button>
         </div>
       </ion-col>
     </ion-row>

@@ -13,7 +13,11 @@
 }
 
 // Reset rules locally
-p, h1, h2, h3, span {
+p,
+h1,
+h2,
+h3,
+span {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
 }
@@ -249,6 +253,7 @@ ion-content {
   .custom-header {
     .header-container {
       padding: 10px 14px;
+
       .header-title {
         font-size: 16px;
       }
@@ -259,10 +264,12 @@ ion-content {
     .digital-bank-card {
       height: 160px;
       padding: 18px;
+
       .card-number {
         font-size: 18px;
       }
     }
+
     .bank-details-pane {
       padding: 16px;
     }

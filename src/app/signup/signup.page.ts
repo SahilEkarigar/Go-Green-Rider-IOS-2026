@@ -1,60 +1,92 @@
 // import { Storage } from '@ionic/storage-angular';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { IonicModule, ToastController, Platform, LoadingController } from '@ionic/angular';
+
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  OnDestroy
+} from '@angular/core';
+
+import {
+  IonicModule,
+  Platform,
+  LoadingController
+} from '@ionic/angular';
+
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { catchError, throwError, timeout } from 'rxjs';
+import { CommonModule, Location } from '@angular/common';
 
-
-import { Location } from '@angular/common';
 import { AuthserviceService } from '../services/authservice.service';
 // import { LoaderService } from '../services/loader.service';
+
 import { Storage } from '@ionic/storage-angular';
 import { jwtDecode } from 'jwt-decode';
 import { GoogleAuthService } from '@app/services/google-auth.service';
-import { SignInWithApple, ASAuthorizationAppleIDRequest } from '@ionic-native/sign-in-with-apple/ngx';
+
+import {
+  SignInWithApple,
+  ASAuthorizationAppleIDRequest
+} from '@ionic-native/sign-in-with-apple/ngx';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, CommonModule],
+  imports: [
+    IonicModule,
+    FormsModule,
+    CommonModule
+  ],
 })
-export class SignupPage implements OnInit {
+export class SignupPage implements OnInit, OnDestroy {
   fname = '';
   lname = '';
   email = '';
   phone = '';
   password = '';
   cpassword = '';
-  errorMsg = '';
+
   showPassword: boolean = false;
   showCPassword: boolean = false;
+
   isFnameInvalid: boolean = false;
   isLnameInvalid: boolean = false;
   isEmailInvalid: boolean = false;
   isPhoneInvalid: boolean = false;
   isPSWInvalid: boolean = false;
   isCPSWInvalid: boolean = false;
+
   prefix = '+1';
   role_id = 4;
+
   isIos = false;
+
   riderImagePreview: string | ArrayBuffer | null = null;
   proofImagePreview: string | ArrayBuffer | null = null;
+
   googleAuthToken = '';
+
+  /*
+   * Only one error message is stored and displayed at a time.
+   */
   generalError: string = '';
+  errorField: string = '';
+
   loading: boolean = false;
   isAppleAvailable = false;
-
-
   emailTouched: boolean = false;
+
+  /*
+   * Timer used to automatically remove the error after two seconds.
+   */
+  private errorTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private platform: Platform,
     private router: Router,
-    private toastController: ToastController,
     private location: Location,
     private authservice: AuthserviceService,
     private storage: Storage,
@@ -65,61 +97,207 @@ export class SignupPage implements OnInit {
     this.init();
   }
 
+  @ViewChild('fileInput')
+  fileInput!: ElementRef<HTMLInputElement>;
 
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('cameraInput') cameraInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('proofFileInput') proofFileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('proofCameraInput') proofCameraInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('cameraInput')
+  cameraInput!: ElementRef<HTMLInputElement>;
+
+  @ViewChild('proofFileInput')
+  proofFileInput!: ElementRef<HTMLInputElement>;
+
+  @ViewChild('proofCameraInput')
+  proofCameraInput!: ElementRef<HTMLInputElement>;
 
   async ngOnInit() {
     this.isIos = this.platform.is('ios');
-    this.isAppleAvailable = this.platform.is('ios') && (this.platform.is('hybrid') || this.platform.is('capacitor') || this.platform.is('cordova'));
+
+    this.isAppleAvailable =
+      this.platform.is('ios') &&
+      (
+        this.platform.is('hybrid') ||
+        this.platform.is('capacitor') ||
+        this.platform.is('cordova')
+      );
   }
 
+  ngOnDestroy(): void {
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer);
+      this.errorTimer = null;
+    }
+  }
 
   async init() {
     await this.storage.create();
   }
-  private async presentLoading(message: string = 'Please wait...') {
-    const loading = await this.loadingController.create({ message });
+
+  private async presentLoading(
+    message: string = 'Please wait...'
+  ): Promise<void> {
+    const loading = await this.loadingController.create({
+      message
+    });
+
     await loading.present();
   }
 
-  private async dismissLoading() {
-    try { await this.loadingController.dismiss(); } catch { }
+  private async dismissLoading(): Promise<void> {
+    try {
+      await this.loadingController.dismiss();
+    } catch {
+      // Loader may already be dismissed.
+    }
   }
 
   goBack(): void {
     this.location.back();
   }
-  togglePassword() {
+
+  togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
-  toggleCPassword() {
+
+  toggleCPassword(): void {
     this.showCPassword = !this.showCPassword;
   }
 
-  private async handleSuccessfulLogin(response: any) {
+  /*
+   * Reset all invalid input styles.
+   */
+  private resetValidationFlags(): void {
+    this.isFnameInvalid = false;
+    this.isLnameInvalid = false;
+    this.isEmailInvalid = false;
+    this.isPhoneInvalid = false;
+    this.isPSWInvalid = false;
+    this.isCPSWInvalid = false;
+  }
+
+  /*
+   * Display only one error message at a time.
+   * The message and invalid border disappear after two seconds.
+   */
+  private showSingleError(
+    field: string,
+    message: string,
+    shouldFocus: boolean = true
+  ): void {
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer);
+      this.errorTimer = null;
+    }
+
+    this.resetValidationFlags();
+
+    this.errorField = field;
+    this.generalError = message;
+
+    switch (field) {
+      case 'fname':
+        this.isFnameInvalid = true;
+        break;
+
+      case 'lname':
+        this.isLnameInvalid = true;
+        break;
+
+      case 'email':
+        this.isEmailInvalid = true;
+        break;
+
+      case 'phone':
+        this.isPhoneInvalid = true;
+        break;
+
+      case 'password':
+        this.isPSWInvalid = true;
+        break;
+
+      case 'cpassword':
+        this.isCPSWInvalid = true;
+        break;
+
+      default:
+        break;
+    }
+
+    if (shouldFocus && field !== 'general') {
+      this.focusField(field);
+    }
+
+    this.errorTimer = setTimeout(() => {
+      this.clearAllErrors();
+    }, 2000);
+  }
+
+  /*
+   * Focus the first invalid input.
+   */
+  private focusField(field: string): void {
+    setTimeout(() => {
+      const element = document.getElementById(field) as HTMLInputElement | null;
+
+      if (element) {
+        element.focus();
+      }
+    }, 100);
+  }
+
+  /*
+   * Completely remove the current error.
+   */
+  private clearAllErrors(): void {
+    if (this.errorTimer) {
+      clearTimeout(this.errorTimer);
+      this.errorTimer = null;
+    }
+
+    this.generalError = '';
+    this.errorField = '';
+    this.resetValidationFlags();
+  }
+
+  /*
+   * Remove an error as soon as the user starts correcting that field.
+   */
+  clearFieldError(field: string): void {
+    if (this.errorField !== field) {
+      return;
+    }
+
+    this.clearAllErrors();
+  }
+
+  private async handleSuccessfulLogin(response: any): Promise<void> {
     try {
       const decoded: any = jwtDecode(response.token);
       const user_id = decoded?.user_id;
+
       await this.storage.set('user_id', user_id);
       await this.storage.set('role_id', this.role_id);
-      localStorage.setItem('user_id', user_id);
+
+      localStorage.setItem('user_id', String(user_id));
 
       if (response.is_verified === 0) {
         this.router.navigate(['application-review']);
         return;
       }
+
       if (response.verification_Done === 0) {
         this.router.navigate(['signup-step-2']);
         return;
       }
+
       if (response.is_verified === 2) {
-        this.generalError = 'Rider Rejected';
-        setTimeout(() => { this.generalError = ''; }, 2000);
+        this.showSingleError(
+          'general',
+          'Your rider application has been rejected.',
+          false
+        );
         return;
       }
+
       if (response.is_verified === 3) {
         this.router.navigate(['application-review']);
         return;
@@ -127,120 +305,176 @@ export class SignupPage implements OnInit {
 
       if (response.is_verified === 1) {
         await this.storage.set('token', response.token);
+
         this.router.navigate(['home']).then(async () => {
           const data = {
             user_id: user_id,
             fcmToken: await this.storage.get('FCM_TOKEN')
           };
+
           await this.presentLoading('Syncing device...');
-          (await this.authservice.sendFCMToken(data)).subscribe(
-            async (sendTokenResponse) => {
-              if (sendTokenResponse && sendTokenResponse.success) {
+
+          (await this.authservice.sendFCMToken(data)).subscribe({
+            next: async (sendTokenResponse: any) => {
+              if (sendTokenResponse?.success) {
                 console.log(sendTokenResponse.message);
               } else {
-                console.log(sendTokenResponse?.message || 'Submission failed');
+                console.log(
+                  sendTokenResponse?.message || 'Submission failed'
+                );
               }
+
               await this.dismissLoading();
             },
-            async (error) => {
+
+            error: async (error: any) => {
               console.error('API error:', error);
-              this.generalError = error?.error?.message || 'An error occurred. Please try again later.';
-              setTimeout(() => { this.generalError = ''; }, 2000);
+
               await this.dismissLoading();
+
+              this.showSingleError(
+                'general',
+                error?.error?.message ||
+                'An error occurred while syncing the device.',
+                false
+              );
             }
-          );
+          });
         });
       }
-    } catch (e) {
-      console.error('Post-login handling failed:', e);
-      this.generalError = 'An error occurred after login.';
-      setTimeout(() => { this.generalError = ''; }, 2000);
+    } catch (error) {
+      console.error('Post-login handling failed:', error);
+
+      this.showSingleError(
+        'general',
+        'An error occurred after login.',
+        false
+      );
     }
   }
 
-
-  onEmailBlur() {
+  onEmailBlur(): void {
     this.emailTouched = true;
-  }
-  // isValidEmail(email: string): boolean {    
-  //   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  // }
-  isValidEmail(email: string): boolean {
-    // const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    // return emailRegex.test(email);
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+$/;
-    return emailRegex.test(email);
-  }
 
+    const trimmedEmail = this.email.trim();
 
-  // for check valid password bottom
-
-  // isValidPassword(password: string): boolean {   
-  //   const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{6,}$/;
-  //   return passwordRegex.test(password);
-  // }
-
-  private async presentToast(message: string) {
-    const toast = await this.toastController.create({
-      message: message,
-      duration: 3000,
-      color: 'danger',
-      position: 'bottom'
-    });
-    await toast.present();
-  }
-
-  async NextStep() {
-    this.isFnameInvalid = !this.fname.trim();
-    this.isLnameInvalid = !this.lname.trim();
-    this.isEmailInvalid = !this.email.trim();
-    this.isPhoneInvalid = !this.phone.trim();
-    this.isPSWInvalid = !this.password.trim();
-    this.isCPSWInvalid = !this.cpassword.trim();
-
-    setTimeout(() => {
-      if (this.isFnameInvalid) {
-        (document.getElementById('fname') as HTMLInputElement).focus();
-      } else if (this.isLnameInvalid) {
-        (document.getElementById('lname') as HTMLInputElement).focus();
-      } else if (this.isEmailInvalid) {
-        (document.getElementById('email') as HTMLInputElement).focus();
-      } else if (this.isPhoneInvalid) {
-        (document.getElementById('phone') as HTMLInputElement).focus();
-      } else if (this.isPSWInvalid) {
-        (document.getElementById('password') as HTMLInputElement).focus();
-      } else if (this.isCPSWInvalid) {
-        (document.getElementById('cpassword') as HTMLInputElement).focus();
-      }
-    });
-
-    const hasAnyInvalid =
-      this.isFnameInvalid ||
-      this.isLnameInvalid ||
-      this.isEmailInvalid ||
-      this.isPhoneInvalid ||
-      this.isPSWInvalid ||
-      this.isCPSWInvalid;
-
-    if (hasAnyInvalid) {
-      this.presentToast('All fields are required.');
+    if (!trimmedEmail) {
+      this.showSingleError(
+        'email',
+        'Email address is required.'
+      );
       return;
     }
 
+    if (!this.isValidEmail(trimmedEmail)) {
+      this.showSingleError(
+        'email',
+        'Please enter a valid email address.'
+      );
+    }
+  }
 
-    // Email validation
-    if (!this.isValidEmail(this.email)) {
-      this.isEmailInvalid = true;
-      this.presentToast('Please enter a valid email address.');
-      (document.getElementById('email') as HTMLInputElement).focus();
+  isValidEmail(email: string): boolean {
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z]{2,})+$/;
+
+    return emailRegex.test(email.trim());
+  }
+
+  /*
+   * Move to the next step after validating one field at a time.
+   */
+  async NextStep(): Promise<void> {
+    if (this.loading) {
       return;
-    } else {
-      this.isEmailInvalid = false;
+    }
+
+    this.clearAllErrors();
+
+    /*
+     * Trim values before checking them.
+     */
+    this.fname = this.fname.trim();
+    this.lname = this.lname.trim();
+    this.email = this.email.trim();
+    this.phone = this.phone.trim();
+
+    /*
+     * Only the first error is displayed.
+     */
+    if (!this.fname) {
+      this.showSingleError(
+        'fname',
+        'First name is required.'
+      );
+      return;
+    }
+
+    if (!this.lname) {
+      this.showSingleError(
+        'lname',
+        'Last name is required.'
+      );
+      return;
+    }
+
+    if (!this.email) {
+      this.showSingleError(
+        'email',
+        'Email address is required.'
+      );
+      return;
+    }
+
+    if (!this.isValidEmail(this.email)) {
+      this.showSingleError(
+        'email',
+        'Please enter a valid email address.'
+      );
+      return;
+    }
+
+    if (!this.phone) {
+      this.showSingleError(
+        'phone',
+        'Mobile number is required.'
+      );
+      return;
+    }
+
+    /*
+     * This catches 4 digits, 8 digits, 9 digits, or any value
+     * that is not exactly 10 numeric digits.
+     */
+    if (!this.isValidPhone(this.phone)) {
+      this.showSingleError(
+        'phone',
+        'Mobile number must be exactly 10 digits.'
+      );
+      return;
+    }
+
+    if (!this.password.trim()) {
+      this.showSingleError(
+        'password',
+        'Password is required.'
+      );
+      return;
+    }
+
+    if (!this.cpassword.trim()) {
+      this.showSingleError(
+        'cpassword',
+        'Confirm password is required.'
+      );
+      return;
     }
 
     if (this.password !== this.cpassword) {
-      this.isCPSWInvalid = true;
-      this.presentToast('Passwords do not match!');
+      this.showSingleError(
+        'cpassword',
+        'Password and confirm password do not match.'
+      );
       return;
     }
 
@@ -251,17 +485,22 @@ export class SignupPage implements OnInit {
       password: this.password,
       role_id: this.role_id,
       phonenumber: this.phone,
-      prefix: "+1"
+      prefix: this.prefix
     };
 
-    await this.presentLoading('Signing up...');
-    this.authservice.registerRider(data).subscribe(
-      async (response) => {
+    this.loading = true;
 
+    await this.presentLoading('Signing up...');
+
+    this.authservice.registerRider(data).subscribe({
+      next: async (response: any) => {
+        this.loading = false;
         await this.dismissLoading();
-        if (response && response.token) {
+
+        if (response?.token) {
           await this.storage.set('token', response.token);
           await this.handleSignUpSuccess(response);
+
           this.fname = '';
           this.lname = '';
           this.email = '';
@@ -269,75 +508,152 @@ export class SignupPage implements OnInit {
           this.password = '';
           this.cpassword = '';
           this.prefix = '+1';
+
           this.router.navigate(['signup-step-4']);
         } else {
-          this.generalError = response?.message || 'Registration failed. Please try again.';
-          this.presentToast(this.generalError);
+          this.showSingleError(
+            'general',
+            response?.message ||
+            'Registration failed. Please try again.',
+            false
+          );
         }
       },
-      async (error) => {
+
+      error: async (error: any) => {
+        this.loading = false;
         await this.dismissLoading();
-        if (error.error.error == 'Please user another Phone number . This phone already exist') {
-          console.error('Registration API error:', error);
-          this.generalError = 'Please user another Phone number . This phone already exist';
-          this.presentToast(this.generalError);
-        } else {
-          console.error('Registration API error:', error);
-          this.generalError = error?.error?.message || 'An error occurred during registration. Please try again.';
-          this.presentToast(this.generalError);
+
+        console.error('Registration API error:', error);
+
+        const apiErrorMessage =
+          error?.error?.error ||
+          error?.error?.message ||
+          error?.message ||
+          '';
+
+        const normalizedError = String(apiErrorMessage).toLowerCase();
+
+        if (
+          normalizedError.includes('phone already exist') ||
+          normalizedError.includes('phone number already exist') ||
+          normalizedError.includes('phone number already registered')
+        ) {
+          this.showSingleError(
+            'phone',
+            'This mobile number is already registered. Please use another number.'
+          );
+
+          return;
         }
+
+        if (
+          normalizedError.includes('email already exist') ||
+          normalizedError.includes('email already registered')
+        ) {
+          this.showSingleError(
+            'email',
+            'This email address is already registered. Please use another email.'
+          );
+
+          return;
+        }
+
+        this.showSingleError(
+          'general',
+          apiErrorMessage ||
+          'An error occurred during registration. Please try again.',
+          false
+        );
       }
-    );
+    });
   }
 
-  async handleSignUpSuccess(response: any) {
+  async handleSignUpSuccess(response: any): Promise<void> {
     if (response?.token) {
       try {
         const decoded: any = jwtDecode(response.token);
         const user_id = decoded?.user_id;
+
         await this.storage.set('user_token', response.token);
         await this.storage.set('user_id', user_id);
-        localStorage.setItem('user_id', user_id);
-        await this.storage.set('user_details', JSON.stringify({
-          name: `${this.fname} ${this.lname}`,
-          email: this.email,
-          user_id: user_id
-        }));
-        console.log("user_id", user_id)
+
+        localStorage.setItem('user_id', String(user_id));
+
+        await this.storage.set(
+          'user_details',
+          JSON.stringify({
+            name: `${this.fname} ${this.lname}`,
+            email: this.email,
+            user_id: user_id
+          })
+        );
+
+        console.log('user_id', user_id);
       } catch (error) {
         console.error('Invalid token received:', error);
+
+        this.showSingleError(
+          'general',
+          'A valid user token was not received.',
+          false
+        );
       }
     } else {
       console.warn('Signup response does not contain a valid token.');
     }
   }
 
-  async loginOrSignupWithGoogle() {
+  async loginOrSignupWithGoogle(): Promise<void> {
     try {
       const result = await this.googleAuthService.googleAuth();
 
-      console.log('result : ' + result);
+      console.log('Google authentication result:', result);
 
       this.googleAuthToken = result.token;
-      console.log(this.googleAuthToken)
+
       const data = {
         role_id: this.role_id,
         googleauthToken: this.googleAuthToken
       };
-      this.authservice.registerRider(data).subscribe(async (response: any) => {
-        if (response && response.success) {
-          await this.handleSuccessfulLogin(response);
-        } else {
-          this.generalError = response?.message || 'Login failed. Please try again later.';
-          setTimeout(() => { this.generalError = ''; }, 2000);
+
+      this.authservice.registerRider(data).subscribe({
+        next: async (response: any) => {
+          if (response?.success) {
+            await this.handleSuccessfulLogin(response);
+          } else {
+            this.showSingleError(
+              'general',
+              response?.message ||
+              'Google login failed. Please try again.',
+              false
+            );
+          }
+        },
+
+        error: (error: any) => {
+          console.error('Google registration error:', error);
+
+          this.showSingleError(
+            'general',
+            error?.error?.message ||
+            'Google login failed. Please try again.',
+            false
+          );
         }
-      })
+      });
     } catch (error) {
       console.error('Google Auth Failed:', error);
+
+      this.showSingleError(
+        'general',
+        'Google authentication could not be completed.',
+        false
+      );
     }
   }
 
-  async appleSignIn() {
+  async appleSignIn(): Promise<void> {
     try {
       const result = await this.signInWithApple.signin({
         requestedScopes: [
@@ -348,45 +664,74 @@ export class SignupPage implements OnInit {
 
       console.log('Apple Sign-In success:', result);
 
-      const appleAuthToken = result.identityToken; // <-- JWT from Apple
+      const appleAuthToken = result.identityToken;
 
       const data = {
         role_id: this.role_id,
         appleAuthToken: appleAuthToken,
       };
 
-      this.authservice.login(data).subscribe(async (response: any) => {
-        if (response && response.success) {
-          await this.handleSuccessfulLogin(response);
-        } else {
-          console.error('Apple login failed:', response);
-          this.generalError = response?.message || 'Login failed. Please try again later.';
-          setTimeout(() => { this.generalError = ''; }, 2000);
+      this.authservice.login(data).subscribe({
+        next: async (response: any) => {
+          if (response?.success) {
+            await this.handleSuccessfulLogin(response);
+          } else {
+            console.error('Apple login failed:', response);
+
+            this.showSingleError(
+              'general',
+              response?.message ||
+              'Apple login failed. Please try again.',
+              false
+            );
+          }
+        },
+
+        error: (error: any) => {
+          console.error('Apple login API error:', error);
+
+          this.showSingleError(
+            'general',
+            error?.error?.message ||
+            'Apple login failed. Please try again.',
+            false
+          );
         }
       });
+    } catch (error) {
+      console.error('Apple Sign-In error:', error);
 
-    } catch (err) {
-      console.error('Apple Sign-In error:', err);
+      this.showSingleError(
+        'general',
+        'Apple Sign-In could not be completed.',
+        false
+      );
     }
   }
 
-  // Allow only numbers and limit to 10 digits
+  /*
+   * Allow only numbers and restrict mobile number to 10 digits.
+   * This also handles pasted values containing spaces or symbols.
+   */
   onPhoneInput(event: Event): void {
     const input = event.target as HTMLInputElement;
 
-    // Remove non-numeric characters
     let value = input.value.replace(/\D/g, '');
 
-    // Limit to 10 digits
     if (value.length > 10) {
       value = value.substring(0, 10);
     }
 
     input.value = value;
     this.phone = value;
+
+    this.clearFieldError('phone');
   }
 
-  // Prevent typing anything except numbers
+  /*
+   * Prevent letters and unsupported symbols from being typed.
+   * Ctrl/Cmd shortcuts remain supported.
+   */
   allowOnlyNumbers(event: KeyboardEvent): void {
     const allowedKeys = [
       'Backspace',
@@ -394,11 +739,21 @@ export class SignupPage implements OnInit {
       'Tab',
       'ArrowLeft',
       'ArrowRight',
+      'ArrowUp',
+      'ArrowDown',
       'Home',
-      'End'
+      'End',
+      'Enter'
     ];
 
     if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    /*
+     * Allow copy, paste, cut and select-all shortcuts.
+     */
+    if (event.ctrlKey || event.metaKey) {
       return;
     }
 
@@ -407,10 +762,11 @@ export class SignupPage implements OnInit {
     }
   }
 
-  // Validate 10-digit phone number
+  /*
+   * Mobile number must contain exactly 10 numeric digits.
+   */
   isValidPhone(phone: string): boolean {
-    return /^[0-9]{10}$/.test(phone);
+    return /^[0-9]{10}$/.test(phone.trim());
   }
-
-
 }
+

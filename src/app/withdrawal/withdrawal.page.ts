@@ -2,8 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IonicModule, NavController } from '@ionic/angular';
-import { time } from 'ionicons/icons';
-import { FooterTabsComponent } from "../components/footer-tabs/footer-tabs.component";
+
 
 import { Location } from '@angular/common';
 
@@ -12,10 +11,10 @@ import { Location } from '@angular/common';
   templateUrl: './withdrawal.page.html',
   styleUrls: ['./withdrawal.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, CommonModule, FooterTabsComponent],
+  imports: [IonicModule, FormsModule, CommonModule],
 })
 export class WithdrawalPage implements OnInit {
-  constructor(private navCtrl: NavController,private location: Location) {}
+  constructor(private navCtrl: NavController, private location: Location) { }
   transactions = [
     {
       amount: '$180',
@@ -60,7 +59,7 @@ export class WithdrawalPage implements OnInit {
       status: 'Processing',
     },
   ];
-  ngOnInit() {}
+  ngOnInit() { }
   getStatusIcon(status: string): string {
     switch (status.trim().toLowerCase()) {
       case 'completed':
@@ -78,7 +77,7 @@ export class WithdrawalPage implements OnInit {
   //   this.navCtrl.navigateBack('/setting-screen');
   // }
 
-  
+
   goBack(): void {
     this.location.back();
   }
