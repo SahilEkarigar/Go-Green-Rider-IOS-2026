@@ -23,6 +23,7 @@ import { jwtDecode } from 'jwt-decode';
 export class SignupStep4Page implements OnInit {
   address = '';
   dob = '';
+  maxDate: string = '';
   identityProof: File | null = null;
   otherPhone = '';
   profileImage: File | null = null;
@@ -51,6 +52,9 @@ export class SignupStep4Page implements OnInit {
   async ngOnInit() {
     await this.storage.create();
     const token = await this.storage.get('user_token');
+
+    // Prevent future dates
+    this.maxDate = new Date().toISOString().split('T')[0];
   }
 
   goBack(): void {
@@ -63,7 +67,7 @@ export class SignupStep4Page implements OnInit {
   }
 
   private async dismissLoading() {
-    try { await this.loadingController.dismiss(); } catch {}
+    try { await this.loadingController.dismiss(); } catch { }
   }
 
   private async presentToast(message: string) {
@@ -127,6 +131,16 @@ export class SignupStep4Page implements OnInit {
     } else if (!this.profileImage) {
       this.isProfileImagevalid = true;
       this.errorMsgShow('Profile image is required.');
+      return;
+    }
+
+    const selectedDate = new Date(this.dob);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate > today) {
+      this.isDobInvalid = true;
+      this.errorMsgShow('Date of birth cannot be a future date.');
       return;
     }
 

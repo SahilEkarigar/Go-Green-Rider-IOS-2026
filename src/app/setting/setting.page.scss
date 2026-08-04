@@ -13,7 +13,12 @@
 }
 
 // Reset rules locally
-p, h1, h2, h3, h6, span {
+p,
+h1,
+h2,
+h3,
+h6,
+span {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
 }
@@ -199,7 +204,7 @@ ion-content.settings-content {
 
 // Settings Categorized Cards List
 .settings-cards-list {
-  padding: 0 16px 40px 16px;
+  padding: 4% 16px 40px 16px;
 
   .category-card {
     background-color: $white;
@@ -357,7 +362,7 @@ ion-content.settings-content {
 @media (max-width: 360px) {
   .settings-header {
     padding: calc(env(safe-area-inset-top, 24px) + 12px) 16px 24px 16px;
-    
+
     .profile-details-pane .profile-row .avatar-container {
       width: 60px;
       height: 60px;
@@ -367,6 +372,7 @@ ion-content.settings-content {
   .quick-stats-row {
     margin: 16px 12px;
     padding: 12px;
+
     .stat-tile .tile-label {
       font-size: 10.5px;
     }
@@ -374,6 +380,7 @@ ion-content.settings-content {
 
   .settings-cards-list {
     padding: 0 12px 30px 12px;
+
     .category-card {
       padding: 14px;
     }

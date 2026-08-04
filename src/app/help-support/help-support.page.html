@@ -1,92 +1,163 @@
 <ion-header [translucent]="false" class="custom-header">
   <div class="header-container">
     <button class="back-btn" (click)="goBack()">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      <i class="fa fa-chevron-left"></i>
     </button>
+
     <h1 class="header-title">Contact Support</h1>
+
     <div class="header-right-placeholder"></div>
   </div>
 </ion-header>
 
 <ion-content class="ion-padding content">
+
   <div class="support-container">
-    <h2 class="support-subtitle">We’re here to help you have the best experience possible.</h2>
+
+    <h2 class="support-subtitle">
+      We're here to help you have the best experience possible.
+    </h2>
+
     <p class="support-intro">
-      Whether you have a question about your order, a payment issue, or just need assistance navigating the app, our support team is ready to assist you.
+      Whether you have a question about your order, payment, account, or anything else,
+      our support team is always happy to assist you.
     </p>
 
-    <!-- Support Contact Cards -->
+    <!-- Contact Cards -->
+
     <div class="contact-cards-list">
+
+      <!-- Email -->
+
       <div class="contact-row-item">
+
         <div class="item-icon-wrapper email">
-          <i class="fa fa-envelope" aria-hidden="true"></i>
+          <i class="fa fa-envelope"></i>
         </div>
+
         <div class="item-details">
           <span class="item-label">Email Support</span>
-          <span class="item-value">support&#64;yourstore.com</span>
+
+          <a href="mailto:contact@gogreentechca.com" class="item-value">
+            contact&#64;gogreentechca.com
+          </a>
+
         </div>
+
       </div>
 
-      <div class="contact-row-item">
-        <div class="item-icon-wrapper phone">
-          <i class="fa fa-phone" aria-hidden="true"></i>
-        </div>
-        <div class="item-details">
-          <span class="item-label">Phone Support</span>
-          <span class="item-value">+91-XXXXXXXXXX</span>
-        </div>
-      </div>
+      <!-- Support Hours -->
 
       <div class="contact-row-item">
+
         <div class="item-icon-wrapper hours">
-          <i class="fa fa-clock-o" aria-hidden="true"></i>
+          <i class="fa fa-clock-o"></i>
         </div>
+
         <div class="item-details">
-          <span class="item-label">Support Hours</span>
-          <span class="item-value">Mon to Sat, 10:00 AM to 6:00 PM IST</span>
+
+          <span class="item-label">
+            Support Hours
+          </span>
+
+          <span class="item-value">
+            Monday – Saturday
+            <br>
+            9:00 AM – 8:00 PM
+          </span>
+
+          <small [style.color]="isSupportOpen ? '#2e7d32' : '#d32f2f'">
+
+            {{ isSupportOpen ? '🟢 Currently Open' : '🔴 Currently Closed' }}
+
+          </small>
+
         </div>
+
       </div>
+
     </div>
 
+    <!-- Dynamic Support Message -->
+
     <p class="final-note">
-      We strive to respond to all queries within 24 hours. Your feedback and concerns help us improve, so don’t hesitate to contact us.
+      {{ supportMessage }}
     </p>
+
   </div>
 
   <!-- Floating Chat Button -->
+
   <div class="chat-toggle-btn" (click)="toggleChat()" [class.active]="showChat">
-    <i class="fa" [ngClass]="showChat ? 'fa-times' : 'fa-comments'" aria-hidden="true"></i>
+
+    <i class="fa" [ngClass]="showChat ? 'fa-times' : 'fa-comments'">
+    </i>
+
   </div>
 
-  <!-- Smart Assistant Chat Window -->
+  <!-- Chat Window -->
+
   <div class="chat-assistant-panel" *ngIf="showChat">
+
+    <!-- Header -->
+
     <div class="assistant-header">
-      <span class="assistant-title">💬 Smart Assistant</span>
+
+      <span class="assistant-title">
+        💬 Smart Assistant
+      </span>
+
       <button class="close-assistant-btn" (click)="toggleChat()">
-        <i class="fa fa-times" aria-hidden="true"></i>
+
+        <i class="fa fa-times"></i>
+
       </button>
+
     </div>
 
-    <div class="assistant-body">
+    <!-- Messages -->
+
+    <div class="assistant-body" #chatBody>
+
       <div *ngFor="let msg of messages" class="chat-bubble-row" [ngClass]="msg.from">
+
         <div class="chat-bubble">
-          <p class="bubble-text">{{ msg.text }}</p>
-          
-          <!-- Options for quick response -->
-          <div class="bubble-options" *ngIf="msg.options">
+
+          <p class="bubble-text">
+            {{ msg.text }}
+          </p>
+
+          <div class="bubble-options" *ngIf="msg.options?.length">
+
             <button *ngFor="let opt of msg.options" class="option-pill-btn" (click)="selectOption(opt)">
+
               {{ opt }}
+
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
+    <!-- Footer -->
 
     <div class="assistant-footer">
-      <input [(ngModel)]="userMessage" placeholder="Type your message..." (keyup.enter)="sendMessage()" class="message-input-field" />
-      <button (click)="sendMessage()" class="send-message-btn">
-        <i class="fa fa-paper-plane" aria-hidden="true"></i>
+
+      <input [(ngModel)]="userMessage" class="message-input-field" placeholder="Type your message..."
+        (keyup.enter)="sendMessage()" />
+
+      <button class="send-message-btn" (click)="sendMessage()">
+
+        <i class="fa fa-paper-plane"></i>
+
       </button>
+
     </div>
+
   </div>
+
 </ion-content>

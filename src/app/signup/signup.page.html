@@ -53,16 +53,9 @@
               </div>
               <div class="form_input_box">
                 <label for="email">Email</label>
-                <input
-                  type="email"
-                  [(ngModel)]="email"
-                  [ngClass]="{'input-error': isEmailInvalid || (emailTouched && !isValidEmail(email))}"
-                  id="email"
-                  name="email"
-                  class="form-control"
-                  placeholder="Enter Email"
-                  (blur)="onEmailBlur()"
-                >
+                <input type="email" [(ngModel)]="email"
+                  [ngClass]="{'input-error': isEmailInvalid || (emailTouched && !isValidEmail(email))}" id="email"
+                  name="email" class="form-control" placeholder="Enter Email" (blur)="onEmailBlur()">
                 <div *ngIf="isEmailInvalid" class="error-message mt-1">Email is required.</div>
                 <div *ngIf="emailTouched && !isEmailInvalid && !isValidEmail(email)" class="error-message mt-1">
                   Please enter a valid email address.
@@ -74,8 +67,11 @@
                   <select [(ngModel)]="prefix" id="prefix" name="prefix" class="form-control">
                     <option value="+1">+1</option>
                   </select>
+                  <!--<input type="tel" [(ngModel)]="phone" [ngClass]="{'input-error': isPhoneInvalid}" id="phone"
+                    name="phone" class="form-control" placeholder="Enter Mobile No">-->
                   <input type="tel" [(ngModel)]="phone" [ngClass]="{'input-error': isPhoneInvalid}" id="phone"
-                    name="phone" class="form-control" placeholder="Enter Mobile No">
+                    name="phone" class="form-control" placeholder="Enter Mobile No" maxlength="10" inputmode="numeric"
+                    (input)="onPhoneInput($event)" (keydown)="allowOnlyNumbers($event)">
                 </div>
                 <div *ngIf="isPhoneInvalid" class="error-message mt-1">Mobile No is required.</div>
               </div>
@@ -120,15 +116,17 @@
 <ion-footer class="ion-no-border bg_white">
   <div class="container" style="padding: 10px 15px;">
     <ion-row class="ion-align-items-center">
-      <ion-col [size]="isAppleAvailable ? 6 : 12" *ngIf="isAppleAvailable" class="ion-no-padding" style="padding-right: 6px;">
+      <!--<ion-col [size]="isAppleAvailable ? 6 : 12" *ngIf="isAppleAvailable" class="ion-no-padding"
+        style="padding-right: 6px;">
         <div class="login_welcome d_flex justify_content_center flex_column">
           <a class="apple_signin_button" (click)="appleSignIn()" style="margin-top: 0px; height: 44px;">
             <img src="../../assets/welcome/apple.svg" class="google_logo" alt="Apple logo">
             Apple Sign Up
           </a>
         </div>
-      </ion-col>
-      <ion-col [size]="isAppleAvailable ? 6 : 12" class="ion-no-padding" [style.padding-left]="isAppleAvailable ? '6px' : '0px'">
+      </ion-col>-->
+      <ion-col [size]="isAppleAvailable ? 6 : 12" class="ion-no-padding"
+        [style.padding-left]="isAppleAvailable ? '6px' : '0px'">
         <div class="button_group">
           <button type="button" class="btn theme_button" (click)="NextStep()">Next</button>
         </div>

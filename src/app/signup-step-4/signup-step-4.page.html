@@ -37,82 +37,48 @@
             <form class="form_box">
               <div class="form_input_box">
                 <label for="address">Address</label>
-                <input
-                  type="text"
-                  [(ngModel)]="address"
-                  [ngClass]="{'input-error': isAddressInvalid}"
-                  id="address"
-                  name="address"
-                  class="form-control"
-                  placeholder="Enter Address"
-                >
+                <input type="text" [(ngModel)]="address" [ngClass]="{'input-error': isAddressInvalid}" id="address"
+                  name="address" class="form-control" placeholder="Enter Address">
                 <div *ngIf="isAddressInvalid" class="error-message mt-1">Address is required.</div>
               </div>
-            
+
               <div class="form_input_box">
                 <label for="dob">Date of Birth</label>
-                <input
-                  type="date"
-                  [(ngModel)]="dob"
-                  [ngClass]="{'input-error': isDobInvalid}"
-                  id="dob"
-                  name="dob"
-                  class="form-control"
-                >
+                <input type="date" [(ngModel)]="dob" [ngClass]="{'input-error': isDobInvalid}" id="dob" name="dob"
+                  class="form-control" [max]="maxDate">
                 <div *ngIf="isDobInvalid" class="error-message mt-1">Date of Birth is required.</div>
               </div>
-            
+
               <div class="form_input_box">
                 <label for="identityProof">Identity Proof</label>
-                <input
-                  type="file"
-                  (change)="onIdentityProofSelected($event)"
-                  id="identityProof"
-                  name="identityProof"
-                  class="form-control"
-                  accept="image/*"
-                  [ngClass]="{'input-error': isIdentityProofInvalid}"
-                >
+                <input type="file" (change)="onIdentityProofSelected($event)" id="identityProof" name="identityProof"
+                  class="form-control" accept="image/*" [ngClass]="{'input-error': isIdentityProofInvalid}">
                 <div *ngIf="isIdentityProofInvalid" class="error-message mt-1">Identity proof is required.</div>
               </div>
-            
+
               <div class="form_input_box">
                 <label for="otherPhone">Other Phone Number</label>
                 <div class="prefix_phone_box">
                   <select [(ngModel)]="otherPrefix" id="otherPrefix" name="otherPrefix" class="form-control">
                     <option value="+1">+1</option>
                   </select>
-                  <input
-                    type="tel"
-                    [(ngModel)]="otherPhone"
-                    [ngClass]="{'input-error': isOtherPhoneInvalid}"
-                    id="otherPhone"
-                    name="otherPhone"
-                    class="form-control"
-                    placeholder="Enter Other Phone Number"
-                  >
+                  <input type="tel" [(ngModel)]="otherPhone" [ngClass]="{'input-error': isOtherPhoneInvalid}"
+                    id="otherPhone" name="otherPhone" class="form-control" placeholder="Enter Other Phone Number">
                 </div>
                 <div *ngIf="isOtherPhoneInvalid" class="error-message mt-1">Other Phone Number is required.</div>
               </div>
-            
+
               <div class="form_input_box">
                 <label for="profileImage">Profile Image</label>
-                <input
-                  type="file"
-                  (change)="onProfileImageSelected($event)"
-                  id="profileImage"
-                  name="profileImage"
-                  class="form-control"
-                  accept="image/*"
-                  [ngClass]="{'input-error': isProfileImagevalid}"
-                >
+                <input type="file" (change)="onProfileImageSelected($event)" id="profileImage" name="profileImage"
+                  class="form-control" accept="image/*" [ngClass]="{'input-error': isProfileImagevalid}">
                 <div *ngIf="isProfileImagevalid" class="error-message mt-1">Profile Image is required.</div>
               </div>
             </form>
             <div>
               <p class="error-message">{{generalError}}</p>
             </div>
-          </ion-col>            
+          </ion-col>
         </ion-row>
       </div>
     </div>

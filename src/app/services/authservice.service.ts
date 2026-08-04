@@ -19,10 +19,12 @@ export class AuthserviceService {
   signupUrl = this.apiUrl + 'riders/rider-signup';
   signupUrl2 = this.apiUrl + 'riders/rider-verification';
   addBankDetailsForm = this.apiUrl + 'users/addbankdetails';
-  AllOrders = this.apiUrl+ 'order/orderhistorybyuserid/';
+  AllOrders = this.apiUrl + 'order/orderhistorybyuserid/';
   loginApi = this.apiUrl + 'riders/rider-login';
   personalDetails = this.apiUrl + 'riders/rider-personaldetails';
   rider_fullDetails = this.apiUrl + 'riders/rider-profile';
+  rider_documentDetails = this.apiUrl + 'riders/get-rider-documents';
+  update_RiderDocumentDetails = this.apiUrl + 'riders/update-rider-documents';
   getRiderOrderApi = this.apiUrl + 'riders/getordersbyriderid';
   rider_Status = this.apiUrl + 'riders/rider-status';
   rider_role = 4;
@@ -39,7 +41,7 @@ export class AuthserviceService {
 
   private async getHeaders(): Promise<HttpHeaders> {
     const token = await this.storage.get('token');
-    
+
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
     });
@@ -84,6 +86,17 @@ export class AuthserviceService {
     const headers = await this.getHeaders();
     return this.http.post(this.rider_fullDetails, data, { headers });
   };
+
+  async riderDocumentDetails(data: any): Promise<Observable<any>> {
+    const headers = await this.getHeaders();
+    return this.http.post(this.rider_documentDetails, data, { headers });
+  };
+
+  async updateRiderDocumentDetails(data: any): Promise<Observable<any>> {
+    const headers = await this.getHeaders();
+    return this.http.put(this.update_RiderDocumentDetails, data, { headers });
+  };
+
   async updateRiderProfileDetails(data: any): Promise<Observable<any>> {
     const headers = await this.getHeaders();
     return this.http.put(this.apiUrl + 'riders/update-riderProfile', data, { headers });
@@ -107,7 +120,7 @@ export class AuthserviceService {
     return this.http.put(url, data, { headers });
   }
 
- get_all_orders(params: { user_id?: any; rider_id?: any },date?: string
+  get_all_orders(params: { user_id?: any; rider_id?: any }, date?: string
   ): Observable<any> {
 
     const finalDate = date ? date : 'today';
@@ -226,7 +239,7 @@ export class AuthserviceService {
   getBankInfo(user_id: string): Observable<any[]> {
     return from(this.getHeaders()).pipe(
       switchMap((headers: HttpHeaders) => {
-        const body = { user_id: user_id, role_id:this.rider_role };  // send rider_id in body
+        const body = { user_id: user_id, role_id: this.rider_role };  // send rider_id in body
         return this.http.post<any[]>(`${this.apiUrl}riders/rider-bankdetails`, body, { headers });
       })
     );

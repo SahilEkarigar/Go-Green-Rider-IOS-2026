@@ -15,19 +15,6 @@
     <div class="profile-card">
       <div class="form-container">
 
-        <!-- 1. Add Documents Button Card -->
-        <div class="form-group">
-          <label>Upload New Document</label>
-          <div class="initial-upload-container">
-            <label for="initialDocInput" class="upload-trigger-btn">
-              <i class="fa fa-cloud-upload" aria-hidden="true"></i>
-              <span>Select File to Upload</span>
-            </label>
-            <input type="file" id="initialDocInput" class="upload-input" (change)="handleInitialFileUpload($event)"
-              accept=".jpg,.jpeg,.png,.pdf" style="display: none;" />
-          </div>
-        </div>
-
         <!-- 2. Dynamic Uploaded Documents List -->
         <div class="uploaded-docs-section" *ngIf="uploadedDocs.length > 0">
           <label class="section-subtitle">Uploaded Files</label>

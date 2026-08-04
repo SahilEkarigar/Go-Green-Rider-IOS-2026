@@ -86,7 +86,7 @@ export class SignupPage implements OnInit {
   }
 
   private async dismissLoading() {
-    try { await this.loadingController.dismiss(); } catch {}
+    try { await this.loadingController.dismiss(); } catch { }
   }
 
   goBack(): void {
@@ -257,6 +257,7 @@ export class SignupPage implements OnInit {
     await this.presentLoading('Signing up...');
     this.authservice.registerRider(data).subscribe(
       async (response) => {
+
         await this.dismissLoading();
         if (response && response.token) {
           await this.storage.set('token', response.token);
@@ -270,16 +271,21 @@ export class SignupPage implements OnInit {
           this.prefix = '+1';
           this.router.navigate(['signup-step-4']);
         } else {
-          console.log(response.message);
           this.generalError = response?.message || 'Registration failed. Please try again.';
           this.presentToast(this.generalError);
         }
       },
       async (error) => {
         await this.dismissLoading();
-        console.error('Registration API error:', error);
-        this.generalError = error?.error?.message || 'An error occurred during registration. Please try again.';
-        this.presentToast(this.generalError);
+        if (error.error.error == 'Please user another Phone number . This phone already exist') {
+          console.error('Registration API error:', error);
+          this.generalError = 'Please user another Phone number . This phone already exist';
+          this.presentToast(this.generalError);
+        } else {
+          console.error('Registration API error:', error);
+          this.generalError = error?.error?.message || 'An error occurred during registration. Please try again.';
+          this.presentToast(this.generalError);
+        }
       }
     );
   }
@@ -310,8 +316,8 @@ export class SignupPage implements OnInit {
     try {
       const result = await this.googleAuthService.googleAuth();
 
-      console.log('result : '+result);
-      
+      console.log('result : ' + result);
+
       this.googleAuthToken = result.token;
       console.log(this.googleAuthToken)
       const data = {
@@ -362,6 +368,48 @@ export class SignupPage implements OnInit {
     } catch (err) {
       console.error('Apple Sign-In error:', err);
     }
+  }
+
+  // Allow only numbers and limit to 10 digits
+  onPhoneInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    // Remove non-numeric characters
+    let value = input.value.replace(/\D/g, '');
+
+    // Limit to 10 digits
+    if (value.length > 10) {
+      value = value.substring(0, 10);
+    }
+
+    input.value = value;
+    this.phone = value;
+  }
+
+  // Prevent typing anything except numbers
+  allowOnlyNumbers(event: KeyboardEvent): void {
+    const allowedKeys = [
+      'Backspace',
+      'Delete',
+      'Tab',
+      'ArrowLeft',
+      'ArrowRight',
+      'Home',
+      'End'
+    ];
+
+    if (allowedKeys.includes(event.key)) {
+      return;
+    }
+
+    if (!/^[0-9]$/.test(event.key)) {
+      event.preventDefault();
+    }
+  }
+
+  // Validate 10-digit phone number
+  isValidPhone(phone: string): boolean {
+    return /^[0-9]{10}$/.test(phone);
   }
 
 
