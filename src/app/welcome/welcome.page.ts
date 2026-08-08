@@ -1,5 +1,4 @@
-import { Component, OnInit } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
@@ -8,20 +7,22 @@ import { IonicModule } from '@ionic/angular';
   templateUrl: './welcome.page.html',
   styleUrls: ['./welcome.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule],
+  imports: [
+    IonicModule
+  ]
 })
-export class WelcomePage implements OnInit {
+export class WelcomePage {
 
-  constructor(private router: Router) { }
+  constructor(
+    private router: Router
+  ) {}
 
-  ngOnInit() {
+  loginPage(): void {
+    this.router.navigate(['/login']);
   }
 
-
-
-  signUpPage(){
-    this.router.navigate(['./signup'])
+  signUpPage(): void {
+    this.router.navigate(['/signup']);
   }
-
 
 }

@@ -1,24 +1,122 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <div class="header" (click)="goBack()">
-      <div class="col1">
-        <i class="fa-solid fa-arrow-left"></i>
-      </div>
-     
+<ion-header class="ion-no-border">
+
+  <div class="header">
+
+    <div
+      class="back_arrow_div"
+      (click)="goBack()">
+
+      <i
+        class="fa-solid fa-arrow-left"
+        aria-hidden="true">
+      </i>
+
     </div>
-  </ion-toolbar>
-</ion-header>
-<ion-content [fullscreen]="true">
-  <div class="welcome_main">
-    <div class="delivery_man_main">
-      <img src="../../assets/application-review/application_review_image.svg" alt="Application Review" />
+
+
+    <div class="col2">
+      <p>Application Review</p>
     </div>
-    <div class="content_welcome">
-      <img src="../../assets/application-review/Group 736.svg" alt="Under Review" class="under-review-image" />
-      <p class="review-text">
-        Your application is currently under review. We will<br>notify you as soon as it has been approved. Thank you<br>for your patience!
-      </p>
-      <button class="ok-button" (click)="goHome()">OK</button>
-    </div>
+
+
+    <div class="header_placeholder"></div>
+
   </div>
+
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+
+  <div class="welcome_main">
+
+    <div class="content_welcome">
+
+      <!-- Logo -->
+      <div class="logo_section">
+
+        <img
+          src="../../assets/icon/logo_gogreen.svg"
+          class="otplogo"
+          alt="GoGreen"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async">
+
+      </div>
+
+
+      <!-- Illustration -->
+      <div class="delivery_man_main">
+
+        <div class="review_image_circle">
+
+          <img
+            src="../../assets/welcome/delivery_man.svg"
+            alt="Application under review"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async">
+
+        </div>
+
+      </div>
+
+
+      <!-- Status -->
+      <div class="review_status">
+        <span class="review_status_dot"></span>
+        Application Submitted
+      </div>
+
+
+      <!-- Heading -->
+      <h2 class="review_heading">
+        Your Application is Under Review
+      </h2>
+
+
+      <!-- Description -->
+      <p class="review-text">
+        Thank you for submitting your rider application.
+        Our team is currently reviewing your details and documents.
+        You will be able to continue once your application has been approved.
+      </p>
+
+
+      <!-- Information Box -->
+      <div class="review_info_box">
+
+        <div class="review_info_icon">
+          <ion-icon name="information-circle-outline"></ion-icon>
+        </div>
+
+        <div class="review_info_content">
+
+          <strong>What happens next?</strong>
+
+          <p>
+            Please wait while your information is being verified.
+            You can return later and log in again to check your application status.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- OK Button -->
+      <button
+        type="button"
+        class="ok-button"
+        (click)="goHome()">
+
+        Back to Login
+
+      </button>
+
+    </div>
+
+  </div>
+
 </ion-content>

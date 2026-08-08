@@ -1,143 +1,320 @@
 <ion-header class="ion-no-border bg_white">
-  <div class="container my_common_header" style="margin-top: 0px;">
+
+  <div class="container my_common_header">
+
     <ion-row>
-      <!--<ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
-        <div (click)="goBack()" class="back_arrow_div">
-          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+
+      <ion-col
+        size="12"
+        class="common_header">
+
+        <div
+          class="back_arrow_div"
+          (click)="goBack()">
+
+          <i
+            class="fa fa-chevron-left"
+            aria-hidden="true">
+          </i>
+
         </div>
-      </ion-col>-->
+
+      </ion-col>
+
     </ion-row>
+
   </div>
+
 </ion-header>
 
-<ion-content class="ioncontent container">
+
+<ion-content [fullscreen]="true" class="ioncontent">
+
   <div class="container">
-    <div class="row signup_steps_row" style="padding-bottom: 20px;">
-      <div class="signup_steps">
-        <ion-row>
-          <ion-col size="12">
-            <h2 class="text-center">Sign Up</h2>
 
-            <div class="step_counts">
-              <div class="stepper">
-                <div class="step active">
-                  <div class="circle">1</div>
-                </div>
+    <ion-row class="signup_steps_row">
 
-                <div class="step active">
-                  <div class="circle">2</div>
-                </div>
+      <ion-col size="12">
 
-                <div class="step">
-                  <div class="circle">3</div>
-                </div>
+        <div class="signup_steps">
 
-                <div class="step">
-                  <div class="circle">4</div>
+          <!-- Page Heading -->
+          <h2 class="text-center">
+            Sign Up
+          </h2>
+
+
+          <!-- Stepper -->
+          <div class="step_counts">
+
+            <div class="stepper">
+
+              <div class="step active">
+                <div class="circle">
+                  1
                 </div>
               </div>
+
+              <div class="step active">
+                <div class="circle">
+                  2
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="circle">
+                  3
+                </div>
+              </div>
+
+              <div class="step">
+                <div class="circle">
+                  4
+                </div>
+              </div>
+
             </div>
 
-            <h4 class="text-center mt-2">Personal Details</h4>
+          </div>
 
-            <form class="form_box">
-              <!-- Address -->
-              <div class="form_input_box">
-                <label for="address">Address</label>
 
-                <input type="text" [(ngModel)]="address" (input)="onAddressInput()"
-                  [ngClass]="{'input-error': isAddressInvalid}" id="address" name="address" class="form-control"
-                  placeholder="Enter Address" autocomplete="street-address" />
+          <h4 class="text-center mt-2">
+            Personal Details
+          </h4>
 
-                <div *ngIf="isAddressInvalid" class="error-message mt-1">
-                  {{ addressErrorMessage }}
-                </div>
+
+          <form
+            class="form_box"
+            novalidate>
+
+
+            <!-- Address -->
+            <div class="form_input_box">
+
+              <label for="address">
+                Address
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="address"
+                (input)="onAddressInput()"
+                [ngClass]="{'input-error': isAddressInvalid}"
+                id="address"
+                name="address"
+                class="form-control"
+                placeholder="Enter your address"
+                autocomplete="street-address">
+
+              <div
+                *ngIf="isAddressInvalid"
+                class="error-message mt-1">
+
+                {{ addressErrorMessage }}
+
               </div>
 
-              <!-- Date of Birth -->
-              <div class="form_input_box">
-                <label for="dob">Date of Birth</label>
-
-                <input type="date" [(ngModel)]="dob" (change)="onDobChange()" [ngClass]="{'input-error': isDobInvalid}"
-                  id="dob" name="dob" class="form-control" [max]="maxDate" />
-
-                <div *ngIf="isDobInvalid" class="error-message mt-1">
-                  {{ dobErrorMessage }}
-                </div>
-              </div>
-
-              <!-- Identity Proof -->
-              <div class="form_input_box">
-                <label for="identityProof">Identity Proof</label>
-
-                <input type="file" (change)="onIdentityProofSelected($event)" id="identityProof" name="identityProof"
-                  class="form-control" accept="image/jpeg,image/png,image/webp"
-                  [ngClass]="{'input-error': isIdentityProofInvalid}" />
-
-                <div *ngIf="isIdentityProofInvalid" class="error-message mt-1">
-                  {{ identityProofErrorMessage }}
-                </div>
-              </div>
-
-              <!-- Optional Other Phone Number -->
-              <div class="form_input_box">
-                <label for="otherPhone">
-                  Other Phone Number
-                  <span class="optional_text">(Optional)</span>
-                </label>
-
-                <div class="prefix_phone_box">
-                  <select [(ngModel)]="otherPrefix" id="otherPrefix" name="otherPrefix" class="form-control">
-                    <option value="+1">+1</option>
-                  </select>
-
-                  <input type="tel" [(ngModel)]="otherPhone" (input)="onOtherPhoneInput($event)"
-                    (blur)="validateOptionalPhone()" [ngClass]="{'input-error': isOtherPhoneInvalid}" id="otherPhone"
-                    name="otherPhone" class="form-control" placeholder="Enter Other Phone Number" inputmode="numeric"
-                    maxlength="10" autocomplete="tel" />
-                </div>
-
-                <div *ngIf="isOtherPhoneInvalid" class="error-message mt-1">
-                  {{ otherPhoneErrorMessage }}
-                </div>
-              </div>
-
-              <!-- Profile Image -->
-              <div class="form_input_box">
-                <label for="profileImage">Profile Image</label>
-
-                <input type="file" (change)="onProfileImageSelected($event)" id="profileImage" name="profileImage"
-                  class="form-control" accept="image/jpeg,image/png,image/webp"
-                  [ngClass]="{'input-error': isProfileImageInvalid}" />
-
-                <div *ngIf="isProfileImageInvalid" class="error-message mt-1">
-                  {{ profileImageErrorMessage }}
-                </div>
-              </div>
-            </form>
-
-            <div>
-              <p *ngIf="generalError" class="error-message">
-                {{ generalError }}
-              </p>
             </div>
-          </ion-col>
-        </ion-row>
-      </div>
-    </div>
+
+
+            <!-- Date of Birth -->
+            <div class="form_input_box">
+
+              <label for="dob">
+                Date of Birth
+              </label>
+
+              <input
+                type="date"
+                [(ngModel)]="dob"
+                (change)="onDobChange()"
+                [ngClass]="{'input-error': isDobInvalid}"
+                id="dob"
+                name="dob"
+                class="form-control"
+                [max]="maxDate">
+
+              <div
+                *ngIf="isDobInvalid"
+                class="error-message mt-1">
+
+                {{ dobErrorMessage }}
+
+              </div>
+
+            </div>
+
+
+            <!-- Identity Proof -->
+            <div class="form_input_box">
+
+              <label for="identityProof">
+                Identity Proof
+              </label>
+
+              <input
+                type="file"
+                (change)="onIdentityProofSelected($event)"
+                id="identityProof"
+                name="identityProof"
+                class="form-control"
+                accept="image/jpeg,image/png,image/webp"
+                [ngClass]="{'input-error': isIdentityProofInvalid}">
+
+              <div class="upload_note">
+                JPG, PNG or WEBP. Maximum file size 5 MB.
+              </div>
+
+              <div
+                *ngIf="isIdentityProofInvalid"
+                class="error-message mt-1">
+
+                {{ identityProofErrorMessage }}
+
+              </div>
+
+            </div>
+
+
+            <!-- Optional Other Phone -->
+            <div class="form_input_box">
+
+              <label for="otherPhone">
+
+                Other Phone Number
+
+                <span class="optional_text">
+                  (Optional)
+                </span>
+
+              </label>
+
+
+              <div class="prefix_phone_box">
+
+                <select
+                  [(ngModel)]="otherPrefix"
+                  id="otherPrefix"
+                  name="otherPrefix"
+                  class="form-control">
+
+                  <option value="+1">
+                    +1
+                  </option>
+
+                </select>
+
+
+                <input
+                  type="tel"
+                  [(ngModel)]="otherPhone"
+                  (input)="onOtherPhoneInput($event)"
+                  (blur)="validateOptionalPhone()"
+                  [ngClass]="{'input-error': isOtherPhoneInvalid}"
+                  id="otherPhone"
+                  name="otherPhone"
+                  class="form-control"
+                  placeholder="Enter other phone number"
+                  inputmode="numeric"
+                  maxlength="10"
+                  autocomplete="tel">
+
+              </div>
+
+
+              <div
+                *ngIf="isOtherPhoneInvalid"
+                class="error-message mt-1">
+
+                {{ otherPhoneErrorMessage }}
+
+              </div>
+
+            </div>
+
+
+            <!-- Profile Image -->
+            <div class="form_input_box">
+
+              <label for="profileImage">
+                Profile Image
+              </label>
+
+              <input
+                type="file"
+                (change)="onProfileImageSelected($event)"
+                id="profileImage"
+                name="profileImage"
+                class="form-control"
+                accept="image/jpeg,image/png,image/webp"
+                [ngClass]="{'input-error': isProfileImageInvalid}">
+
+              <div class="upload_note">
+                Upload a clear profile photo in JPG, PNG or WEBP format.
+              </div>
+
+              <div
+                *ngIf="isProfileImageInvalid"
+                class="error-message mt-1">
+
+                {{ profileImageErrorMessage }}
+
+              </div>
+
+            </div>
+
+          </form>
+
+
+          <!-- General API Error -->
+          <div
+            *ngIf="generalError"
+            class="general_error_box">
+
+            <p class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+        </div>
+
+      </ion-col>
+
+    </ion-row>
+
   </div>
+
 </ion-content>
 
-<ion-footer class="ion-no-border bg_white">
-  <div class="container" style="padding: 10px 15px;">
+
+<ion-footer class="ion-no-border">
+
+  <div class="container">
+
     <ion-row>
-      <ion-col size="12" class="ion-no-padding">
+
+      <ion-col
+        size="12"
+        class="common_footer">
+
         <div class="button_group">
-          <button type="button" class="btn theme_button" (click)="NextStep()">
-            Next
+
+          <button
+            type="button"
+            class="theme_button"
+            (click)="NextStep()">
+
+            Continue
+
           </button>
+
         </div>
+
       </ion-col>
+
     </ion-row>
+
   </div>
+
 </ion-footer>

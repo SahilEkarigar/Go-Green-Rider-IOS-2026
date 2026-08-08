@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { SplashscreenPageRoutingModule } from './splashscreen-routing.module';
-
 import { SplashscreenPage } from './splashscreen.page';
 
 @NgModule({
@@ -15,6 +14,8 @@ import { SplashscreenPage } from './splashscreen.page';
     IonicModule,
     SplashscreenPageRoutingModule
   ],
-  declarations: [SplashscreenPage]
+  declarations: [
+    SplashscreenPage
+  ]
 })
 export class SplashscreenPageModule {}

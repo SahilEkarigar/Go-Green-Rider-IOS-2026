@@ -1,98 +1,650 @@
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400&display=swap');
+/* =====================================================
+   PAGE
+===================================================== */
 
 ion-content {
-  font-family: 'Open Sans', sans-serif;
-  background: #fff;
+  --background: #ffffff;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+
+  font-family: opensans_regular, "Open Sans", Arial, sans-serif;
 }
 
-.welcome_main {
+
+ion-header {
+  --background: #ffffff;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid #edf2ef;
+
+  box-shadow:
+    0 2px 12px rgba(0, 85, 40, 0.04);
+
+  z-index: 99;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  min-height: 64px;
+
+  padding:
+    calc(8px + env(safe-area-inset-top))
+    18px
+    8px;
+
+  background: #ffffff;
+
+  box-sizing: border-box;
+}
+
+
+/* Back */
+
+.back_arrow_div {
+  display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  padding: 0px 20px 0px 20px ;
+
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+
+  border: 1px solid rgba(0, 85, 40, 0.08);
+  border-radius: 12px;
+
+  background: #edf6f1;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 3px 10px rgba(0, 85, 40, 0.07);
+
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease;
+}
+
+
+.back_arrow_div:active {
+  transform: scale(0.94);
+
+  background: #deeee5;
+}
+
+
+i.fa-solid.fa-arrow-left {
+  color: #005528;
+
+  font-size: 17px;
+  font-weight: 700;
+}
+
+
+/* Header Title */
+
+.col2 {
+  flex: 1;
+
   text-align: center;
 }
 
-.delivery_man_main img {
-  margin-bottom: 20px;
+
+.col2 p {
+  margin: 0 !important;
+  padding: 0 !important;
+
+  color: #005528;
+
+  font-family: opensans_semibold, "Open Sans", Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
 }
+
+
+/* Used to keep title centered */
+
+.header_placeholder {
+  width: 38px;
+  height: 38px;
+
+  flex-shrink: 0;
+}
+
+
+/* =====================================================
+   MAIN CONTENT
+===================================================== */
+
+.welcome_main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 100%;
+
+  padding: 30px 20px 35px;
+
+  text-align: center;
+
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 50% 15%,
+      rgba(8, 139, 70, 0.06) 0%,
+      rgba(8, 139, 70, 0) 34%
+    ),
+    #ffffff;
+}
+
+
+/* =====================================================
+   CONTENT WRAPPER
+===================================================== */
 
 .content_welcome {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  width: 100%;
+  max-width: 480px;
+
+  margin: 0 auto;
 }
 
 
+/* =====================================================
+   LOGO
+===================================================== */
 
-.review-text{
-  font-size: 12px;
-  font-weight: 500;
-  color: black;
-  margin: 10px 0px 20px 0px;
-  padding: 0 15px;
+.logo_section {
+  width: 100%;
+
+  margin-bottom: 22px;
+
   text-align: center;
-  font-family: opensans_regular;
 }
+
+
+img.otplogo {
+  display: block;
+
+  width: 130px;
+  max-width: 42%;
+  height: auto;
+
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   ILLUSTRATION
+===================================================== */
+
+.delivery_man_main {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  margin-bottom: 18px;
+}
+
+
+.review_image_circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 230px;
+  height: 230px;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #eff8f3 0%,
+      #dcf0e4 100%
+    );
+
+  box-shadow:
+    0 12px 32px rgba(8, 139, 70, 0.10);
+
+  overflow: hidden;
+
+  animation:
+    reviewAppear 0.45s ease-out forwards;
+}
+
+
+.delivery_man_main img {
+  display: block;
+
+  width: 90%;
+  height: auto;
+
+  margin: 0;
+
+  object-fit: contain;
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+.review_status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  margin-bottom: 14px;
+
+  padding: 7px 13px;
+
+  border: 1px solid rgba(8, 139, 70, 0.12);
+  border-radius: 20px;
+
+  background: #eef8f3;
+
+  color: #08733e;
+
+  font-family: opensans_semibold, "Open Sans", Arial, sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+
+  letter-spacing: 0.2px;
+}
+
+
+.review_status_dot {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #088b46;
+
+  box-shadow:
+    0 0 0 4px rgba(8, 139, 70, 0.10);
+}
+
+
+/* =====================================================
+   HEADING
+===================================================== */
+
+.review_heading {
+  margin: 0 0 9px;
+
+  color: #163e2a;
+
+  font-family: opensans_semibold, "Open Sans", Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+
+/* =====================================================
+   REVIEW TEXT
+===================================================== */
+
+.review-text {
+  max-width: 410px;
+
+  margin: 0 0 22px;
+
+  padding: 0 8px;
+
+  color: #68746d;
+
+  font-family: opensans_regular, "Open Sans", Arial, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+
+  line-height: 21px;
+
+  text-align: center;
+}
+
+
+/* =====================================================
+   INFORMATION CARD
+===================================================== */
+
+.review_info_box {
+  display: flex;
+  align-items: flex-start;
+
+  width: 100%;
+
+  margin-bottom: 22px;
+  padding: 14px;
+
+  gap: 11px;
+
+  border: 1px solid #dcebe2;
+  border-radius: 14px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f7fbf9 0%,
+      #f0f8f4 100%
+    );
+
+  text-align: left;
+
+  box-sizing: border-box;
+}
+
+
+.review_info_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  background: #dff1e7;
+
+  color: #08733e;
+}
+
+
+.review_info_icon ion-icon {
+  font-size: 20px;
+}
+
+
+.review_info_content {
+  flex: 1;
+}
+
+
+.review_info_content strong {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #24543a;
+
+  font-family: opensans_semibold, "Open Sans", Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+
+.review_info_content p {
+  margin: 0;
+
+  color: #6d7771;
+
+  font-family: opensans_regular, "Open Sans", Arial, sans-serif;
+  font-size: 11px;
+
+  line-height: 17px;
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
 
 .ok-button {
-  background-color: #005528	;
-  color: #ffffff;
-  border: none;
-  border-radius: 30px;
-  padding: 14px 0;
-  width: 100%;
-  font-size: 16px;
-  cursor: pointer;
-  font-family: opensans_semibold!important;
+  position: relative;
 
-}
-
-
-//header
-ion-toolbar.ios.in-toolbar.hydrated {
-  background: #ffffff;
-  /* opacity: -0.2; */
-}
-.header {
-  display: flex
-;
-  justify-content: space-between;
+  display: flex;
   align-items: center;
-  padding: 0px 20px 0px 20px;
-}
-ion-header.undefined.header-undefined.header-translucent.header-collapse-none.header-translucent-undefined{
-  z-index: 99;
-  padding-top: 20px;
+  justify-content: center;
 
-}
-i.fa-solid.fa-arrow-left {
-  color: #005528	;
-  font-size: 18px;
-  font-weight: bold;
-}
-.col2 p {
-  margin: 0 !important;
-  padding: 0 !important;
-  font-family: "Open Sans", serif;
-  color: #005528;
+  width: 100%;
+  min-height: 50px;
+
+  padding: 13px 20px;
+
+  overflow: hidden;
+
+  border: none;
+  border-radius: 27px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #005528 0%,
+      #088b46 100%
+    );
+
+  color: #ffffff;
+
+  font-family: opensans_semibold, "Open Sans", Arial, sans-serif !important;
+  font-size: 15px;
   font-weight: 600;
+
+  letter-spacing: 0.2px;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 18px rgba(8, 139, 70, 0.20);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.2s ease;
 }
-@supports ((-webkit-backdrop-filter: blur(0)) or (backdrop-filter: blur(0))) {
-  .header-translucent-ios ion-toolbar {
-      --opacity: -0.2!important;
-  }
+
+
+.ok-button::before {
+  content: '';
+
+  position: absolute;
+
+  top: -100%;
+  left: -20%;
+
+  width: 30%;
+  height: 300%;
+
+  background: rgba(255, 255, 255, 0.10);
+
+  transform: rotate(25deg);
+
+  pointer-events: none;
 }
-ion-header.ios.header-ios.header-translucent.header-collapse-none.header-translucent-ios.hydrated {
-  padding-top: 14px !important;
+
+
+.ok-button:active {
+  transform: scale(0.985);
+
+  box-shadow:
+    0 4px 10px rgba(8, 139, 70, 0.14);
 }
-img.otplogo {
-  width: 50%;
-}
+
+
+/* =====================================================
+   GLOBAL LINK
+===================================================== */
+
 a {
-  color: white;
+  color: #ffffff;
+
   text-decoration: none;
 }
 
+
+/* =====================================================
+   ANIMATION
+===================================================== */
+
+@keyframes reviewAppear {
+
+  from {
+    transform: translateY(10px) scale(0.96);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+}
+
+
+/* =====================================================
+   SHORT MOBILE
+===================================================== */
+
+@media screen and (max-height: 720px) {
+
+  .welcome_main {
+    justify-content: flex-start;
+
+    padding-top: 18px;
+    padding-bottom: 25px;
+  }
+
+
+  .logo_section {
+    margin-bottom: 12px;
+  }
+
+
+  img.otplogo {
+    width: 105px;
+  }
+
+
+  .review_image_circle {
+    width: 170px;
+    height: 170px;
+  }
+
+
+  .delivery_man_main {
+    margin-bottom: 12px;
+  }
+
+
+  .review_heading {
+    font-size: 19px;
+  }
+
+
+  .review-text {
+    margin-bottom: 15px;
+
+    font-size: 12px;
+
+    line-height: 18px;
+  }
+
+
+  .review_info_box {
+    margin-bottom: 15px;
+  }
+
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media screen and (min-width: 600px) {
+
+  .content_welcome {
+    max-width: 520px;
+  }
+
+
+  img.otplogo {
+    width: 150px;
+  }
+
+
+  .review_image_circle {
+    width: 270px;
+    height: 270px;
+  }
+
+
+  .review_heading {
+    font-size: 26px;
+  }
+
+
+  .review-text {
+    max-width: 460px;
+
+    font-size: 14px;
+
+    line-height: 23px;
+  }
+
+
+  .review_info_content strong {
+    font-size: 13px;
+  }
+
+
+  .review_info_content p {
+    font-size: 12px;
+
+    line-height: 18px;
+  }
+
+
+  .ok-button {
+    max-width: 430px;
+
+    font-size: 16px;
+  }
+
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .review_image_circle {
+    animation: none;
+  }
+
+
+  .back_arrow_div,
+  .ok-button {
+    transition: none;
+  }
+
+}

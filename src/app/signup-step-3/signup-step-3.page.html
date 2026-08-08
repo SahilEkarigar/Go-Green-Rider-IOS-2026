@@ -1,158 +1,318 @@
 <ion-header class="ion-no-border bg_white">
-  <div class="container my_common_header" style="margin-top: 0px;">
+
+  <div class="container my_common_header">
+
     <ion-row>
-      <!--<ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
-        <div (click)="goBack()" class="back_arrow_div">
-          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+
+      <ion-col
+        size="12"
+        class="common_header">
+
+        <div
+          class="back_arrow_div"
+          (click)="goBack()">
+
+          <i
+            class="fa fa-chevron-left"
+            aria-hidden="true">
+          </i>
+
         </div>
-      </ion-col>-->
+
+      </ion-col>
+
     </ion-row>
+
   </div>
+
 </ion-header>
 
-<ion-content class="ioncontent container">
+
+<ion-content [fullscreen]="true" class="ioncontent">
+
   <div class="container">
-    <div class="row signup_steps_row" style="padding-bottom: 20px;">
-      <div class="signup_steps">
-        <ion-row>
-          <ion-col size="12">
-            <h2 class="text-center">Sign Up</h2>
 
-            <div class="step_counts">
-              <div class="stepper">
-                <div class="step active">
-                  <div class="circle">1</div>
-                </div>
+    <ion-row class="signup_steps_row">
 
-                <div class="step active">
-                  <div class="circle">2</div>
-                </div>
+      <ion-col size="12">
 
-                <div class="step active">
-                  <div class="circle">3</div>
-                </div>
+        <div class="signup_steps">
 
-                <div class="step active">
-                  <div class="circle">4</div>
-                </div>
+          <!-- Heading -->
+          <h2 class="text-center">
+            Sign Up
+          </h2>
+
+
+          <!-- Stepper -->
+          <div class="step_counts">
+
+            <div class="stepper">
+
+              <div class="step active">
+                <div class="circle">1</div>
               </div>
+
+              <div class="step active">
+                <div class="circle">2</div>
+              </div>
+
+              <div class="step active">
+                <div class="circle">3</div>
+              </div>
+
+              <div class="step active">
+                <div class="circle">4</div>
+              </div>
+
             </div>
 
-            <h4 class="text-center mt-2">
-              Bank Details (for Payouts)
-            </h4>
+          </div>
 
-            <div class="form_box">
-              <!-- Account Holder Name -->
-              <div class="form_input_box">
-                <label for="account_holder_name">
-                  Account Holder Name
-                </label>
 
-                <input type="text" [(ngModel)]="account_holder_name" (input)="clearFieldError('accountHolderName')"
-                  [ngClass]="{
-                    'input-error': isAccount_holder_nameInvalid
-                  }" id="account_holder_name" name="account_holder_name" class="form-control"
-                  placeholder="Enter Account Holder Name" maxlength="100" autocomplete="name" />
+          <h4 class="text-center mt-2">
+            Bank Details (for Payouts)
+          </h4>
 
-                <div *ngIf="isAccount_holder_nameInvalid" class="error-message mt-1">
-                  {{ accountHolderNameErrorMessage }}
-                </div>
+
+          <!-- Form -->
+          <div class="form_box">
+
+
+            <!-- Account Holder Name -->
+            <div class="form_input_box">
+
+              <label for="account_holder_name">
+                Account Holder Name
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="account_holder_name"
+                (input)="clearFieldError('accountHolderName')"
+                [ngClass]="{
+                  'input-error': isAccount_holder_nameInvalid
+                }"
+                id="account_holder_name"
+                name="account_holder_name"
+                class="form-control"
+                placeholder="Enter Account Holder Name"
+                maxlength="100"
+                autocomplete="name">
+
+              <div
+                *ngIf="isAccount_holder_nameInvalid"
+                class="error-message mt-1">
+
+                {{ accountHolderNameErrorMessage }}
+
               </div>
 
-              <!-- Institution Number -->
-              <div class="form_input_box">
-                <label for="institution_number">
-                  Institution Number
-                </label>
-
-                <input type="text" [(ngModel)]="institution_number" (input)="onNumericInput($event, 'institution')"
-                  [ngClass]="{
-                    'input-error': isInstitution_numberInvalid
-                  }" id="institution_number" name="institution_number" class="form-control"
-                  placeholder="Enter 3-digit Institution Number" inputmode="numeric" maxlength="3" autocomplete="off" />
-
-                <div *ngIf="isInstitution_numberInvalid" class="error-message mt-1">
-                  {{ institutionNumberErrorMessage }}
-                </div>
-              </div>
-
-              <!-- Transit Number -->
-              <div class="form_input_box">
-                <label for="transit_number">
-                  Transit Number
-                </label>
-
-                <input type="text" [(ngModel)]="transit_number" (input)="onNumericInput($event, 'transit')" [ngClass]="{
-                    'input-error': isTransit_numberInvalid
-                  }" id="transit_number" name="transit_number" class="form-control"
-                  placeholder="Enter 5-digit Transit Number" inputmode="numeric" maxlength="5" autocomplete="off" />
-
-                <div *ngIf="isTransit_numberInvalid" class="error-message mt-1">
-                  {{ transitNumberErrorMessage }}
-                </div>
-              </div>
-
-              <!-- Account Number -->
-              <div class="form_input_box">
-                <label for="account_number">
-                  Account Number
-                </label>
-
-                <input type="text" [(ngModel)]="account_number" (input)="onNumericInput($event, 'account')" [ngClass]="{
-                    'input-error': isAccount_numberInvalid
-                  }" id="account_number" name="account_number" class="form-control"
-                  placeholder="Enter 7–12 digit Account Number" inputmode="numeric" maxlength="12" autocomplete="off" />
-
-                <div *ngIf="isAccount_numberInvalid" class="error-message mt-1">
-                  {{ accountNumberErrorMessage }}
-                </div>
-              </div>
-
-              <!-- Optional Void Cheque -->
-              <div class="form_input_box">
-                <label for="void_cheque">
-                  Void Cheque or Direct Deposit Form
-                  <span class="optional_text">(Optional)</span>
-                </label>
-
-                <input type="file" (change)="onFileSelected($event)" [ngClass]="{
-                    'input-error': isVoid_chequeInvoice
-                  }" id="void_cheque" name="void_cheque" class="form-control"
-                  accept="image/jpeg,image/png,image/webp,application/pdf" />
-
-                <div *ngIf="isVoid_chequeInvoice" class="error-message mt-1">
-                  {{ voidChequeErrorMessage }}
-                </div>
-              </div>
             </div>
 
-            <div>
-              <p *ngIf="generalError" class="error-message">
-                {{ generalError }}
-              </p>
+
+            <!-- Institution Number -->
+            <div class="form_input_box">
+
+              <label for="institution_number">
+                Institution Number
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="institution_number"
+                (input)="onNumericInput($event, 'institution')"
+                [ngClass]="{
+                  'input-error': isInstitution_numberInvalid
+                }"
+                id="institution_number"
+                name="institution_number"
+                class="form-control"
+                placeholder="Enter 3-digit Institution Number"
+                inputmode="numeric"
+                maxlength="3"
+                autocomplete="off">
+
+              <div
+                *ngIf="isInstitution_numberInvalid"
+                class="error-message mt-1">
+
+                {{ institutionNumberErrorMessage }}
+
+              </div>
+
             </div>
-          </ion-col>
-        </ion-row>
-      </div>
-    </div>
+
+
+            <!-- Transit Number -->
+            <div class="form_input_box">
+
+              <label for="transit_number">
+                Transit Number
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="transit_number"
+                (input)="onNumericInput($event, 'transit')"
+                [ngClass]="{
+                  'input-error': isTransit_numberInvalid
+                }"
+                id="transit_number"
+                name="transit_number"
+                class="form-control"
+                placeholder="Enter 5-digit Transit Number"
+                inputmode="numeric"
+                maxlength="5"
+                autocomplete="off">
+
+              <div
+                *ngIf="isTransit_numberInvalid"
+                class="error-message mt-1">
+
+                {{ transitNumberErrorMessage }}
+
+              </div>
+
+            </div>
+
+
+            <!-- Account Number -->
+            <div class="form_input_box">
+
+              <label for="account_number">
+                Account Number
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="account_number"
+                (input)="onNumericInput($event, 'account')"
+                [ngClass]="{
+                  'input-error': isAccount_numberInvalid
+                }"
+                id="account_number"
+                name="account_number"
+                class="form-control"
+                placeholder="Enter 7–12 digit Account Number"
+                inputmode="numeric"
+                maxlength="12"
+                autocomplete="off">
+
+              <div
+                *ngIf="isAccount_numberInvalid"
+                class="error-message mt-1">
+
+                {{ accountNumberErrorMessage }}
+
+              </div>
+
+            </div>
+
+
+            <!-- Void Cheque -->
+            <div class="form_input_box">
+
+              <label for="void_cheque">
+
+                Void Cheque or Direct Deposit Form
+
+                <span class="optional_text">
+                  (Optional)
+                </span>
+
+              </label>
+
+              <input
+                type="file"
+                (change)="onFileSelected($event)"
+                [ngClass]="{
+                  'input-error': isVoid_chequeInvoice
+                }"
+                id="void_cheque"
+                name="void_cheque"
+                class="form-control"
+                accept="image/jpeg,image/png,image/webp,application/pdf">
+
+              <div class="upload_note">
+                JPG, PNG, WEBP or PDF. Maximum file size 5 MB.
+              </div>
+
+              <div
+                *ngIf="isVoid_chequeInvoice"
+                class="error-message mt-1">
+
+                {{ voidChequeErrorMessage }}
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <!-- General Error -->
+          <div
+            *ngIf="generalError"
+            class="general_error_box">
+
+            <p class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+        </div>
+
+      </ion-col>
+
+    </ion-row>
+
   </div>
+
 </ion-content>
 
-<ion-footer class="ion-no-border bg_white">
-  <div class="container" style="padding: 10px 15px;">
+
+<!-- Footer -->
+<ion-footer class="ion-no-border">
+
+  <div class="container">
+
     <ion-row>
-      <ion-col size="12" class="ion-no-padding">
+
+      <ion-col
+        size="12"
+        class="common_footer">
+
         <div class="button_group">
-          <button type="button" class="btn theme_button_light mr_10" (click)="skip_Step()">
+
+          <!-- Skip -->
+          <button
+            type="button"
+            class="btn theme_button_light"
+            (click)="skip_Step()">
+
             Skip
+
           </button>
 
-          <button type="button" class="btn theme_button" (click)="NextStep()">
+
+          <!-- Submit -->
+          <button
+            type="button"
+            class="btn theme_button"
+            (click)="NextStep()">
+
             Submit
+
           </button>
+
         </div>
+
       </ion-col>
+
     </ion-row>
+
   </div>
+
 </ion-footer>

@@ -1,119 +1,522 @@
-.welcome_second {
-    background-image: url(../../assets/welcome/white_ellipse_square.webp);
-    background-size: 140%;
-    background-position: top center;
-    background-repeat: no-repeat;
-    position: fixed;
-    /* top: -137px; */
-    padding-top: 180px;
-    bottom: 0;
-    width: 100%;
-    // position: relative;
+/* =====================================================
+   Ionic Content
+===================================================== */
+
+ion-content {
+  --background: #088b46;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --padding-start: 0;
+  --padding-end: 0;
 }
+
+
+/* =====================================================
+   Main Welcome Screen
+===================================================== */
+
+.welcome_main {
+  position: relative;
+
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 650px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #056b36 0%,
+      #077f40 48%,
+      #088b46 100%
+    );
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   Ingredient Background
+===================================================== */
+
 .welcome_ingredients {
-    // margin-top: 50px;
-    width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  display: block;
+
+  width: 100%;
+  height: auto;
+
+  z-index: 1;
+
+  pointer-events: none;
+
+  animation: ingredientsFade 0.5s ease-out forwards;
 }
-.delivery_man {
-    width: 80%;
+
+
+/* =====================================================
+   Bottom White Section
+===================================================== */
+
+.welcome_second {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+
+  padding: 190px 0 18px;
+
+  background-color: #ffffff;
+
+  border-radius: 48% 48% 0 0 / 9% 9% 0 0;
+
+  box-shadow:
+    0 -15px 35px rgba(0, 0, 0, 0.08);
+
+  z-index: 2;
 }
+
+
+/* Soft curve / glow above white section */
+
+.welcome_second::before {
+  content: '';
+
+  position: absolute;
+  top: -18px;
+  left: -5%;
+
+  width: 110%;
+  height: 80px;
+
+  background: #ffffff;
+
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+
+  box-shadow:
+    0 -10px 24px rgba(0, 0, 0, 0.05);
+
+  z-index: -1;
+}
+
+
+/* =====================================================
+   Delivery Man
+===================================================== */
+
 .delivery_man_main {
-    text-align: center;
-    position: absolute;
-    /* top: 0; */
-    width: 100%;
-    bottom: 58%;
-    animation: leafZoom 1.5s ease-out forwards;
+  position: absolute;
+
+  left: 0;
+  bottom: 57%;
+
+  width: 100%;
+
+  text-align: center;
+
+  z-index: 3;
+
+  pointer-events: none;
+
+  animation: leafZoom 0.45s ease-out forwards;
 }
-@keyframes leafZoom {
-    0% {
-      transform: scale(0);
-      opacity: 0;
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
+
+
+.delivery_man {
+  display: block;
+
+  width: 82%;
+  max-width: 390px;
+  height: auto;
+
+  margin: 0 auto;
+
+  filter: drop-shadow(
+    0 14px 10px rgba(0, 0, 0, 0.13)
+  );
+}
+
+
+/* =====================================================
+   Bottom Content
+===================================================== */
+
 .content_welcome {
-    padding: 0px 15px 0px 15px;
+  position: relative;
+
+  width: 100%;
+
+  padding: 0 24px;
+
+  box-sizing: border-box;
+
+  z-index: 4;
 }
+
+
+/* =====================================================
+   Order In Seconds Image
+===================================================== */
+
+.order_in_seconds_main {
+  width: 100%;
+
+  margin-bottom: 12px;
+}
+
+
+.order_in_seconds {
+  display: block;
+
+  width: 74%;
+  max-width: 290px;
+  height: auto;
+
+  margin: 0 auto;
+}
+
+
+/* =====================================================
+   Login Button
+===================================================== */
+
+.login_welcome {
+  width: 100%;
+
+  margin-top: 6px;
+}
+
+
 .login_welcome a {
-    margin-top: 15px;
-    font-family: opensans_semibold;
-    text-decoration: none;
-    border-radius: 30px;
-    display: block;
-    padding: 13px;
-    width: 100%;
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 50px;
+
+  padding: 13px 20px;
+
+  box-sizing: border-box;
+
+  border-radius: 30px;
+
+  font-family: opensans_semibold;
+  font-size: 16px;
+  font-weight: 600;
+
+  letter-spacing: 0.2px;
+
+  text-decoration: none;
+
+  cursor: pointer;
+
+  background:
+    linear-gradient(
+      135deg,
+      #056b36 0%,
+      #088b46 100%
+    );
+
+  box-shadow:
+    0 8px 18px rgba(8, 139, 70, 0.22);
+
+  overflow: hidden;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
+
+
+/* Subtle light effect */
+
+.login_welcome a::before {
+  content: '';
+
+  position: absolute;
+
+  top: -70%;
+  left: -25%;
+
+  width: 35%;
+  height: 240%;
+
+  background: rgba(255, 255, 255, 0.12);
+
+  transform: rotate(25deg);
+
+  pointer-events: none;
+}
+
+
+.login_welcome a:active {
+  transform: scale(0.98);
+
+  box-shadow:
+    0 4px 10px rgba(8, 139, 70, 0.18);
+}
+
+
+/* =====================================================
+   Register Section
+===================================================== */
+
+.sign_up_welcome {
+  width: 100%;
+
+  margin-top: 16px !important;
+}
+
+
 .sign_up_welcome a {
-    margin-top: 15px;
-    font-family: opensans_semibold;
-    text-decoration: none;
-    font-size: 14px;
+  margin: 0;
+
+  font-family: opensans_semibold;
+  font-size: 14px;
+
+  line-height: 22px;
+
+  text-decoration: none;
 }
-.welcome_footer p {
-    font-size: 14px !important;
-    font-weight: 500;
+
+
+.sign_up_welcome span {
+  display: inline-block;
+
+  margin-left: 2px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
 }
+
+
+.sign_up_welcome span:active {
+  opacity: 0.7;
+
+  transform: scale(0.98);
+}
+
+
+/* =====================================================
+   Footer
+===================================================== */
+
 .welcome_footer {
-    margin-top: 20px;
-}
-@keyframes leafMove {
-    from {
-        transform: translateX(-900px); /* Start from left */
-    }
-    to {
-        transform: translateX(0); /* Move to normal position */
-    }
+  margin-top: 18px;
+
+  padding-bottom: max(
+    0px,
+    env(safe-area-inset-bottom)
+  );
 }
 
 
+.welcome_footer p {
+  margin: 0;
+
+  font-size: 13px !important;
+  font-weight: 400;
+
+  line-height: 20px;
+
+  letter-spacing: 0.05px;
+}
 
 
+.welcome_footer a {
+  font-weight: 500;
+}
 
 
+/* =====================================================
+   Animations
+===================================================== */
 
-@media (min-width: 600px){
+@keyframes leafZoom {
 
-    .delivery_man{
-        width: 74%;
-    }
-    .login_welcome a {
-        width: 50%;
-        font-size: 17px;
-    }
+  from {
+    transform: translateY(12px) scale(0.94);
+    opacity: 0;
+  }
 
-    .welcome_footer {
-   
-        text-align: center;
-    }
-    .welcome_second {
-     
-        padding-top: 370px;
-        
-        padding-bottom: 74px;
-        
-    }
-    img.order_in_seconds {
-        width: 50%;
-    }
-    .welcome_footer p {
-        font-size: 17px !important;
-      
-    }
-    .sign_up_welcome a {
-  
-        font-size: 16px;
-    }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 
 }
 
-@media (min-width: 883px){
-    .delivery_man{
-        width: 60%;
-    }
 
-    
+@keyframes ingredientsFade {
+
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
+
+}
+
+
+/* =====================================================
+   Smaller Phones
+===================================================== */
+
+@media screen and (max-height: 720px) {
+
+  .welcome_second {
+    padding-top: 145px;
+    padding-bottom: 12px;
+  }
+
+  .delivery_man_main {
+    bottom: 60%;
+  }
+
+  .delivery_man {
+    width: 70%;
+    max-width: 310px;
+  }
+
+  .order_in_seconds {
+    width: 64%;
+    max-width: 240px;
+  }
+
+  .login_welcome a {
+    min-height: 46px;
+
+    padding: 11px 18px;
+  }
+
+  .sign_up_welcome {
+    margin-top: 10px !important;
+  }
+
+  .welcome_footer {
+    margin-top: 12px;
+  }
+
+  .welcome_footer p {
+    font-size: 12px !important;
+    line-height: 18px;
+  }
+
+}
+
+
+/* =====================================================
+   Tablet
+===================================================== */
+
+@media screen and (min-width: 600px) {
+
+  .welcome_second {
+    padding-top: 330px;
+    padding-bottom: 45px;
+  }
+
+  .delivery_man_main {
+    bottom: 52%;
+  }
+
+  .delivery_man {
+    width: 65%;
+    max-width: 520px;
+  }
+
+  .content_welcome {
+    max-width: 620px;
+
+    margin: 0 auto;
+
+    padding: 0 30px;
+  }
+
+  .order_in_seconds {
+    width: 50%;
+    max-width: 330px;
+  }
+
+  .login_welcome a {
+    width: 70%;
+    max-width: 480px;
+
+    min-height: 54px;
+
+    margin-left: auto;
+    margin-right: auto;
+
+    font-size: 17px;
+  }
+
+  .sign_up_welcome a {
+    font-size: 16px;
+  }
+
+  .welcome_footer {
+    text-align: center;
+  }
+
+  .welcome_footer p {
+    font-size: 15px !important;
+    line-height: 22px;
+  }
+
+}
+
+
+/* =====================================================
+   Larger Tablet / Desktop
+===================================================== */
+
+@media screen and (min-width: 883px) {
+
+  .delivery_man {
+    width: 52%;
+    max-width: 560px;
+  }
+
+  .content_welcome {
+    max-width: 680px;
+  }
+
+}
+
+
+/* =====================================================
+   Reduce Motion Accessibility
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .delivery_man_main,
+  .welcome_ingredients {
+    animation: none;
+  }
+
+  .login_welcome a,
+  .sign_up_welcome span {
+    transition: none;
+  }
+
+}
+
+.text_grey{
+  text-align: center;
 }

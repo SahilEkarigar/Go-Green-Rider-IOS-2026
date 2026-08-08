@@ -1,199 +1,453 @@
 <ion-header class="ion-no-border bg_white">
+
   <div class="container my_common_header" style="margin-top: 0px;">
+
     <ion-row>
-      <ion-col size="12" class="common_header" style="padding-bottom: 10px !important;">
-        <div (click)="goBack()" class="back_arrow_div">
-          <i class="fa fa-chevron-left" aria-hidden="true"></i>
+
+      <ion-col
+        size="12"
+        class="common_header">
+
+        <div
+          class="back_arrow_div"
+          (click)="goBack()">
+
+          <i
+            class="fa fa-chevron-left"
+            aria-hidden="true">
+          </i>
+
         </div>
+
       </ion-col>
+
     </ion-row>
+
   </div>
+
 </ion-header>
 
+
 <ion-content class="ioncontent container">
+
   <div class="container">
-    <div class="row signup_steps_row" style="padding-bottom: 20px;">
+
+    <div class="row signup_steps_row">
+
       <div class="signup_steps">
+
+        <!-- =========================================
+             PAGE HEADING
+        ========================================== -->
+
         <ion-row>
+
           <ion-col size="12">
-            <h2 class="text-center">Sign Up</h2>
 
-            <div class="step_counts">
-              <div class="stepper">
-                <div class="step active">
-                  <div class="circle">1</div>
-                </div>
+            <h2 class="text-center">
+              Sign Up
+            </h2>
 
-                <div class="step">
-                  <div class="circle">2</div>
-                </div>
+            <h4 class="text-center">
+              Create your rider account
+            </h4>
 
-                <div class="step">
-                  <div class="circle">3</div>
-                </div>
-
-                <div class="step">
-                  <div class="circle">4</div>
-                </div>
-              </div>
-            </div>
-
-            <h4 class="text-center mt-2">Basic Details</h4>
-
-            <form class="form_box" novalidate>
-              <!-- First Name and Last Name -->
-              <div class="form_input_box">
-                <ion-row class="ion-no-padding">
-                  <ion-col size="6" class="ion-no-padding" style="padding-right: 8px;">
-                    <label for="fname">First Name</label>
-
-                    <input type="text" [(ngModel)]="fname" [ngClass]="{'input-error': isFnameInvalid}"
-                      [attr.aria-invalid]="isFnameInvalid" id="fname" name="fname" class="form-control"
-                      placeholder="Enter First Name" autocomplete="given-name"
-                      (ngModelChange)="clearFieldError('fname')">
-
-                    <div *ngIf="errorField === 'fname' && generalError" class="error-message mt-1">
-                      {{ generalError }}
-                    </div>
-                  </ion-col>
-
-                  <ion-col size="6" class="ion-no-padding" style="padding-left: 8px;">
-                    <label for="lname">Last Name</label>
-
-                    <input type="text" [(ngModel)]="lname" [ngClass]="{'input-error': isLnameInvalid}"
-                      [attr.aria-invalid]="isLnameInvalid" id="lname" name="lname" class="form-control"
-                      placeholder="Enter Last Name" autocomplete="family-name"
-                      (ngModelChange)="clearFieldError('lname')">
-
-                    <div *ngIf="errorField === 'lname' && generalError" class="error-message mt-1">
-                      {{ generalError }}
-                    </div>
-                  </ion-col>
-                </ion-row>
-              </div>
-
-              <!-- Email -->
-              <div class="form_input_box">
-                <label for="email">Email</label>
-
-                <input type="email" [(ngModel)]="email" [ngClass]="{'input-error': isEmailInvalid}"
-                  [attr.aria-invalid]="isEmailInvalid" id="email" name="email" class="form-control"
-                  placeholder="Enter Email" autocomplete="email" inputmode="email" (blur)="onEmailBlur()"
-                  (ngModelChange)="clearFieldError('email')">
-
-                <div *ngIf="errorField === 'email' && generalError" class="error-message mt-1">
-                  {{ generalError }}
-                </div>
-              </div>
-
-              <!-- Mobile Number -->
-              <div class="form_input_box">
-                <label for="phone">Mobile No</label>
-
-                <div class="prefix_phone_box">
-                  <select [(ngModel)]="prefix" id="prefix" name="prefix" class="form-control">
-                    <option value="+1">+1</option>
-                  </select>
-
-                  <input type="tel" [(ngModel)]="phone" [ngClass]="{'input-error': isPhoneInvalid}"
-                    [attr.aria-invalid]="isPhoneInvalid" id="phone" name="phone" class="form-control"
-                    placeholder="Enter 10-digit Mobile No" maxlength="10" minlength="10" pattern="[0-9]{10}"
-                    inputmode="numeric" autocomplete="tel-national" (input)="onPhoneInput($event)"
-                    (keydown)="allowOnlyNumbers($event)">
-                </div>
-
-                <div *ngIf="errorField === 'phone' && generalError" class="error-message mt-1">
-                  {{ generalError }}
-                </div>
-              </div>
-
-              <!-- Password -->
-              <div class="form_input_box">
-                <label for="password">Password</label>
-
-                <div class="psw_box">
-                  <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password"
-                    [ngClass]="{'input-error': isPSWInvalid}" [attr.aria-invalid]="isPSWInvalid" id="password"
-                    name="password" class="form-control" placeholder="Enter Password" autocomplete="new-password"
-                    (ngModelChange)="clearFieldError('password')">
-
-                  <span class="eye_box" role="button" tabindex="0" (click)="togglePassword()">
-                    <i class="fa" [ngClass]="showPassword ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
-                  </span>
-                </div>
-
-                <div *ngIf="errorField === 'password' && generalError" class="error-message mt-1">
-                  {{ generalError }}
-                </div>
-              </div>
-
-              <!-- Confirm Password -->
-              <div class="form_input_box">
-                <label for="cpassword">Confirm Password</label>
-
-                <div class="psw_box">
-                  <input [type]="showCPassword ? 'text' : 'password'" [(ngModel)]="cpassword"
-                    [ngClass]="{'input-error': isCPSWInvalid}" [attr.aria-invalid]="isCPSWInvalid" id="cpassword"
-                    name="cpassword" class="form-control" placeholder="Enter Confirm Password"
-                    autocomplete="new-password" (ngModelChange)="clearFieldError('cpassword')">
-
-                  <span class="eye_box" role="button" tabindex="0" (click)="toggleCPassword()">
-                    <i class="fa" [ngClass]="showCPassword ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"></i>
-                  </span>
-                </div>
-
-                <div *ngIf="errorField === 'cpassword' && generalError" class="error-message mt-1">
-                  {{ generalError }}
-                </div>
-              </div>
-            </form>
-
-            <!-- API or General Error -->
-            <div *ngIf="errorField === 'general' && generalError" class="error-message mt-1 text-center">
-              {{ generalError }}
-            </div>
           </ion-col>
+
         </ion-row>
+
+
+        <!-- =========================================
+             STEPPER
+        ========================================== -->
+
+        <div class="step_counts">
+
+          <div class="stepper">
+
+            <div class="step active">
+
+              <div class="circle">
+                1
+              </div>
+
+            </div>
+
+
+            <div class="step">
+
+              <div class="circle">
+                2
+              </div>
+
+            </div>
+
+
+            <div class="step">
+
+              <div class="circle">
+                3
+              </div>
+
+            </div>
+
+
+            <div class="step">
+
+              <div class="circle">
+                4
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- =========================================
+             FORM
+        ========================================== -->
+
+        <div class="form_box">
+
+
+          <!-- =========================================
+               FIRST NAME
+          ========================================== -->
+
+          <div class="form_input_box">
+
+            <label for="fname">
+              First Name
+            </label>
+
+            <input
+              id="fname"
+              name="fname"
+              type="text"
+              class="form-control"
+              [class.input-error]="isFnameInvalid"
+              [(ngModel)]="fname"
+              (input)="clearFieldError('fname')"
+              placeholder="Enter your first name"
+              autocomplete="given-name">
+
+            <p
+              *ngIf="errorField === 'fname' && generalError"
+              class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               LAST NAME
+          ========================================== -->
+
+          <div class="form_input_box">
+
+            <label for="lname">
+              Last Name
+            </label>
+
+            <input
+              id="lname"
+              name="lname"
+              type="text"
+              class="form-control"
+              [class.input-error]="isLnameInvalid"
+              [(ngModel)]="lname"
+              (input)="clearFieldError('lname')"
+              placeholder="Enter your last name"
+              autocomplete="family-name">
+
+            <p
+              *ngIf="errorField === 'lname' && generalError"
+              class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               EMAIL
+          ========================================== -->
+
+          <div class="form_input_box">
+
+            <label for="email">
+              Email Address
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              class="form-control"
+              [class.input-error]="isEmailInvalid"
+              [(ngModel)]="email"
+              (input)="clearFieldError('email')"
+              (blur)="onEmailBlur()"
+              placeholder="Enter your email address"
+              autocomplete="email"
+              inputmode="email">
+
+            <p
+              *ngIf="errorField === 'email' && generalError"
+              class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               MOBILE NUMBER
+          ========================================== -->
+
+          <div class="form_input_box">
+
+            <label for="phone">
+              Mobile Number
+            </label>
+
+            <div class="prefix_phone_box">
+
+              <select
+                name="prefix"
+                [(ngModel)]="prefix"
+                aria-label="Country code">
+
+                <option value="+1">
+                  +1
+                </option>
+
+              </select>
+
+
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                class="form-control"
+                [class.input-error]="isPhoneInvalid"
+                [(ngModel)]="phone"
+                (input)="onPhoneInput($event)"
+                (keydown)="allowOnlyNumbers($event)"
+                placeholder="Enter 10 digit mobile number"
+                autocomplete="tel"
+                inputmode="numeric"
+                maxlength="10">
+
+            </div>
+
+            <p class="note_id">
+              Enter a valid 10 digit mobile number.
+            </p>
+
+            <p
+              *ngIf="errorField === 'phone' && generalError"
+              class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               PASSWORD
+          ========================================== -->
+
+          <div class="form_input_box">
+
+            <label for="password">
+              Password
+            </label>
+
+            <div class="psw_box">
+
+              <input
+                id="password"
+                name="password"
+                [type]="showPassword ? 'text' : 'password'"
+                class="form-control"
+                [class.input-error]="isPSWInvalid"
+                [(ngModel)]="password"
+                (input)="clearFieldError('password')"
+                placeholder="Enter your password"
+                autocomplete="new-password">
+
+              <button
+                type="button"
+                class="eye_box"
+                (click)="togglePassword()"
+                [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+
+                <i
+                  class="fa"
+                  [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                  aria-hidden="true">
+                </i>
+
+              </button>
+
+            </div>
+
+            <p
+              *ngIf="errorField === 'password' && generalError"
+              class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               CONFIRM PASSWORD
+          ========================================== -->
+
+          <div class="form_input_box">
+
+            <label for="cpassword">
+              Confirm Password
+            </label>
+
+            <div class="psw_box">
+
+              <input
+                id="cpassword"
+                name="cpassword"
+                [type]="showCPassword ? 'text' : 'password'"
+                class="form-control"
+                [class.input-error]="isCPSWInvalid"
+                [(ngModel)]="cpassword"
+                (input)="clearFieldError('cpassword')"
+                placeholder="Confirm your password"
+                autocomplete="new-password">
+
+              <button
+                type="button"
+                class="eye_box"
+                (click)="toggleCPassword()"
+                [attr.aria-label]="showCPassword ? 'Hide password' : 'Show password'">
+
+                <i
+                  class="fa"
+                  [ngClass]="showCPassword ? 'fa-eye-slash' : 'fa-eye'"
+                  aria-hidden="true">
+                </i>
+
+              </button>
+
+            </div>
+
+            <p
+              *ngIf="errorField === 'cpassword' && generalError"
+              class="error-message">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               GENERAL API ERROR
+          ========================================== -->
+
+          <div
+            *ngIf="errorField === 'general' && generalError"
+            class="form_input_box">
+
+            <p class="error-message text-center">
+              {{ generalError }}
+            </p>
+
+          </div>
+
+
+          <!-- =========================================
+               CONTINUE BUTTON
+          ========================================== -->
+
+          <div class="button_group">
+
+            <button
+              type="button"
+              class="theme_button"
+              [disabled]="loading"
+              (click)="NextStep()">
+
+              <span *ngIf="!loading">
+                Continue
+              </span>
+
+              <span *ngIf="loading">
+                Please wait...
+              </span>
+
+            </button>
+
+          </div>
+
+
+          <!-- =========================================
+               GOOGLE LOGIN
+          ========================================== -->
+
+        <!--  <div style="margin-top: 15px;">
+
+            <a
+              href="javascript:void(0)"
+              class="google_signin_button"
+              (click)="loginOrSignupWithGoogle()">
+
+              <img
+                src="../../assets/welcome/google.svg"
+                class="google_logo"
+                alt="Google"
+                loading="eager"
+                decoding="async">
+
+              Continue with Google
+
+            </a>
+
+          </div>-->
+
+
+          <!-- =========================================
+               APPLE LOGIN
+          ========================================== -->
+
+          <!--<div *ngIf="isAppleAvailable">
+
+            <a
+              href="javascript:void(0)"
+              class="apple_signin_button"
+              (click)="appleSignIn()">
+
+              <img
+                src="../../assets/welcome/apple.svg"
+                class="google_logo"
+                alt="Apple"
+                loading="eager"
+                decoding="async">
+
+              Continue with Apple
+
+            </a>
+
+          </div>-->
+
+        </div>
+
       </div>
+
     </div>
+
   </div>
+
 </ion-content>
-
-<ion-footer class="ion-no-border bg_white">
-  <div class="container" style="padding: 10px 15px;">
-    <ion-row class="ion-align-items-center">
-      <!--
-      <ion-col
-        [size]="isAppleAvailable ? 6 : 12"
-        *ngIf="isAppleAvailable"
-        class="ion-no-padding"
-        style="padding-right: 6px;"
-      >
-        <div class="login_welcome d_flex justify_content_center flex_column">
-          <a
-            class="apple_signin_button"
-            (click)="appleSignIn()"
-            style="margin-top: 0px; height: 44px;"
-          >
-            <img
-              src="../../assets/welcome/apple.svg"
-              class="google_logo"
-              alt="Apple logo"
-            >
-            Apple Sign Up
-          </a>
-        </div>
-      </ion-col>
-      -->
-
-      <ion-col [size]="isAppleAvailable ? 6 : 12" class="ion-no-padding"
-        [style.padding-left]="isAppleAvailable ? '6px' : '0px'">
-        <div class="button_group">
-          <button type="button" class="btn theme_button" [disabled]="loading" (click)="NextStep()">
-            {{ loading ? 'Please wait...' : 'Next' }}
-          </button>
-        </div>
-      </ion-col>
-    </ion-row>
-  </div>
-</ion-footer>

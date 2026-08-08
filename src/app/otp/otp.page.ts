@@ -1,189 +1,501 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PostService } from '../services/post.service';
-import { Location } from '@angular/common';
-import { CommonModule } from '@angular/common';
-import { AuthserviceService } from '../services/authservice.service';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+
+import {
+  CommonModule,
+  Location
+} from '@angular/common';
+
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
+
+import {
+  IonicModule
+} from '@ionic/angular';
+
+import {
+  AuthserviceService
+} from '../services/authservice.service';
+
 
 @Component({
   selector: 'app-otp',
   templateUrl: './otp.page.html',
   styleUrls: ['./otp.page.scss'],
   standalone: true,
-  imports: [IonicModule, FormsModule, CommonModule],
+  imports: [
+    IonicModule,
+    CommonModule
+  ],
 })
-export class OtpPage implements OnInit {
+export class OtpPage implements OnInit, OnDestroy {
 
-  @ViewChild('otpContainer', { static: true }) otpContainer!: ElementRef;
   email: string = '';
-  timeLeft: number = 120; // 2 minutes in seconds
+
+  timeLeft: number = 120;
+
   timerDisplay: string = '02:00';
-  timer: any;
+
+  timer: ReturnType<typeof setInterval> | null = null;
+
   otpValue: string = '';
-  otpLength = 4; // Or 6 if needed
-  otpArray = Array(this.otpLength).fill(0);
-  otpDigits: string[] = new Array(this.otpLength).fill('');
-  canResend: boolean = false;
-  resendLoading: boolean = false;
+
+  otpDigits: string[] = [
+    '',
+    '',
+    '',
+    ''
+  ];
+
   generalError: string = '';
+
+  loading: boolean = false;
+
+  private errorTimer:
+    ReturnType<typeof setTimeout> | null = null;
+
 
   constructor(
     private route: ActivatedRoute,
     private location: Location,
-    private httpService: PostService,
     private router: Router,
     private authService: AuthserviceService
-  ) {
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
-      console.log('Received email:', this.email);
-      this.startTimer();
-    });
-  }
-  ngOnInit() { }
+  ) {}
 
-  moveToNext(event: any) {
-    const input = event.target;
-    const value = input.value;
-    if (!/^\d$/.test(value)) {
-      input.value = '';
-      return;
-    }
-    const otpInputs = document.querySelectorAll('.otp-input') as NodeListOf<HTMLInputElement>;
-    otpInputs.forEach((inp, index) => {
-      this.otpDigits[index] = inp.value;
-    });
-    this.updateOtpValue();
-    const nextInput = input.nextElementSibling;
-    if (nextInput && value !== '') {
-      nextInput.focus();
-    }
-  }
 
-  handleBackspace(event: any) {
-    const input = event.target;
-    if (event.key === 'Backspace' && input.value === '') {
-      const prevInput = input.previousElementSibling;
-      if (prevInput) {
-        prevInput.focus();
+  ngOnInit(): void {
+
+    this.email =
+      (
+        this.route.snapshot
+          .queryParamMap
+          .get('email') || ''
+      ).trim();
+
+
+    this.startTimer();
+
+
+    setTimeout(() => {
+
+      const otpInputs =
+        this.getOtpInputs();
+
+
+      if (otpInputs.length > 0) {
+
+        otpInputs[0].focus();
+
       }
+
+    }, 200);
+
+  }
+
+
+  ngOnDestroy(): void {
+
+    this.stopTimer();
+
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+      this.errorTimer = null;
+
     }
-    const otpInputs = document.querySelectorAll('.otp-input') as NodeListOf<HTMLInputElement>;
-    otpInputs.forEach((inp, index) => {
-      this.otpDigits[index] = inp.value;
-    });
+
+  }
+
+
+  private getOtpInputs():
+    NodeListOf<HTMLInputElement> {
+
+    return document.querySelectorAll<HTMLInputElement>(
+      'app-otp .otp-input'
+    );
+
+  }
+
+
+  moveToNext(
+    event: Event
+  ): void {
+
+    const input =
+      event.target;
+
+
+    if (!(input instanceof HTMLInputElement)) {
+
+      return;
+
+    }
+
+
+    const cleanValue =
+      input.value.replace(
+        /\D/g,
+        ''
+      );
+
+
+    if (!cleanValue) {
+
+      input.value = '';
+
+      this.updateOtpValue();
+
+      return;
+
+    }
+
+
+    input.value =
+      cleanValue.charAt(
+        cleanValue.length - 1
+      );
+
+
+    this.clearError();
+
     this.updateOtpValue();
+
+
+    const nextInput =
+      input.nextElementSibling;
+
+
+    if (
+      nextInput instanceof HTMLInputElement &&
+      nextInput.classList.contains('otp-input')
+    ) {
+
+      nextInput.focus();
+
+      nextInput.select();
+
+    }
+
+  }
+
+
+  handleBackspace(
+    event: KeyboardEvent
+  ): void {
+
+    const input =
+      event.target;
+
+
+    if (!(input instanceof HTMLInputElement)) {
+
+      return;
+
+    }
+
+
+    if (event.key !== 'Backspace') {
+
+      return;
+
+    }
+
+
+    if (!input.value) {
+
+      const previousInput =
+        input.previousElementSibling;
+
+
+      if (
+        previousInput instanceof HTMLInputElement &&
+        previousInput.classList.contains('otp-input')
+      ) {
+
+        previousInput.focus();
+
+        previousInput.select();
+
+      }
+
+    }
+
+
+    setTimeout(() => {
+
+      this.updateOtpValue();
+
+    }, 0);
+
+  }
+
+
+  updateOtpValue(): void {
+
+    const otpInputs =
+      this.getOtpInputs();
+
+
+    this.otpDigits =
+      Array.from(
+        otpInputs
+      ).map(
+        (input: HTMLInputElement) => {
+
+          return input.value.replace(
+            /\D/g,
+            ''
+          );
+
+        }
+      );
+
+
+    this.otpValue =
+      this.otpDigits.join('');
+
+  }
+
+
+  startTimer(): void {
+
+    this.stopTimer();
+
+
+    this.timeLeft = 120;
+
+    this.updateDisplay();
+
+
+    this.timer =
+      setInterval(() => {
+
+        if (this.timeLeft > 0) {
+
+          this.timeLeft--;
+
+          this.updateDisplay();
+
+        } else {
+
+          this.stopTimer();
+
+        }
+
+      }, 1000);
+
+  }
+
+
+  private stopTimer(): void {
+
+    if (this.timer) {
+
+      clearInterval(
+        this.timer
+      );
+
+      this.timer = null;
+
+    }
+
+  }
+
+
+  updateDisplay(): void {
+
+    const minutes =
+      Math.floor(
+        this.timeLeft / 60
+      );
+
+
+    const seconds =
+      this.timeLeft % 60;
+
+
+    this.timerDisplay =
+      `${this.pad(minutes)}:${this.pad(seconds)}`;
+
+  }
+
+
+  pad(
+    num: number
+  ): string {
+
+    return num < 10
+      ? `0${num}`
+      : num.toString();
+
   }
 
 
   goBack(): void {
+
     this.location.back();
+
   }
 
 
-  startTimer() {
-    this.updateDisplay();
-    this.canResend = false;
-    this.timer = setInterval(() => {
-      if (this.timeLeft > 0) {
-        this.timeLeft--;
-        this.updateDisplay();
-      } else {
-        this.canResend = true;
-        clearInterval(this.timer);
-      }
-    }, 1000);
+  private showError(
+    message: string
+  ): void {
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+    }
+
+
+    this.generalError =
+      message;
+
+
+    this.errorTimer =
+      setTimeout(() => {
+
+        this.generalError = '';
+
+        this.errorTimer = null;
+
+      }, 2000);
+
   }
 
-  updateDisplay() {
-    const minutes = Math.floor(this.timeLeft / 60);
-    const seconds = this.timeLeft % 60;
-    this.timerDisplay = `${this.pad(minutes)}:${this.pad(seconds)}`;
+
+  private clearError(): void {
+
+    this.generalError = '';
+
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+      this.errorTimer = null;
+
+    }
+
   }
 
-  pad(num: number): string {
-    return num < 10 ? '0' + num : num.toString();
-  }
 
-  resendOtp() {
-    this.resendLoading = true;
+  async verifyOtp(): Promise<void> {
 
-    // this.authService.SendRiderOtp(this.email).subscribe({
-    //   next: (res) => {
-    //     console.log('Resend OTP successful:', res);
-    //     this.resendLoading = false;
-    //   },
-    //   error: (err) => {
-    //     console.error('Failed to resend OTP:', err);
-    //     const errMsg = err?.error?.message || err.message || 'Unknown error';
-    //     alert('Failed to resend OTP: ' + errMsg);
-    //     this.resendLoading = false;
-    //   }
-    // });
-  }
-  async verifyOtp() {
-    const otpInputs = document.querySelectorAll('.otp-input') as NodeListOf<HTMLInputElement>;
-    otpInputs.forEach((inp, index) => {
-      this.otpDigits[index] = inp.value;
-    });
+    if (this.loading) {
+
+      return;
+
+    }
+
+
     this.updateOtpValue();
-    console.log('OTP Digits:', this.otpDigits);
-    if (!this.otpValue || this.otpValue.length !== 4) {
-      alert('Please enter a complete 4-digit OTP.');
+
+
+    if (
+      !this.otpValue ||
+      this.otpValue.length !== 4 ||
+      !/^[0-9]{4}$/.test(
+        this.otpValue
+      )
+    ) {
+
+      this.showError(
+        'Please enter the complete 4-digit verification code.'
+      );
+
       return;
+
     }
-    if (!this.email || !this.email.trim()) {
-      alert('Please enter a valid email.');
+
+
+    if (
+      !this.email ||
+      !this.email.trim()
+    ) {
+
+      this.showError(
+        'Email address was not found. Please request a new verification code.'
+      );
+
       return;
+
     }
-    console.log('Sending OTP to:', this.email);
+
+
+    this.clearError();
+
+    this.loading = true;
+
+
     const data = {
       email: this.email,
       otp: this.otpValue
-    }
+    };
+
+
     try {
-      const response = await (await this.authService.riderVerifyOtp(data)).toPromise();
-      console.log('OTP sent successfully:', response);
-      this.router.navigate(['/reset-password'], { queryParams: { otp: this.otpValue, email: this.email } });
-      // this.router.navigate(['/otp'], { queryParams: { email: this.email } });
+
+      const otpObservable =
+        await this.authService.riderVerifyOtp(
+          data
+        );
+
+
+      const response =
+        await otpObservable.toPromise();
+
+
+      console.log(
+        'OTP verified successfully:',
+        response
+      );
+
+
+      this.router.navigate(
+        ['/reset-password'],
+        {
+          queryParams: {
+            otp: this.otpValue,
+            email: this.email
+          }
+        }
+      );
+
     } catch (err: any) {
-      this.generalError = 'Failed to send OTP';
-      setTimeout(() => {
-        this.generalError = '';
-      }, 2000);
-      // console.error('Failed to send OTP:', err);
 
-      const errMsg = err?.error?.message || err.message || 'Unknown error';
-      alert('Failed to send OTP: ' + errMsg);
+      console.error(
+        'OTP verification failed:',
+        err
+      );
+
+
+      this.showError(
+        err?.error?.message ||
+        err?.message ||
+        'The verification code is incorrect or has expired.'
+      );
+
     } finally {
-      // this.loading = false; // Hide loader after response
+
+      this.loading = false;
+
     }
+
   }
-
-  // this.authService.VerifyRiderOtp(this.email, +this.otpValue).subscribe({
-  //   next: (res) => {
-  //     console.log('otp verified succesfully:', res);
-  //     this.router.navigate(['/reset-password'], { queryParams: { otp: this.otpValue, email: this.email } });
-  //   },
-  //   error: (err) => {
-  //     console.error('Failed to veriffy OTP:', err);
-  //     const errMsg = err?.error?.message || err.message || 'Unknown error';
-  //     alert('Failed to resend OTP: ' + errMsg);
-  //   }
-  // });
-
-  ngOnDestroy(): void {
-    clearInterval(this.timer);
-  }
-
-
-
-  updateOtpValue() {
-    this.otpValue = this.otpDigits.join('');
-    console.log('OTP entered:', this.otpValue);
-  }
-
 
 }

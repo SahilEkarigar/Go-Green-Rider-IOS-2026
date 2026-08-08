@@ -1,65 +1,158 @@
 <ion-content [fullscreen]="true">
 
-  <div class="welcome_main bg_gogreen" [class.keyboard-open]="isKeyboardOpen">
-    <div>
-      <img src="../../assets/welcome/welcome_ingredients.svg" class="welcome_ingredients" alt="welcome_ingredients"
-        title="welcome_ingredients">
-    </div>
+  <div class="welcome_main" [class.keyboard-open]="isKeyboardOpen">
+
     <div class="welcome_second">
+
+      <!-- Delivery Man -->
       <div class="delivery_man_main">
-        <img src="../../assets/welcome/delivery_man.svg" class="delivery_man" alt="delivery_man" title="delivery_man">
+        <img
+          src="../../assets/welcome/delivery_man.svg"
+          class="delivery_man"
+          alt="Delivery man"
+          loading="eager"
+          fetchpriority="high"
+          decoding="async">
       </div>
+
       <div class="content_welcome">
+
+        <!-- Welcome Message -->
         <div class="order_in_seconds_main text_center">
-          <img src="../../assets/welcome/order_in_seconds.svg" class="order_in_seconds" alt="order_in_seconds"
-            title="order_in_seconds">
+          <img
+            src="../../assets/welcome/order_in_seconds.svg"
+            class="order_in_seconds"
+            alt="Order in seconds delivered in minutes"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async">
         </div>
 
+        <!-- Login Fields -->
         <div class="fieldscontainer">
+
+          <!-- ID -->
           <div class="input-container">
             <label for="email" class="label">ID</label>
-            <input type="mail" [(ngModel)]="email" [ngClass]="{'input-error': isEmailInvalid}"
-              class="input-field customeINputEmail" placeholder="enter your id">
+
+            <input
+              id="email"
+              type="email"
+              [(ngModel)]="email"
+              [ngClass]="{'input-error': isEmailInvalid}"
+              class="input-field customeINputEmail"
+              placeholder="Enter your ID"
+              autocomplete="username"
+              inputmode="email">
           </div>
 
+          <!-- Password -->
           <div class="input-container">
-            <div class="label"><img src="../../assets/welcome/lock.svg"></div>
-            <input type="password" [(ngModel)]="password" [ngClass]="{'input-error': isPasswordInvalid}"
-              class="input-field" placeholder=" ********">
-          </div>
-
-          <div class="d-flex">
-            <div class="col-7">
-              <p *ngIf="generalError" class="col-8 error-message customeErrorMsg mb-0">{{ generalError }}</p>
+            <div class="label">
+              <img
+                src="../../assets/welcome/lock.svg"
+                alt="Password"
+                loading="eager"
+                decoding="async">
             </div>
-            <p (click)="forgetPassword()" class="col-4 forgetpassword mb-2 text-nowrap">Forget Password</p>
+
+            <input
+              type="password"
+              [(ngModel)]="password"
+              [ngClass]="{'input-error': isPasswordInvalid}"
+              class="input-field"
+              placeholder="Enter your password"
+              autocomplete="current-password">
           </div>
+
+          <!-- Error + Forgot Password -->
+          <div class="d-flex login_options_row">
+
+            <div class="col-7">
+              <p
+                *ngIf="generalError"
+                class="col-8 error-message customeErrorMsg mb-0">
+                {{ generalError }}
+              </p>
+            </div>
+
+            <p
+              (click)="forgetPassword()"
+              class="col-4 forgetpassword mb-2 text-nowrap">
+              Forget Password
+            </p>
+
+          </div>
+
         </div>
 
+        <!-- Login -->
         <div class="login_welcome d_flex justify_content_center">
-          <a class="bg_gogreen text_white text_center" (click)="loginApi()">Log in</a>
-        </div>
-
-        <!--<div class="login_welcome d_flex justify_content_center" *ngIf="isAppleAvailable">
-          <a class="bg_black text_white text_center" (click)="appleSignIn()">
-            <img src="../../assets/welcome/apple.svg" class="google_logo"> Sign In with Apple
+          <a
+            class="bg_gogreen text_white text_center"
+            (click)="loginApi()">
+            Log in
           </a>
-        </div>-->
-
-        <div class="sign_up_welcome d_flex justify_content_center mt-1">
-          <a class="text_center text_grey mt-0">Don't have an account? <span class="text_gogreen"
-              (click)="goSignupPage()">Register Now</span></a>
         </div>
 
+        <!--
+        <div
+          class="login_welcome d_flex justify_content_center"
+          *ngIf="isAppleAvailable">
+
+          <a
+            class="bg_black text_white text_center"
+            (click)="appleSignIn()">
+
+            <img
+              src="../../assets/welcome/apple.svg"
+              class="google_logo"
+              alt="Apple">
+
+            Sign In with Apple
+          </a>
+
+        </div>
+        -->
+
+        <!-- Register -->
+        <div class="sign_up_welcome d_flex justify_content_center mt-1">
+          <a class="text_center text_grey mt-0">
+            Don't have an account?
+
+            <span
+              class="text_gogreen"
+              (click)="goSignupPage()">
+              Register Now
+            </span>
+          </a>
+        </div>
+
+        <!-- Terms -->
         <div class="welcome_footer mt-1">
           <p class="text_grey opensans_semibold">
             By logging in or registering, you agree to our <br>
-            <a class="text_gogreen text_dec_none" href="../login">Terms of service</a> and <a
-              class="text_gogreen text_dec_none" href="../login">Privacy policy</a>.
+
+            <a
+              class="text_gogreen text_dec_none"
+              href="../terms-condition">
+              Terms of service
+            </a>
+
+            and
+
+            <a
+              class="text_gogreen text_dec_none"
+              href="../privacy">
+              Privacy policy
+            </a>.
           </p>
         </div>
+
       </div>
+
     </div>
+
   </div>
 
 </ion-content>

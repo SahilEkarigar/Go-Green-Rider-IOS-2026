@@ -1,80 +1,472 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
 
+import {
+  CommonModule,
+  Location
+} from '@angular/common';
 
-import { IonicModule } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { PostService } from '../services/post.service';
-import { AuthserviceService } from '../services/authservice.service';
+import {
+  FormsModule
+} from '@angular/forms';
+
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
+
+import {
+  IonicModule
+} from '@ionic/angular';
+
+import {
+  AuthserviceService
+} from '../services/authservice.service';
+
 
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.page.html',
   styleUrls: ['./reset-password.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule
+  ]
 })
-export class ResetPasswordPage implements OnInit {
-
+export class ResetPasswordPage implements OnInit, OnDestroy {
 
   email: string = '';
+
   otp: number = 0;
+
   password: string = '';
+
   new_password: string = '';
-  isPasswordVisible: boolean = false;
+
   loading: boolean = false;
+
+
+  generalError: string = '';
+
+
+  isPasswordInvalid: boolean = false;
+
+  isConfirmPasswordInvalid: boolean = false;
+
+
+  passwordErrorMessage: string = '';
+
+  confirmPasswordErrorMessage: string = '';
+
+
+  private errorTimer:
+    ReturnType<typeof setTimeout> | null = null;
+
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
     private location: Location,
     private authService: AuthserviceService
-  ) { }
+  ) {}
 
-  goHome() {
-    this.router.navigate(['/']);
+
+  /* =====================================================
+     INIT
+  ===================================================== */
+
+  ngOnInit(): void {
+
+    this.email =
+      (
+        this.route.snapshot
+          .queryParamMap
+          .get('email') || ''
+      ).trim();
+
+
+    const otpValue =
+      this.route.snapshot
+        .queryParamMap
+        .get('otp');
+
+
+    this.otp =
+      otpValue
+        ? Number(otpValue)
+        : 0;
+
   }
-  togglePasswordVisibility() {
-    this.isPasswordVisible = !this.isPasswordVisible;
+
+
+  /* =====================================================
+     DESTROY
+  ===================================================== */
+
+  ngOnDestroy(): void {
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+
+      this.errorTimer = null;
+
+    }
+
   }
+
+
+  /* =====================================================
+     BACK
+  ===================================================== */
+
   goBack(): void {
+
     this.location.back();
+
   }
 
-  ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
-      this.otp = +params['otp'] || 0; // convert to number
-    });
+
+  /* =====================================================
+     CLEAR ERROR
+  ===================================================== */
+
+  clearError(
+    field:
+      | 'password'
+      | 'confirmPassword'
+  ): void {
+
+    if (field === 'password') {
+
+      this.isPasswordInvalid =
+        false;
+
+
+      this.passwordErrorMessage =
+        '';
+
+    }
+
+
+    if (
+      field === 'confirmPassword'
+    ) {
+
+      this.isConfirmPasswordInvalid =
+        false;
+
+
+      this.confirmPasswordErrorMessage =
+        '';
+
+    }
+
+
+    this.generalError = '';
+
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+
+      this.errorTimer = null;
+
+    }
+
   }
 
-  async onResetPassword() {
-    if (!this.password || !this.new_password) {
-      alert('Please enter all required fields!');
-      return;
-    }
-    if (this.password !== this.new_password) {
-      alert('Passwords do not match!');
-      return;
+
+  /* =====================================================
+     FIELD ERROR
+  ===================================================== */
+
+  private showFieldError(
+    field:
+      | 'password'
+      | 'confirmPassword',
+    message: string
+  ): void {
+
+    this.clearAllErrors();
+
+
+    if (
+      field === 'password'
+    ) {
+
+      this.isPasswordInvalid =
+        true;
+
+
+      this.passwordErrorMessage =
+        message;
+
     }
 
-    this.loading = true; // Show loader
+
+    if (
+      field === 'confirmPassword'
+    ) {
+
+      this.isConfirmPasswordInvalid =
+        true;
+
+
+      this.confirmPasswordErrorMessage =
+        message;
+
+    }
+
+
+    this.startErrorTimer();
+
+  }
+
+
+  /* =====================================================
+     GENERAL ERROR
+  ===================================================== */
+
+  private showGeneralError(
+    message: string
+  ): void {
+
+    this.clearAllErrors();
+
+
+    this.generalError =
+      message;
+
+
+    this.startErrorTimer();
+
+  }
+
+
+  /* =====================================================
+     ERROR TIMER
+  ===================================================== */
+
+  private startErrorTimer(): void {
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+    }
+
+
+    this.errorTimer =
+      setTimeout(() => {
+
+        this.clearAllErrors();
+
+      }, 2500);
+
+  }
+
+
+  /* =====================================================
+     CLEAR ALL ERRORS
+  ===================================================== */
+
+  private clearAllErrors(): void {
+
+    if (this.errorTimer) {
+
+      clearTimeout(
+        this.errorTimer
+      );
+
+
+      this.errorTimer = null;
+
+    }
+
+
+    this.isPasswordInvalid =
+      false;
+
+
+    this.isConfirmPasswordInvalid =
+      false;
+
+
+    this.passwordErrorMessage =
+      '';
+
+
+    this.confirmPasswordErrorMessage =
+      '';
+
+
+    this.generalError =
+      '';
+
+  }
+
+
+  /* =====================================================
+     RESET PASSWORD
+  ===================================================== */
+
+  async onResetPassword():
+    Promise<void> {
+
+    if (this.loading) {
+
+      return;
+
+    }
+
+
+    this.clearAllErrors();
+
+
+    if (
+      !this.password
+    ) {
+
+      this.showFieldError(
+        'password',
+        'Please enter your new password.'
+      );
+
+
+      return;
+
+    }
+
+
+    if (
+      !this.new_password
+    ) {
+
+      this.showFieldError(
+        'confirmPassword',
+        'Please confirm your new password.'
+      );
+
+
+      return;
+
+    }
+
+
+    if (
+      this.password !==
+      this.new_password
+    ) {
+
+      this.showFieldError(
+        'confirmPassword',
+        'New password and confirm password do not match.'
+      );
+
+
+      return;
+
+    }
+
+
+    if (
+      !this.email
+    ) {
+
+      this.showGeneralError(
+        'Email information was not found. Please restart the password reset process.'
+      );
+
+
+      return;
+
+    }
+
+
+    if (!this.otp) {
+
+      this.showGeneralError(
+        'OTP verification information was not found. Please request a new OTP.'
+      );
+
+
+      return;
+
+    }
+
+
+    this.loading = true;
+
+
     const data = {
-      email: this.email,
-      otp: this.otp,
-      new_password: this.new_password
-    }
+
+      email:
+        this.email,
+
+      otp:
+        this.otp,
+
+      new_password:
+        this.new_password
+
+    };
+
+
     try {
-      const response = await (await this.authService.ResetRiderPwd(data)).toPromise();
-      console.log('Password changed successfully! please login', response);
-      this.router.navigate(['/login']);
+
+      const resetObservable =
+        await this.authService.ResetRiderPwd(
+          data
+        );
+
+
+      const response =
+        await resetObservable.toPromise();
+
+
+      console.log(
+        'Password changed successfully:',
+        response
+      );
+
+
+      this.router.navigate([
+        '/login'
+      ]);
+
     } catch (err: any) {
-      console.error('Error changing password. Please try again.', err);
-      const errMsg = err?.error?.message || err.message || 'Unknown error';
-      console.log("Error Msg", errMsg)
+
+      console.error(
+        'Password reset failed:',
+        err
+      );
+
+
+      this.showGeneralError(
+        err?.error?.message ||
+        err?.message ||
+        'Unable to reset your password. Please try again.'
+      );
+
     } finally {
-      this.loading = false;
+
+      this.loading =
+        false;
+
     }
 
   }

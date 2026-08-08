@@ -1,404 +1,789 @@
+/* =====================================================
+   PAGE
+===================================================== */
+
+ion-content {
+    --background: #ffffff;
+}
+
+ion-header,
+ion-footer,
+ion-toolbar {
+    --background: #ffffff !important;
+    background: #ffffff !important;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
 .common_header {
-    text-align: left;
-    padding: 12px 16px !important;
     display: flex;
     align-items: center;
+
+    padding: 12px 16px !important;
+
+    text-align: left;
 }
+
 
 .common_footer {
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom)) !important;
+
     text-align: left;
-    padding: 30px 0px 30px !important;
+
+    background: #ffffff;
+
+    border-top: 1px solid #edf2ef;
 }
 
+
+/* Back button */
+
 .back_arrow_div {
-    background: #e0eae6;
-    width: 36px;
-    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 50%;
+
+    width: 38px;
+    height: 38px;
+
+    border: 1px solid rgba(0, 85, 43, 0.08);
+    border-radius: 12px;
+
+    background: #edf6f1;
+
     cursor: pointer;
-    transition: background 0.2s ease;
+
+    box-shadow:
+        0 3px 10px rgba(0, 85, 43, 0.07);
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
 }
+
 
 .back_arrow_div i {
-    color: #00552b;
-    font-size: 16px;
     margin-right: 2px;
+
+    color: #00552b;
+
+    font-size: 16px;
 }
+
+
+.back_arrow_div:active {
+    transform: scale(0.94);
+
+    background: #dfeee6;
+}
+
+
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
 
 .signup_steps_row {
-    padding: 50px 15px 50px;
+    padding: 22px 15px 35px;
 }
+
+
+/* =====================================================
+   SIGNUP CARD
+===================================================== */
 
 .signup_steps {
-    background: #00552d1f;
-    border-radius: 12px;
-    box-shadow: 0px 4px 15px rgba(0, 85, 45, 0.15);
-    padding: 20px 15px;
+    position: relative;
+
+    width: 100%;
+
+    padding: 22px 16px;
+
+    overflow: hidden;
+
+    border: 1px solid rgba(0, 85, 45, 0.07);
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #f7fbf9 0%,
+            #edf7f1 100%
+        );
+
+    box-shadow:
+        0 8px 25px rgba(0, 85, 45, 0.08);
+
+    box-sizing: border-box;
 }
 
+
+/* Decorative background */
+
+.signup_steps::before {
+    content: '';
+
+    position: absolute;
+
+    top: -70px;
+    right: -65px;
+
+    width: 170px;
+    height: 170px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(8, 139, 70, 0.10) 0%,
+            rgba(8, 139, 70, 0) 70%
+        );
+
+    pointer-events: none;
+}
+
+
 .signup_steps h2 {
-    margin-top: 0px;
-    font-size: 26px;
-    font-weight: 700;
-    margin-bottom: 5px;
+    position: relative;
+
+    margin: 0 0 4px;
+
     color: #00552b;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    line-height: 1.25;
+
+    letter-spacing: 0.2px;
+
     text-transform: uppercase;
 }
 
+
 .signup_steps h4 {
-    margin-top: 0px;
+    position: relative;
+
+    margin-top: 10px !important;
+    margin-bottom: 0;
+
+    color: #42534a;
+
     font-size: 14px;
     font-weight: 600;
-    margin-bottom: 0px;
-    color: #000;
 }
+
+
+/* =====================================================
+   STEPPER
+===================================================== */
 
 .step_counts .stepper {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 10px 0px;
+
+    margin: 17px 0 6px;
+
     font-family: Arial, sans-serif;
 }
 
+
 .step_counts .step {
+    position: relative;
+
     display: flex;
+
+    flex: 1;
     flex-direction: column;
     align-items: center;
-    position: relative;
-    flex: 1;
 }
+
 
 .step_counts .step:not(:last-child)::after {
     content: '';
+
     position: absolute;
-    top: 12px;
-    left: calc(50% + 0px);
+
+    top: 14px;
+    left: 50%;
     right: -50%;
-    height: 1px;
-    background: #ccc;
+
+    height: 2px;
+
+    background: #d5e0da;
+
     z-index: 1;
 }
 
+
+/* Active connector */
+
+.step_counts .step.active:not(:last-child)::after {
+    background:
+        linear-gradient(
+            90deg,
+            #088b46 0%,
+            #65b88b 100%
+        );
+}
+
+
 .step_counts .circle {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    background: white;
+    position: relative;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 2;
+
+    width: 29px;
+    height: 29px;
+
+    border: 2px solid #d4dfd8;
+    border-radius: 50%;
+
+    background: #ffffff;
+
+    color: #87928c;
+
     font-size: 12px;
+    font-weight: 600;
+
+    box-shadow:
+        0 2px 7px rgba(0, 0, 0, 0.04);
+
+    z-index: 2;
+
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
+
 
 .step_counts .step.active .circle {
-    background: #00552d;
-    border-color: #00552d;
-    color: white;
+    border-color: #088b46;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00552d 0%,
+            #088b46 100%
+        );
+
+    color: #ffffff;
+
+    box-shadow:
+        0 4px 11px rgba(8, 139, 70, 0.20);
 }
 
-.step_counts .label {
-    margin-top: 8px;
-    font-size: 0.9em;
-    color: #666;
-    text-align: center;
-}
 
-.step_counts .step.active .label {
-    font-weight: bold;
-    color: #000;
-}
+/* =====================================================
+   FORM
+===================================================== */
 
 .form_box {
-    margin-top: 15px;
+    margin-top: 23px;
 }
 
-ion-header,
-ion-footer {
-    --background: #ffffff !important;
-    background-color: #ffffff !important;
-}
-
-.form_input_box input {
-    display: block;
-    width: 100%;
-    height: 40px;
-    border: 1.5px solid #00552d !important;
-    border-radius: 6px;
-    font-size: 14px;
-    padding: 8px 12px;
-    background: #e0eae6 !important;
-    color: #000;
-    font-weight: 600 !important;
-    box-sizing: border-box;
-}
-
-.form_input_box textarea {
-    display: block;
-    width: 100%;
-    border: 1.5px solid #00552d !important;
-    border-radius: 6px;
-    font-size: 14px;
-    padding: 8px 12px;
-    background: #e0eae6 !important;
-    color: #000;
-    font-weight: 600 !important;
-    box-sizing: border-box;
-}
-
-.form_input_box select {
-    display: block;
-    width: 100%;
-    height: 40px;
-    border: 1.5px solid #00552d !important;
-    border-radius: 6px;
-    font-size: 14px;
-    padding: 8px 12px;
-    background: #e0eae6 !important;
-    color: #000;
-    font-weight: 600 !important;
-    box-sizing: border-box;
-}
-
-.form_input_box input::placeholder {
-    color: #9f9a9a;
-}
-
-.form-control:focus {
-    box-shadow: none !important;
-    border: none !important;
-    outline: none !important;
-}
 
 .form_input_box {
-    margin-bottom: 20px !important;
     display: flex;
+
+    width: 100%;
+
+    margin-bottom: 19px !important;
+
     flex-direction: column;
 }
 
+
 .form_input_box label {
-    font-size: 12px;
-    font-weight: 600 !important;
-    color: #00552d;
-    margin-bottom: 6px !important;
     display: block;
+
     width: 100%;
+
+    margin-bottom: 7px !important;
+
+    color: #28563e;
+
+    font-size: 12px;
+    font-weight: 700 !important;
+
+    letter-spacing: 0.1px;
 }
 
-.theme_button {
-    background: #00552f;
-    color: #fff;
-    font-size: 14px;
-    text-transform: uppercase;
-    border-radius: 5px;
-    font-weight: 600;
-    padding: 10px 20px;
+
+/* Optional */
+
+.optional_text {
+    margin-left: 3px;
+
+    color: #939b97;
+
+    font-size: 10px;
+    font-weight: 500;
+
+    text-transform: none;
+}
+
+
+/* =====================================================
+   NORMAL INPUTS
+===================================================== */
+
+.form_input_box input,
+.form_input_box select,
+.form_input_box textarea {
+    display: block;
+
     width: 100%;
-    height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    cursor: pointer;
+
+    border: 1.5px solid #d3e5da !important;
+    border-radius: 11px;
+
+    outline: none !important;
+
+    background: #ffffff !important;
+
+    color: #27352d;
+
+    font-size: 14px;
+    font-weight: 500 !important;
+
     box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
-.button_group {
-    text-align: right;
+
+.form_input_box input,
+.form_input_box select {
+    min-height: 48px;
+
+    padding: 10px 13px;
 }
 
-.padding_left_zero {
-    padding-left: 0px !important;
+
+.form_input_box textarea {
+    min-height: 100px;
+
+    padding: 12px 13px;
+
+    resize: vertical;
 }
 
-.signup_steps h3 {
-    margin-top: 0px;
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 0px;
-    color: #000;
+
+.form_input_box input::placeholder,
+.form_input_box textarea::placeholder {
+    color: #9aa49e;
+
+    font-weight: 400;
+
+    opacity: 1;
 }
 
-.psw_box {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
+
+/* =====================================================
+   FOCUS
+===================================================== */
+
+.form_input_box input:focus,
+.form_input_box select:focus,
+.form_input_box textarea:focus,
+.form-control:focus {
+    border-color: #088b46 !important;
+
+    outline: none !important;
+
+    background: #ffffff !important;
+
+    box-shadow:
+        0 0 0 3px rgba(8, 139, 70, 0.08) !important;
 }
 
-.psw_box input {
-    padding-right: 40px !important;
+
+/* =====================================================
+   DATE
+===================================================== */
+
+input[type='date'] {
+    color: #39473f;
 }
 
-.eye_box {
-    position: absolute;
-    right: 12px;
-    border: none !important;
-    background: transparent !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
+
+input[type='date']::-webkit-calendar-picker-indicator {
+    opacity: 0.7;
+
     cursor: pointer;
-    z-index: 10;
 }
 
-.eye_box i {
-    font-size: 16px;
-    color: #00552f;
+
+/* =====================================================
+   FILE INPUT
+===================================================== */
+
+.form_input_box input[type='file'] {
+    padding: 5px 6px;
+
+    color: #57655d;
+
+    background: #ffffff !important;
 }
+
+
+.form_input_box input[type='file']::file-selector-button {
+    height: 36px;
+
+    margin-right: 10px;
+    padding: 0 13px;
+
+    border: none;
+    border-radius: 8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #e5f3eb 0%,
+            #d9eee2 100%
+        );
+
+    color: #07683a;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition:
+        background-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+.form_input_box input[type='file']::file-selector-button:active {
+    transform: scale(0.97);
+}
+
+
+/* Upload helper */
+
+.upload_note {
+    margin-top: 6px;
+
+    color: #838d87;
+
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 15px;
+}
+
+
+/* =====================================================
+   PHONE
+===================================================== */
 
 .prefix_phone_box {
     display: flex;
+
     width: 100%;
+
     gap: 10px;
 }
 
+
 .prefix_phone_box select {
-    width: 70px !important;
+    width: 78px !important;
+    min-width: 78px;
+
     flex-shrink: 0;
+
+    padding-left: 9px;
+    padding-right: 4px;
 }
+
 
 .prefix_phone_box input {
-    flex-grow: 1;
+    min-width: 0;
+
+    flex: 1;
 }
 
+
+/* =====================================================
+   VALIDATION
+===================================================== */
+
+.form_input_box input.input-error,
+.form_input_box select.input-error,
+.form_input_box textarea.input-error,
 .input-error {
-    border-color: red !important;
+    border-color: #d93025 !important;
+
+    background: #fffafa !important;
+
+    box-shadow:
+        0 0 0 3px rgba(217, 48, 37, 0.05) !important;
 }
 
-.note_id {
-    font-size: 10px;
-    font-style: italic;
-}
-
-.proof-upload-box {
-    position: relative;
-    width: 200px;
-    height: 140px;
-    margin: 20px auto;
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-
-    &:hover {
-        border-color: #00552f;
-    }
-
-    .preview-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-
-    .placeholder {
-        text-align: center;
-        padding: 20px;
-        color: #999;
-
-        i {
-            font-size: 48px;
-            color: #ccc;
-        }
-
-        p {
-            margin: 10px 0 4px;
-            font-weight: bold;
-        }
-
-        small {
-            font-size: 12px;
-            color: #777;
-        }
-    }
-
-    .upload-overlay {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        background: rgba(0, 0, 0, 0.6);
-        border-radius: 50%;
-        padding: 6px;
-        color: #fff;
-
-        i {
-            font-size: 16px;
-        }
-    }
-}
-
-.image-upload-box {
-    position: relative;
-    width: 200px;
-    height: 140px;
-    margin: 20px auto;
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-    overflow: hidden;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-
-    &:hover {
-        border-color: #00552f;
-        box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
-    }
-
-    .preview-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-        // border-radius: 50%;
-    }
-
-    .placeholder {
-        text-align: center;
-        color: #999;
-
-        i {
-            font-size: 60px;
-            color: #ccc;
-        }
-
-        p {
-            font-size: 14px;
-            margin-top: 10px;
-            font-weight: 500;
-        }
-    }
-
-    .upload-overlay {
-        position: absolute;
-        bottom: 10px;
-        right: 10px;
-        background-color: rgba(0, 0, 0, 0.6);
-        border-radius: 50%;
-        padding: 8px;
-        color: #fff;
-        z-index: 2;
-
-        i {
-            font-size: 18px;
-        }
-    }
-}
-
-#otherPrefix {
-    width: 30px;
-}
 
 .error-message {
-    font-size: 12px;
-    color: red;
-    opacity: 0.8;
+    margin-top: 5px !important;
+    margin-bottom: 0;
+
+    color: #d93025;
+
+    font-size: 11px;
+    font-weight: 500;
+
+    line-height: 16px;
+
+    opacity: 1;
+}
+
+
+/* =====================================================
+   GENERAL ERROR
+===================================================== */
+
+.general_error_box {
+    margin-top: 3px;
+    padding: 10px 12px;
+
+    border: 1px solid rgba(217, 48, 37, 0.13);
+    border-radius: 9px;
+
+    background: #fff7f7;
+}
+
+
+.general_error_box .error-message {
+    margin: 0 !important;
+
+    text-align: center;
+}
+
+
+/* =====================================================
+   BUTTON
+===================================================== */
+
+.button_group {
+    width: 100%;
+
+    text-align: right;
+}
+
+
+.theme_button {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 49px;
+
+    padding: 10px 20px;
+
+    overflow: hidden;
+
+    border: none;
+    border-radius: 11px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #00552f 0%,
+            #088b46 100%
+        );
+
+    color: #ffffff;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    letter-spacing: 0.25px;
+
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 7px 17px rgba(8, 139, 70, 0.18);
+
+    box-sizing: border-box;
+
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
+}
+
+
+.theme_button::before {
+    content: '';
+
+    position: absolute;
+
+    top: -100%;
+    left: -20%;
+
+    width: 30%;
+    height: 300%;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    transform: rotate(25deg);
+
+    pointer-events: none;
+}
+
+
+.theme_button:active {
+    transform: scale(0.985);
+
+    box-shadow:
+        0 4px 10px rgba(8, 139, 70, 0.14);
+}
+
+
+.padding_left_zero {
+    padding-left: 0 !important;
+}
+
+
+/* =====================================================
+   SMALL PHONES
+===================================================== */
+
+@media screen and (max-width: 480px) {
+
+    .signup_steps_row {
+        padding: 16px 11px 28px;
+    }
+
+
+    .signup_steps {
+        padding: 20px 13px;
+
+        border-radius: 17px;
+    }
+
+
+    .signup_steps h2 {
+        font-size: 23px;
+    }
+
+
+    .form_box {
+        margin-top: 20px;
+    }
+
+
+    .form_input_box {
+        margin-bottom: 17px !important;
+    }
+
+
+    .form_input_box input,
+    .form_input_box select {
+        min-height: 46px;
+    }
+
+
+    .prefix_phone_box select {
+        width: 74px !important;
+        min-width: 74px;
+    }
+
+}
+
+
+/* =====================================================
+   TABLETS
+===================================================== */
+
+@media screen and (min-width: 600px) {
+
+    .signup_steps_row {
+        max-width: 720px;
+
+        margin: 0 auto;
+
+        padding-top: 30px;
+    }
+
+
+    .signup_steps {
+        padding: 28px 30px 30px;
+    }
+
+
+    .signup_steps h2 {
+        font-size: 28px;
+    }
+
+
+    .signup_steps h4 {
+        font-size: 15px;
+    }
+
+
+    .form_box {
+        max-width: 580px;
+
+        margin: 26px auto 0;
+    }
+
+
+    .form_input_box label {
+        font-size: 13px;
+    }
+
+
+    .form_input_box input,
+    .form_input_box select,
+    .form_input_box textarea {
+        font-size: 15px;
+    }
+
+
+    .common_footer {
+        max-width: 620px;
+
+        margin: 0 auto;
+    }
+
+
+    .theme_button {
+        height: 51px;
+
+        font-size: 15px;
+    }
+
+}
+
+
+/* =====================================================
+   ACCESSIBILITY
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .back_arrow_div,
+    .theme_button,
+    .form_input_box input,
+    .form_input_box select,
+    .form_input_box textarea {
+        transition: none;
+    }
+
 }

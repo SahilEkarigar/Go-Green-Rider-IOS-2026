@@ -1,78 +1,219 @@
-<!--<ion-header [translucent]="true">
-  <ion-toolbar>
-    <div class="header">
+<ion-header
+  class="custom-header"
+  [translucent]="false">
 
-      <div class="col1">
-        <i class="fa-solid fa-arrow-left"></i>
-      </div>
-      <div class="col2">
-        <p>OTP</p>
-      </div>
-      <div class="col2">
-        <i class="fa-solid fa-question"></i>
-      </div>
-
-    </div>
-  </ion-toolbar>
-</ion-header>-->
-
-<ion-header class="custom-header" [translucent]="false">
   <div class="header-container">
-    <button class="back-btn" (click)="goBack()">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+
+    <button
+      type="button"
+      class="back-btn"
+      (click)="goBack()"
+      aria-label="Go back">
+
+      <i
+        class="fa fa-chevron-left"
+        aria-hidden="true">
+      </i>
+
     </button>
-    <h1 class="header-title">OTP</h1>
+
+
+    <h1 class="header-title">
+      OTP Verification
+    </h1>
+
+
     <div class="header-right-placeholder"></div>
+
   </div>
+
 </ion-header>
 
+
 <ion-content [fullscreen]="true">
-  <div class="logo">
-    <img src="../../assets/otp/OTP_logo.svg" class="otplogo" alt="" title="">
-  </div>
-  <div class="curved-bg">
+
+  <div class="otp_page">
+
+    <!-- Decorative Background -->
+    <div class="curved-bg"></div>
+
+
+    <!-- Main Content -->
     <div class="content">
-      <p class="verification">Verification <span class="code">Code</span></p>
-      <p class="sendcode">Please enter the verification code<br>
-        sent to your registeredemail.</p>
-    </div>
 
-    <!-- <div class="otpnumber">
 
-            <div class="otp-container">
-             <input type="text" maxlength="1" class="otp-input">
-              <input type="text" maxlength="1" class="otp-input">
-              <input type="text" maxlength="1" class="otp-input">
-              <input type="text" maxlength="1" class="otp-input">
-            </div>
-      </div> -->
-    <div class="otpnumber">
-      <div class="otp-container">
-        <input type="tel" maxlength="1" class="otp-input" (input)="moveToNext($event)"
-          (keydown)="handleBackspace($event)">
-        <input type="tel" maxlength="1" class="otp-input" (input)="moveToNext($event)"
-          (keydown)="handleBackspace($event)">
-        <input type="tel" maxlength="1" class="otp-input" (input)="moveToNext($event)"
-          (keydown)="handleBackspace($event)">
-        <input type="tel" maxlength="1" class="otp-input" (input)="moveToNext($event)"
-          (keydown)="handleBackspace($event)">
+      <!-- Logo -->
+      <div class="logo">
+
+        <div class="logo_inner">
+
+          <img
+            src="../../assets/icon/logo_gogreen.svg"
+            class="otplogo"
+            alt="GoGreen"
+            loading="eager"
+            fetchpriority="high">
+
+        </div>
+
       </div>
-    </div>
-
-    <div class="texttimer">
-      <p>Time {{timerDisplay}}</p>
-      <!--<p><a class="" href="javascript:void(0)" (click)="resendOtp()">Resend OTP</a></p>-->
-    </div>
-
-    <div class="col-12 mt-2 ps-2">
-      <p *ngIf="generalError" class="error-message customeErrorMsg d-block text-left col-12" style="text-align: start;">
-        {{ generalError }}</p>
-    </div>
-    <div class="login_welcome d_flex justify_content_center">
-      <a class="bg_gogreen text_center" href="javascript:void(0)" (click)="verifyOtp()">Continue</a>
-    </div>
 
 
+      <!-- OTP Card -->
+      <div class="otp_card">
+
+        <div class="verification_icon">
+
+          <ion-icon
+            name="shield-checkmark-outline">
+          </ion-icon>
+
+        </div>
+
+
+        <h2 class="verification">
+          Verify Your Email
+        </h2>
+
+
+        <p class="sendcode">
+
+          We've sent a 4-digit verification code to
+
+          <span class="number">
+            {{ email }}
+          </span>
+
+        </p>
+
+
+        <!-- OTP Inputs -->
+        <div class="otpnumber">
+
+          <div class="otp-container">
+
+            <input
+              type="tel"
+              maxlength="1"
+              class="otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="one-time-code"
+              aria-label="OTP digit 1"
+              (input)="moveToNext($event)"
+              (keydown)="handleBackspace($event)">
+
+            <input
+              type="tel"
+              maxlength="1"
+              class="otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              aria-label="OTP digit 2"
+              (input)="moveToNext($event)"
+              (keydown)="handleBackspace($event)">
+
+            <input
+              type="tel"
+              maxlength="1"
+              class="otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              aria-label="OTP digit 3"
+              (input)="moveToNext($event)"
+              (keydown)="handleBackspace($event)">
+
+            <input
+              type="tel"
+              maxlength="1"
+              class="otp-input"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              aria-label="OTP digit 4"
+              (input)="moveToNext($event)"
+              (keydown)="handleBackspace($event)">
+
+          </div>
+
+        </div>
+
+
+        <!-- Timer -->
+        <div class="texttimer">
+
+          <p>
+            Code expires in
+
+            <span class="code">
+              {{ timerDisplay }}
+            </span>
+          </p>
+
+        </div>
+
+
+        <!-- Error -->
+        <div class="col-12 mt-2 ps-2">
+
+          <p
+            *ngIf="generalError"
+            class="error-message customeErrorMsg d-block text-left col-12">
+
+            {{ generalError }}
+
+          </p>
+
+        </div>
+
+
+        <!-- Continue -->
+        <div class="login_welcome d_flex justify_content_center">
+
+          <a
+            class="bg_gogreen text_center"
+            href="javascript:void(0)"
+            [class.disabled]="loading"
+            (click)="verifyOtp()">
+
+            <ng-container
+              *ngIf="!loading; else verifyingTemplate">
+
+              Continue
+
+            </ng-container>
+
+
+            <ng-template #verifyingTemplate>
+
+              <ion-spinner
+                name="crescent"
+                class="button-spinner">
+              </ion-spinner>
+
+              <span class="verifying_text">
+                Verifying...
+              </span>
+
+            </ng-template>
+
+          </a>
+
+        </div>
+
+      </div>
+
+
+      <!-- Security Message -->
+      <p class="secure_text">
+
+        <ion-icon name="lock-closed-outline"></ion-icon>
+
+        Your verification information is secure
+
+      </p>
+
+    </div>
 
   </div>
+
 </ion-content>
