@@ -1,10 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { IonicModule, NavController } from '@ionic/angular';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { FooterTabsComponent } from "../components/footer-tabs/footer-tabs.component"; // <-- Import FormsModule
-import { AuthserviceService } from '../services/authservice.service';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  IonicModule,
+  NavController
+} from '@ionic/angular';
+
+import {
+  FooterTabsComponent
+} from '../components/footer-tabs/footer-tabs.component';
+
+import {
+  AuthserviceService
+} from '../services/authservice.service';
 
 
 @Component({
@@ -12,78 +26,603 @@ import { AuthserviceService } from '../services/authservice.service';
   templateUrl: './notification.page.html',
   styleUrls: ['./notification.page.scss'],
   standalone: true,
-
-  imports: [IonicModule, CommonModule, FormsModule, FooterTabsComponent]
+  imports: [
+    IonicModule,
+    CommonModule,
+    FooterTabsComponent
+  ]
 })
 export class NotificationPage implements OnInit {
-  selectedNotification: { day: string, idx: number } | null = null;
-  selectedNotificationItem: any | null = null;
-  notifications: Array<{ day: string, items: any[] }> = [];
 
-  constructor(private auth: AuthserviceService, private navCtrl: NavController,) { }
+  selectedNotification: {
+    day: string;
+    idx: number;
+  } | null = null;
 
-  ngOnInit() {
-    const userId = localStorage.getItem('user_id') || '';
-    if (!userId) return;
-    this.auth.getUserNotifications(userId).subscribe({
-      next: (res: any) => {
-        // Normalize response: support raw array or wrapped under data
-        const list: any[] = Array.isArray(res)
-          ? res
-          : (Array.isArray(res?.data) ? res.data : (Array.isArray(res?.data?.notifications) ? res.data.notifications : []));
-        console.log("notifications list", list)
-        // Optional: group by date labels "Today" and "Yesterday"
-        const today = new Date();
-        const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-        const startOfYesterday = startOfToday - 24 * 60 * 60 * 1000;
 
-        const todayItems: any[] = [];
-        const yesterdayItems: any[] = [];
-        const olderItems: any[] = [];
+  selectedNotificationItem:
+    any | null = null;
 
-        for (const n of list) {
-          const ts = new Date(n.created_at || n.timestamp || n.date || Date.now()).getTime();
-          if (ts >= startOfToday) todayItems.push(n);
-          else if (ts >= startOfYesterday) yesterdayItems.push(n);
-          else olderItems.push(n);
-        }
 
-        const grouped: Array<{ day: string, items: any[] }> = [];
-        if (todayItems.length) grouped.push({ day: 'Today', items: todayItems });
-        if (yesterdayItems.length) grouped.push({ day: 'Yesterday', items: yesterdayItems });
-        if (olderItems.length) grouped.push({ day: 'Earlier', items: olderItems });
-        this.notifications = grouped;
-      },
-      error: (err) => {
-        console.error('Failed to load notifications', err);
-        this.notifications = [];
-      }
-    });
+  notifications:
+    Array<{
+      day: string;
+      items: any[];
+    }> = [];
+
+
+  loadingNotifications:
+    boolean = true;
+
+
+  constructor(
+    private auth: AuthserviceService,
+    private navCtrl: NavController
+  ) {}
+
+
+  /* =====================================================
+     INIT
+  ===================================================== */
+
+  ngOnInit(): void {
+
+    this.loadNotifications();
+
   }
 
-  showDetails(day: string, idx: number) {
-    this.selectedNotification = { day, idx };
-    const group = this.notifications.find(g => g.day === day);
-    this.selectedNotificationItem = group && group.items ? group.items[idx] : null;
 
-    // Optimistically mark as read in UI and notify backend
-    const item = this.selectedNotificationItem;
-    if (item && item.is_read === 0 && item.id) {
-      item.is_read = 1;
-      this.auth.markNotificationRead(item.id).subscribe({
-        error: () => {
-          // roll back if backend fails
-          item.is_read = 0;
-        }
-      });
+  /* =====================================================
+     LOAD NOTIFICATIONS
+  ===================================================== */
+
+  private loadNotifications(): void {
+
+    const userId =
+      localStorage.getItem(
+        'user_id'
+      ) || '';
+
+
+    if (!userId) {
+
+      this.notifications = [];
+
+      this.loadingNotifications =
+        false;
+
+      return;
+
     }
+
+
+    this.loadingNotifications =
+      true;
+
+
+    this.auth
+      .getUserNotifications(
+        userId
+      )
+      .subscribe({
+
+        next: (
+          response: any
+        ) => {
+
+          const list =
+            this.normalizeNotifications(
+              response
+            );
+
+
+          this.notifications =
+            this.groupNotifications(
+              list
+            );
+
+
+          this.loadingNotifications =
+            false;
+
+        },
+
+
+        error: (
+          error: any
+        ) => {
+
+          console.error(
+            'Failed to load notifications:',
+            error
+          );
+
+
+          this.notifications = [];
+
+
+          this.loadingNotifications =
+            false;
+
+        }
+
+      });
+
   }
 
-  closeDetails() {
-    this.selectedNotification = null;
-    this.selectedNotificationItem = null;
+
+  /* =====================================================
+     NORMALIZE API RESPONSE
+  ===================================================== */
+
+  private normalizeNotifications(
+    response: any
+  ): any[] {
+
+    let list: any[] = [];
+
+
+    if (
+      Array.isArray(
+        response
+      )
+    ) {
+
+      list =
+        response;
+
+    } else if (
+      Array.isArray(
+        response?.data
+      )
+    ) {
+
+      list =
+        response.data;
+
+    } else if (
+      Array.isArray(
+        response?.data?.notifications
+      )
+    ) {
+
+      list =
+        response.data.notifications;
+
+    }
+
+
+    /*
+     * Newest notifications first.
+     */
+    return [
+      ...list
+    ].sort(
+      (
+        first: any,
+        second: any
+      ) => {
+
+        return (
+          this.getNotificationTime(
+            second
+          ) -
+          this.getNotificationTime(
+            first
+          )
+        );
+
+      }
+    );
+
   }
-  goBack() {
-    this.navCtrl.navigateBack('/home');
+
+
+  /* =====================================================
+     GROUP NOTIFICATIONS
+  ===================================================== */
+
+  private groupNotifications(
+    list: any[]
+  ): Array<{
+    day: string;
+    items: any[];
+  }> {
+
+    const now =
+      new Date();
+
+
+    const startOfToday =
+      new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+      ).getTime();
+
+
+    const startOfYesterday =
+      startOfToday -
+      (
+        24 *
+        60 *
+        60 *
+        1000
+      );
+
+
+    const todayItems:
+      any[] = [];
+
+
+    const yesterdayItems:
+      any[] = [];
+
+
+    const olderItems:
+      any[] = [];
+
+
+    for (
+      const notification
+      of list
+    ) {
+
+      const timestamp =
+        this.getNotificationTime(
+          notification
+        );
+
+
+      if (
+        timestamp >=
+        startOfToday
+      ) {
+
+        todayItems.push(
+          notification
+        );
+
+      } else if (
+        timestamp >=
+        startOfYesterday
+      ) {
+
+        yesterdayItems.push(
+          notification
+        );
+
+      } else {
+
+        olderItems.push(
+          notification
+        );
+
+      }
+
+    }
+
+
+    const grouped:
+      Array<{
+        day: string;
+        items: any[];
+      }> = [];
+
+
+    if (
+      todayItems.length
+    ) {
+
+      grouped.push({
+        day: 'Today',
+        items: todayItems
+      });
+
+    }
+
+
+    if (
+      yesterdayItems.length
+    ) {
+
+      grouped.push({
+        day: 'Yesterday',
+        items: yesterdayItems
+      });
+
+    }
+
+
+    if (
+      olderItems.length
+    ) {
+
+      grouped.push({
+        day: 'Earlier',
+        items: olderItems
+      });
+
+    }
+
+
+    return grouped;
+
   }
+
+
+  /* =====================================================
+     NOTIFICATION TIME
+  ===================================================== */
+
+  private getNotificationTime(
+    notification: any
+  ): number {
+
+    const value =
+      notification?.created_at ||
+      notification?.timestamp ||
+      notification?.date;
+
+
+    if (!value) {
+
+      return 0;
+
+    }
+
+
+    const timestamp =
+      new Date(
+        value
+      ).getTime();
+
+
+    if (
+      Number.isNaN(
+        timestamp
+      )
+    ) {
+
+      return 0;
+
+    }
+
+
+    return timestamp;
+
+  }
+
+
+  /* =====================================================
+     UNREAD CHECK
+  ===================================================== */
+
+  isUnread(
+    value: any
+  ): boolean {
+
+    return (
+      Number(value) === 0
+    );
+
+  }
+
+
+  /* =====================================================
+     SHOW DETAILS
+  ===================================================== */
+
+  showDetails(
+    day: string,
+    idx: number
+  ): void {
+
+    const group =
+      this.notifications.find(
+        notificationGroup =>
+          notificationGroup.day === day
+      );
+
+
+    if (
+      !group ||
+      !group.items ||
+      !group.items[idx]
+    ) {
+
+      return;
+
+    }
+
+
+    this.selectedNotification = {
+      day,
+      idx
+    };
+
+
+    this.selectedNotificationItem =
+      group.items[idx];
+
+
+    const item =
+      this.selectedNotificationItem;
+
+
+    /*
+     * Mark unread notification as read.
+     */
+    if (
+      item &&
+      this.isUnread(
+        item.is_read
+      ) &&
+      item.id
+    ) {
+
+      /*
+       * Update immediately in UI.
+       */
+      item.is_read = 1;
+
+
+      this.auth
+        .markNotificationRead(
+          item.id
+        )
+        .subscribe({
+
+          next: (
+            response: any
+          ) => {
+
+            console.log(
+              'Notification marked as read:',
+              response
+            );
+
+          },
+
+
+          error: (
+            error: any
+          ) => {
+
+            console.error(
+              'Unable to mark notification as read:',
+              error
+            );
+
+
+            /*
+             * Restore unread state
+             * if API request fails.
+             */
+            item.is_read = 0;
+
+          }
+
+        });
+
+    }
+
+  }
+
+
+  /* =====================================================
+     CLOSE DETAILS
+  ===================================================== */
+
+  closeDetails(): void {
+
+    this.selectedNotification =
+      null;
+
+
+    this.selectedNotificationItem =
+      null;
+
+  }
+
+
+  /* =====================================================
+     BACK
+  ===================================================== */
+
+  goBack(): void {
+
+    /*
+     * If detail is open,
+     * return to notification list first.
+     */
+    if (
+      this.selectedNotification
+    ) {
+
+      this.closeDetails();
+
+      return;
+
+    }
+
+
+    /*
+     * Otherwise return to Home.
+     */
+    this.navCtrl.navigateBack(
+      '/home'
+    );
+
+  }
+
+
+  /* =====================================================
+     TRACK GROUP
+  ===================================================== */
+
+  trackByGroup(
+    index: number,
+    group: {
+      day: string;
+      items: any[];
+    }
+  ): string {
+
+    if (
+      group &&
+      group.day
+    ) {
+
+      return group.day;
+
+    }
+
+
+    return String(
+      index
+    );
+
+  }
+
+
+  /* =====================================================
+     TRACK NOTIFICATION
+  ===================================================== */
+
+  trackByNotification(
+    index: number,
+    notification: any
+  ): any {
+
+    if (
+      notification?.id !==
+      undefined &&
+      notification?.id !==
+      null
+    ) {
+
+      return notification.id;
+
+    }
+
+
+    if (
+      notification?.notification_id !==
+      undefined &&
+      notification?.notification_id !==
+      null
+    ) {
+
+      return notification.notification_id;
+
+    }
+
+
+    return (
+      `${notification?.created_at || 'notification'}-${index}`
+    );
+
+  }
+
 }

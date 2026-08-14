@@ -1,58 +1,259 @@
-<ion-header class="custom-header" [translucent]="false">
-  <div class="header-container">
-    <button class="back-btn" (click)="goBack()">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
-    </button>
-    <h1 class="header-title">Notifications</h1>
-    <div class="header-right-placeholder"></div>
-  </div>
-</ion-header>
+<ion-header
+  class="custom-header"
+  [translucent]="false">
 
-<ion-content>
-  <div class="outer_box_padding">
+  <ion-toolbar>
 
-    <!-- Details view -->
-    <div *ngIf="selectedNotification; else notificationList">
-      <div class="notification-detail-card">
-        <div class="notification-detail-header">
-          <p class="notification-title">{{ selectedNotificationItem?.title || 'Notification' }}</p>
-        </div>
-        <div class="notification-detail-body">
-          <p class="notification-description">{{ selectedNotificationItem?.message || '-' }}</p>
-        </div>
-        <p class="notification-time">{{ selectedNotificationItem?.created_at | date:'short' }}</p>
-      </div>
+    <div class="header-container">
+
+      <button
+        type="button"
+        class="back-btn"
+        (click)="goBack()"
+        aria-label="Go back">
+
+        <i
+          class="fa fa-chevron-left"
+          aria-hidden="true">
+        </i>
+
+      </button>
+
+
+      <h1 class="header-title">
+        {{ selectedNotification ? 'Notification Details' : 'Notifications' }}
+      </h1>
+
+
+      <div class="header-right-placeholder"></div>
+
     </div>
 
-    <!-- Notification list -->
-    <ng-template #notificationList>
-      <div *ngIf="notifications.length === 0" class="no-data-container">
-        <div class="empty-icon-wrapper">
-          <i class="fa fa-bell-slash" aria-hidden="true"></i>
-        </div>
-        <h3>No notifications yet</h3>
-        <p>We'll notify you when you receive new updates, orders, or announcements.</p>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content [fullscreen]="true">
+
+  <div class="outer_box_padding">
+
+    <!-- =========================================
+         LOADING
+    ========================================== -->
+
+    <div
+      *ngIf="loadingNotifications"
+      class="notification-loading">
+
+      <div class="loading-icon-wrapper">
+
+        <ion-spinner
+          name="crescent"
+          class="notification-spinner">
+        </ion-spinner>
+
       </div>
 
-      <div *ngFor="let group of notifications" class="day-section">
-        <div class="day-header">
-          <p class="day-text">{{ group.day }}</p>
-          <div class="day-line"></div>
-        </div>
+      <p>
+        Loading notifications...
+      </p>
 
-        <div *ngFor="let n of group.items; let idx = index" class="notification-item"
-          [ngClass]="{'unread': n.is_read === 0}" (click)="showDetails(group.day, idx)">
-          <img src="../../assets/home/ringBell_icon.svg" class="bell-icon" alt="Bell">
-          <div class="notification-info">
-            <div class="notification-top">
-              <p class="notification-title-text">{{ n.title || n.type || 'Notification' }}</p>
-              <span class="notification-time-text">{{ n.created_at | date:'shortTime' }}</span>
-            </div>
-            <p class="notification-message">{{ n.message || n.description || '-' }}</p>
+    </div>
+
+
+    <!-- =========================================
+         DETAIL VIEW
+    ========================================== -->
+
+    <div
+      *ngIf="
+        !loadingNotifications &&
+        selectedNotification;
+        else notificationList
+      ">
+
+      <div class="notification-detail-card">
+
+        <div class="notification-detail-header">
+
+          <div class="detail-bell-wrapper">
+
+            <img
+              src="../../assets/home/ringBell_icon.svg"
+              class="bell-icon"
+              alt="Notification"
+              loading="eager">
+
           </div>
+
+
+          <div class="detail-title-wrapper">
+
+            <p class="notification-title">
+              {{
+                selectedNotificationItem?.title ||
+                selectedNotificationItem?.type ||
+                'Notification'
+              }}
+            </p>
+
+            <span class="detail-status">
+              Notification
+            </span>
+
+          </div>
+
         </div>
+
+
+        <div class="notification-detail-body">
+
+          <p class="notification-description">
+            {{
+              selectedNotificationItem?.message ||
+              selectedNotificationItem?.description ||
+              '-'
+            }}
+          </p>
+
+        </div>
+
+
+        <p class="notification-time">
+
+          <i
+            class="fa fa-clock-o"
+            aria-hidden="true">
+          </i>
+
+          {{
+            selectedNotificationItem?.created_at
+              | date:'medium'
+          }}
+
+        </p>
+
       </div>
+
+    </div>
+
+
+    <!-- =========================================
+         NOTIFICATION LIST
+    ========================================== -->
+
+    <ng-template #notificationList>
+
+      <ng-container *ngIf="!loadingNotifications">
+
+        <!-- Empty State -->
+
+        <div
+          *ngIf="notifications.length === 0"
+          class="no-data-container">
+
+          <div class="empty-icon-wrapper">
+
+            <i
+              class="fa fa-bell-slash"
+              aria-hidden="true">
+            </i>
+
+          </div>
+
+          <h3>
+            No notifications yet
+          </h3>
+
+          <p>
+            We'll notify you when you receive new updates,
+            orders, or announcements.
+          </p>
+
+        </div>
+
+
+        <!-- Notification Groups -->
+
+        <div
+          *ngFor="
+            let group of notifications;
+            trackBy: trackByGroup
+          "
+          class="day-section">
+
+          <div class="day-header">
+
+            <p class="day-text">
+              {{ group.day }}
+            </p>
+
+            <div class="day-line"></div>
+
+          </div>
+
+
+          <!-- Notification Item -->
+
+          <div
+            *ngFor="
+              let n of group.items;
+              let idx = index;
+              trackBy: trackByNotification
+            "
+            class="notification-item"
+            [ngClass]="{
+              'unread': isUnread(n.is_read)
+            }"
+            (click)="showDetails(group.day, idx)">
+
+            <img
+              src="../../assets/home/ringBell_icon.svg"
+              class="bell-icon"
+              alt="Notification"
+              loading="eager">
+
+            <div class="notification-info">
+
+              <div class="notification-top">
+
+                <p class="notification-title-text">
+                  {{
+                    n.title ||
+                    n.type ||
+                    'Notification'
+                  }}
+                </p>
+
+                <span class="notification-time-text">
+                  {{ n.created_at | date:'shortTime' }}
+                </span>
+
+              </div>
+
+
+              <p class="notification-message">
+                {{
+                  n.message ||
+                  n.description ||
+                  '-'
+                }}
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </ng-container>
+
     </ng-template>
+
   </div>
+
 </ion-content>
+
+
 <app-footer-tabs></app-footer-tabs>

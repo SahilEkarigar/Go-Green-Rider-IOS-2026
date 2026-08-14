@@ -1,29 +1,48 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit
+} from '@angular/core';
+
+import {
+  CommonModule
+} from '@angular/common';
+
+import {
+  Router
+} from '@angular/router';
+
 import {
   IonicModule,
-  LoadingController,
-  ModalController
+  LoadingController
 } from '@ionic/angular';
 
-import { FormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { Storage } from '@ionic/storage-angular';
-import { filter } from 'rxjs';
-
-import { FooterTabsComponent } from '../components/footer-tabs/footer-tabs.component';
-import { AuthserviceService } from '../services/authservice.service';
-import { AppComponent } from '../app.component';
-import { OrderStateService } from '../services/order-state';
-import { UserService } from '../services/user.service';
-import { OrderAcceptedComponent } from '../components/order-accepted/order-accepted.component';
+import {
+  Storage
+} from '@ionic/storage-angular';
 
 import {
-  chevronUpOutline,
-  chevronDownOutline
-} from 'ionicons/icons';
+  filter,
+  Subject,
+  takeUntil
+} from 'rxjs';
 
-import { addIcons } from 'ionicons';
+import {
+  FooterTabsComponent
+} from '../components/footer-tabs/footer-tabs.component';
+
+import {
+  AuthserviceService
+} from '../services/authservice.service';
+
+import {
+  OrderStateService
+} from '../services/order-state';
+
+import {
+  UserService
+} from '../services/user.service';
+
 
 @Component({
   selector: 'app-home',
@@ -32,392 +51,936 @@ import { addIcons } from 'ionicons';
   standalone: true,
   imports: [
     IonicModule,
-    FormsModule,
     CommonModule,
     FooterTabsComponent
   ],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
 
   isActive = false;
   isScrolled = false;
 
-  selectedTab: 'receive' | 'completed' = 'receive';
+  selectedTab:
+    'receive' | 'completed' =
+    'receive';
 
-  user: any = '';
+  user: any = {
+    data: {}
+  };
+
   user_id: any;
 
   receivedOrders: any[] = [];
   completedOrders: any[] = [];
 
   orderExpanded: {
-    [orderId: string]:
-    { [section: string]: boolean } | undefined
+    [orderId: string]: {
+      [section: string]: boolean;
+    } | undefined;
   } = {};
 
-  loading: HTMLIonLoadingElement | null = null;
+  loading:
+    HTMLIonLoadingElement | null =
+    null;
 
-  private readonly refreshTimeout = 10000;
+  statusUpdating = false;
+
+  private readonly refreshTimeout =
+    10000;
+
+  private readonly loaderDelay =
+    250;
+
+  private loadingDelayTimer:
+    ReturnType<typeof setTimeout> | null =
+    null;
+
+  private loaderRequested =
+    false;
+
+  private readonly destroy$ =
+    new Subject<void>();
+
 
   constructor(
     private router: Router,
     private storage: Storage,
     private userService: UserService,
     private loadingCtrl: LoadingController,
-    private modalCtrl: ModalController,
     private authservice: AuthserviceService,
-    private appComponent: AppComponent,
     private orderStateService: OrderStateService
-  ) {
-    addIcons({
-      'chevron-up-outline': chevronUpOutline,
-      'chevron-down-outline': chevronDownOutline,
-    });
-  }
+  ) {}
 
-  async ngOnInit() {
+
+  /* =====================================================
+     INIT
+  ===================================================== */
+
+  async ngOnInit():
+    Promise<void> {
+
     await this.storage.create();
 
-    this.user_id = await this.storage.get('user_id');
 
-    // Load initial orders
-    await this.loadData();
+    this.user_id =
+      await this.storage.get(
+        'user_id'
+      );
 
-    // Subscribe to user updates
+
+    /*
+     * Subscribe before refreshing/loading page data,
+     * allowing the header to update as soon as user data
+     * is available.
+     */
     this.userService.user$
-      .pipe(filter(user => !!user))
+      .pipe(
+        filter(user => !!user),
+        takeUntil(this.destroy$)
+      )
       .subscribe(user => {
-        this.user = user;
 
-        if (this.user?.data?.status !== undefined) {
+        this.user =
+          user;
+
+
+        if (
+          this.user?.data?.status !==
+          undefined
+        ) {
+
           this.isActive =
-            Number(this.user.data.status) === 1;
+            Number(
+              this.user.data.status
+            ) === 1;
+
         }
+
       });
 
-    // Listen for new accepted orders
-    this.orderStateService.acceptedOrder$
+
+    /*
+     * Accepted orders from the app state.
+     */
+    this.orderStateService
+      .acceptedOrder$
+      .pipe(
+        takeUntil(this.destroy$)
+      )
       .subscribe(order => {
-        if (order) {
-          this.receivedOrders = [
-            order,
-            ...this.receivedOrders
-          ];
 
-          this.selectedTab = 'receive';
-        }
-      });
-  }
-
-  /**
-   * Load received and completed orders.
-   *
-   * During a pull-to-refresh event, the normal page loader
-   * will not be displayed. The refresher is completed from
-   * handleRefresh().
-   */
-  async loadData(event?: any): Promise<void> {
-    if (!event) {
-      await this.showLoading();
-    }
-
-    return new Promise<void>((resolve) => {
-      let requestFinished = false;
-
-      const finishRequest = async () => {
-        if (requestFinished) {
+        if (!order) {
           return;
         }
 
-        requestFinished = true;
 
-        clearTimeout(safetyTimeout);
+        const orderId =
+          String(
+            order.order_id ??
+            order.order_uid ??
+            ''
+          );
 
-        if (!event) {
-          await this.hideLoading();
-        }
 
-        resolve();
-      };
+        /*
+         * Prevent duplicate order cards.
+         */
+        this.receivedOrders =
+          this.receivedOrders.filter(
+            existingOrder => {
 
-      /*
-       * Safety timeout:
-       * Prevents the refresh spinner from remaining active
-       * when the request does not respond on a real device.
-       */
-      const safetyTimeout = setTimeout(async () => {
-        console.warn(
-          'Orders request timed out. Closing loader.'
-        );
+              const existingId =
+                String(
+                  existingOrder.order_id ??
+                  existingOrder.order_uid ??
+                  ''
+                );
 
-        await finishRequest();
-      }, this.refreshTimeout);
 
-      this.authservice
-        .getReceivedOrders(this.user_id)
-        .subscribe({
-          next: async (orders: any[]) => {
-            const orderList =
-              Array.isArray(orders) ? orders : [];
+              return (
+                !orderId ||
+                existingId !== orderId
+              );
 
-            this.receivedOrders = orderList.filter(
-              order =>
-                Number(order.rider_status) === 2 ||
-                Number(order.rider_status) === 3
-            );
+            }
+          );
 
-            this.completedOrders = orderList.filter(
-              order =>
-                Number(order.rider_status) === 4
-            );
 
-            await finishRequest();
-          },
+        this.receivedOrders = [
+          order,
+          ...this.receivedOrders
+        ];
 
-          error: async (error: any) => {
-            console.error(
-              'Error fetching orders:',
-              error
-            );
 
-            await finishRequest();
-          }
-        });
-    });
+        this.selectedTab =
+          'receive';
+
+      });
+
+
+    await this.loadData();
+
   }
 
-  /**
-   * Pull-to-refresh handler.
-   *
-   * The refresher is always completed inside finally,
-   * regardless of API success, failure or timeout.
-   */
-  async handleRefresh(event: any) {
+
+  /* =====================================================
+     DESTROY
+  ===================================================== */
+
+  ngOnDestroy(): void {
+
+    this.destroy$.next();
+    this.destroy$.complete();
+
+
+    this.loaderRequested =
+      false;
+
+
+    this.cancelLoadingDelay();
+
+
+    void this.hideLoading();
+
+  }
+
+
+  /* =====================================================
+     LOAD ORDERS
+  ===================================================== */
+
+  async loadData(
+    event?: any
+  ): Promise<void> {
+
+    if (!event) {
+
+      this.scheduleLoading();
+
+    }
+
+
+    return new Promise<void>(
+      resolve => {
+
+        let requestFinished =
+          false;
+
+
+        let safetyTimeout:
+          ReturnType<typeof setTimeout>;
+
+
+        const finishRequest =
+          async (): Promise<void> => {
+
+            if (
+              requestFinished
+            ) {
+              return;
+            }
+
+
+            requestFinished =
+              true;
+
+
+            clearTimeout(
+              safetyTimeout
+            );
+
+
+            if (!event) {
+
+              this.loaderRequested =
+                false;
+
+
+              this.cancelLoadingDelay();
+
+
+              await this.hideLoading();
+
+            }
+
+
+            resolve();
+
+          };
+
+
+        /*
+         * Safety timeout prevents a hanging API from
+         * leaving pull-to-refresh or loading UI active.
+         */
+        safetyTimeout =
+          setTimeout(
+            async () => {
+
+              console.warn(
+                'Orders request timed out.'
+              );
+
+
+              await finishRequest();
+
+            },
+            this.refreshTimeout
+          );
+
+
+        this.authservice
+          .getReceivedOrders(
+            this.user_id
+          )
+          .subscribe({
+
+            next: async (
+              orders: any[]
+            ) => {
+
+              const orderList =
+                Array.isArray(orders)
+                  ? orders
+                  : [];
+
+
+              this.receivedOrders =
+                orderList.filter(
+                  order =>
+                    Number(
+                      order.rider_status
+                    ) === 2 ||
+                    Number(
+                      order.rider_status
+                    ) === 3
+                );
+
+
+              this.completedOrders =
+                orderList.filter(
+                  order =>
+                    Number(
+                      order.rider_status
+                    ) === 4
+                );
+
+
+              await finishRequest();
+
+            },
+
+
+            error: async (
+              error: any
+            ) => {
+
+              console.error(
+                'Error fetching orders:',
+                error
+              );
+
+
+              await finishRequest();
+
+            }
+
+          });
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     REFRESH
+  ===================================================== */
+
+  async handleRefresh(
+    event: any
+  ): Promise<void> {
+
     try {
+
       await Promise.allSettled([
-        this.loadData(event),
+
+        this.loadData(
+          event
+        ),
+
 
         this.promiseWithTimeout(
           Promise.resolve(
-            this.userService.refreshUserData()
+            this.userService
+              .refreshUserData()
           ),
           this.refreshTimeout
         )
+
       ]);
+
     } catch (error) {
+
       console.error(
         'Refresh error:',
         error
       );
+
     } finally {
-      await this.completeRefresher(event);
+
+      await this.completeRefresher(
+        event
+      );
+
     }
+
   }
 
-  /**
-   * Force a promise to finish after the specified time.
-   * This prevents refreshUserData() from keeping the
-   * pull-to-refresh spinner open indefinitely.
-   */
+
+  /* =====================================================
+     PROMISE TIMEOUT
+  ===================================================== */
+
   private promiseWithTimeout<T>(
     promise: Promise<T>,
     timeoutDuration: number
   ): Promise<T | null> {
+
     return new Promise<T | null>(
       (resolve, reject) => {
-        const timer = setTimeout(() => {
-          console.warn(
-            'User refresh request timed out.'
-          );
 
-          resolve(null);
-        }, timeoutDuration);
+        const timer =
+          setTimeout(() => {
+
+            console.warn(
+              'User refresh request timed out.'
+            );
+
+
+            resolve(
+              null
+            );
+
+          }, timeoutDuration);
+
 
         promise
-          .then((result) => {
-            clearTimeout(timer);
-            resolve(result);
+          .then(result => {
+
+            clearTimeout(
+              timer
+            );
+
+
+            resolve(
+              result
+            );
+
           })
-          .catch((error) => {
-            clearTimeout(timer);
-            reject(error);
+          .catch(error => {
+
+            clearTimeout(
+              timer
+            );
+
+
+            reject(
+              error
+            );
+
           });
+
       }
     );
+
   }
 
-  /**
-   * Safely close the Ionic refresher.
-   */
+
+  /* =====================================================
+     COMPLETE REFRESHER
+  ===================================================== */
+
   private async completeRefresher(
     event: any
   ): Promise<void> {
+
     try {
+
       if (
         event?.target &&
-        typeof event.target.complete === 'function'
+        typeof event.target.complete ===
+          'function'
       ) {
+
         await event.target.complete();
+
         return;
+
       }
 
-      /*
-       * Fallback for devices where the refresher
-       * complete method is available under event.detail.
-       */
+
       if (
         event?.detail &&
-        typeof event.detail.complete === 'function'
+        typeof event.detail.complete ===
+          'function'
       ) {
+
         await event.detail.complete();
+
       }
+
     } catch (error) {
+
       console.warn(
         'Unable to complete refresher:',
         error
       );
+
     }
+
   }
 
-  /**
-   * Centralized loading functions.
-   */
-  private async showLoading() {
-    /*
-     * Check whether Ionic already has an active loader.
-     */
-    const activeLoader =
-      await this.loadingCtrl.getTop();
 
-    if (activeLoader) {
-      this.loading = activeLoader;
-      return;
-    }
+  /* =====================================================
+     DELAYED LOADER
+  ===================================================== */
 
-    if (this.loading) {
-      return;
-    }
+  private scheduleLoading():
+    void {
 
-    this.loading = await this.loadingCtrl.create({
-      message: 'Please wait...',
-      spinner: 'bubbles'
-    });
+    this.cancelLoadingDelay();
 
-    /*
-     * Reset the stored loading reference whenever
-     * the loader is dismissed.
-     */
-    this.loading
-      .onDidDismiss()
-      .then(() => {
-        this.loading = null;
-      });
 
-    await this.loading.present();
+    this.loaderRequested =
+      true;
+
+
+    this.loadingDelayTimer =
+      setTimeout(() => {
+
+        this.loadingDelayTimer =
+          null;
+
+
+        void this.showLoading();
+
+      }, this.loaderDelay);
+
   }
 
-  private async hideLoading() {
+
+  private cancelLoadingDelay():
+    void {
+
+    if (
+      this.loadingDelayTimer
+    ) {
+
+      clearTimeout(
+        this.loadingDelayTimer
+      );
+
+
+      this.loadingDelayTimer =
+        null;
+
+    }
+
+  }
+
+
+  private async showLoading():
+    Promise<void> {
+
+    if (
+      !this.loaderRequested ||
+      this.loading
+    ) {
+
+      return;
+
+    }
+
+
     try {
-      const activeLoader =
-        await this.loadingCtrl.getTop();
 
-      if (activeLoader) {
-        await activeLoader.dismiss();
+      const loader =
+        await this.loadingCtrl.create({
+
+          message:
+            'Loading orders...',
+
+          spinner:
+            'crescent',
+
+          cssClass:
+            'home-loading'
+
+        });
+
+
+      /*
+       * API may have completed while Ionic was creating
+       * the loader.
+       */
+      if (
+        !this.loaderRequested
+      ) {
+
+        return;
+
       }
+
+
+      this.loading =
+        loader;
+
+
+      loader
+        .onDidDismiss()
+        .then(() => {
+
+          if (
+            this.loading === loader
+          ) {
+
+            this.loading =
+              null;
+
+          }
+
+        });
+
+
+      await loader.present();
+
+
+      /*
+       * Request may finish immediately after present().
+       */
+      if (
+        !this.loaderRequested
+      ) {
+
+        await this.hideLoading();
+
+      }
+
     } catch (error) {
+
       console.warn(
-        'Loader was already dismissed:',
+        'Unable to show loader:',
         error
       );
-    } finally {
-      this.loading = null;
+
+
+      this.loading =
+        null;
+
     }
+
   }
 
-  // Header scroll effect
-  onScroll(event: any) {
+
+  private async hideLoading():
+    Promise<void> {
+
+    const loader =
+      this.loading;
+
+
+    this.loading =
+      null;
+
+
+    if (!loader) {
+
+      return;
+
+    }
+
+
+    try {
+
+      await loader.dismiss();
+
+    } catch {
+
+      /*
+       * Loader may already be dismissed.
+       */
+
+    }
+
+  }
+
+
+  /* =====================================================
+     HEADER SCROLL
+  ===================================================== */
+
+  onScroll(
+    event: any
+  ): void {
+
     const scrollTop =
-      event.detail.scrollTop;
+      Number(
+        event?.detail?.scrollTop ||
+        0
+      );
 
-    this.isScrolled = scrollTop > 10;
+
+    this.isScrolled =
+      scrollTop > 10;
+
   }
 
-  // Switch tabs
+
+  /* =====================================================
+     TAB
+  ===================================================== */
+
   selectTab(
-    tab: 'receive' | 'completed'
-  ) {
-    this.selectedTab = tab;
+    tab:
+      'receive' | 'completed'
+  ): void {
+
+    this.selectedTab =
+      tab;
+
   }
 
-  async setStatus(status: boolean) {
-    // Update UI immediately
-    this.isActive = status;
+
+  /* =====================================================
+     RIDER STATUS
+  ===================================================== */
+
+  setStatus(
+    status: boolean
+  ): void {
+
+    /*
+     * Avoid duplicate requests when the currently
+     * selected status is tapped repeatedly.
+     */
+    if (
+      this.statusUpdating ||
+      status === this.isActive
+    ) {
+
+      return;
+
+    }
+
+
+    const previousStatus =
+      this.isActive;
+
+
+    this.isActive =
+      status;
+
+
+    this.statusUpdating =
+      true;
+
 
     const payload = {
-      status: status,
-      user_id: this.user_id,
-      role_id: 4
+
+      status:
+        status,
+
+      user_id:
+        this.user_id,
+
+      role_id:
+        4
+
     };
 
+
     this.authservice
-      .updateStatusPayload(payload)
+      .updateStatusPayload(
+        payload
+      )
       .subscribe({
+
         next: response => {
+
+          this.statusUpdating =
+            false;
+
+
+          if (
+            this.user?.data
+          ) {
+
+            this.user.data.status =
+              status ? 1 : 0;
+
+          }
+
+
           console.log(
             'Status updated successfully:',
             response
           );
+
         },
 
+
         error: error => {
+
+          this.statusUpdating =
+            false;
+
+
+          this.isActive =
+            previousStatus;
+
+
           console.error(
             'Failed to update status:',
             error
           );
 
-          // Revert UI status if API fails
-          this.isActive = !status;
         }
+
       });
+
   }
 
-  navigateStoreDetails(order: any) {
-    console.log(
-      'Order details transferred to store page:',
-      order
-    );
+
+  /* =====================================================
+     STORE DETAILS
+  ===================================================== */
+
+  navigateStoreDetails(
+    order: any
+  ): void {
 
     this.router.navigate(
       ['/store-details'],
       {
         state: {
-          order: order
+          order
         }
       }
     );
+
   }
+
+
+  /* =====================================================
+     ACCORDION
+  ===================================================== */
 
   toggleSection(
     orderId: any,
     section: string
-  ) {
-    const id = String(orderId);
+  ): void {
 
-    if (!this.orderExpanded[id]) {
-      this.orderExpanded[id] = {};
+    const id =
+      String(
+        orderId
+      );
+
+
+    if (
+      !this.orderExpanded[id]
+    ) {
+
+      this.orderExpanded[id] =
+        {};
+
     }
 
-    this.orderExpanded[id][section] =
-      !this.orderExpanded[id][section];
+
+    const currentValue =
+      !!this.orderExpanded[id]?.[
+        section
+      ];
+
+
+    this.orderExpanded[id]![
+      section
+    ] = !currentValue;
+
   }
+
 
   isExpanded(
     orderId: any,
     section: string
   ): boolean {
+
     return !!this.orderExpanded[
       String(orderId)
-    ]?.[section];
-  }
-}
+    ]?.[
+      section
+    ];
 
+  }
+
+
+  /* =====================================================
+     IMAGE FALLBACK
+  ===================================================== */
+
+  handleAvatarError(
+    event: Event
+  ): void {
+
+    const image =
+      event.target;
+
+
+    if (
+      image instanceof HTMLImageElement
+    ) {
+
+      image.onerror =
+        null;
+
+
+      image.src =
+        '../../assets/home/rider_profile.png';
+
+    }
+
+  }
+
+
+  /* =====================================================
+     TRACK BY
+  ===================================================== */
+
+  trackByOrderId(
+    index: number,
+    order: any
+  ): any {
+
+    return (
+      order?.order_id ??
+      order?.order_uid ??
+      index
+    );
+
+  }
+
+
+  trackByItem(
+    index: number,
+    item: any
+  ): any {
+
+    return (
+      item?.order_item_id ??
+      item?.product_id ??
+      `${item?.product_name || 'item'}-${index}`
+    );
+
+  }
+
+}

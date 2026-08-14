@@ -1,249 +1,723 @@
-<ion-header [translucent]="false" class="settings-header">
+<ion-header
+  [translucent]="false"
+  class="settings-header">
+
+  <!-- Top Header -->
   <div class="header-content-top">
-    <!-- Rounded Back Button -->
-    <div (click)="goBackToHome()" class="back-circle-btn">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+
+    <div
+      class="back-circle-btn"
+      (click)="goBackToHome()">
+
+      <i
+        class="fa fa-chevron-left"
+        aria-hidden="true">
+      </i>
+
     </div>
 
-    <!-- Rating Star Badge -->
-    <!--<div class="rating-capsule-badge">
-      <span class="rating-val">4.5</span>
-      <img src="assets/home/Star 1.svg" class="star-icon" alt="star" />
-    </div>-->
   </div>
 
-  <!-- Profile Details Area inside Header -->
+
+  <!-- Profile -->
   <div class="profile-details-pane">
+
     <div class="profile-row">
+
       <div class="avatar-container">
+
         <img
-          [src]="user.data?.profile_pic && !user.data?.profile_pic.includes('maps.googleapis.com') ? user.data.profile_pic : defaultProfileImage"
-          (error)="onImageError($event)" class="profile-avatar-img" alt="Profile" (click)="openImageModal()" />
+          [src]="user.data?.profile_pic || defaultProfileImage"
+          class="profile-avatar-img"
+          alt="Rider profile"
+          loading="eager"
+          fetchpriority="high"
+          (error)="onImageError($event)">
+
       </div>
+
+
       <div class="profile-metadata">
-        <h6 class="profile-name">{{ user.data?.firstname }} {{ user.data?.lastname }}</h6>
-        <p class="profile-phone">{{ user.data?.prefix }} {{ user.data?.phonenumber }}</p>
+
+        <h2 class="profile-name">
+          {{ user.data?.firstname || 'Rider' }}
+          {{ user.data?.lastname || '' }}
+        </h2>
+
+
+        <p class="profile-phone">
+
+          <ng-container *ngIf="user.data?.phonenumber; else noPhone">
+
+            {{ user.data?.prefix || '' }}
+            {{ user.data?.phonenumber }}
+
+          </ng-container>
+
+
+          <ng-template #noPhone>
+            GoGreen Rider Account
+          </ng-template>
+
+        </p>
+
       </div>
+
     </div>
+
   </div>
+
 </ion-header>
 
-<ion-content class="settings-content">
-  <!-- Stats Quick Actions Row -->
-  <!--<div class="quick-stats-row">
-    <div class="stat-tile" (click)="goToWallet()">
-      <div class="icon-bubble green">
-        <img class="tile-icon-img" src="../../assets/home/parchment_17346265.svg" alt="Balance" />
-      </div>
-      <span class="tile-label">Balance & History</span>
-    </div>
 
-    <div class="stat-tile-divider"></div>
+<ion-content
+  [fullscreen]="true"
+  class="settings-content">
 
-    <div class="stat-tile">
-      <div class="icon-bubble darkgreen">
-        <img class="tile-icon-img" src="../../assets/home/wallet_2527572.svg" alt="Funds" />
-      </div>
-      <span class="tile-label">Funds Holder</span>
-    </div>
+  <!-- ==================================================
+       SETTINGS LIST
+  =================================================== -->
 
-    <div class="stat-tile-divider"></div>
-
-    <div class="stat-tile">
-      <div class="icon-bubble red">
-        <img class="tile-icon-img" src="../../assets/home/store_726569.svg" alt="Checkout" />
-      </div>
-      <span class="tile-label">Checkout Lane</span>
-    </div>
-  </div>-->
-
-  <!-- Navigation Cards List -->
   <div class="settings-cards-list">
 
-    <!-- 1. Personal Info -->
+
+    <!-- =================================================
+         1. PERSONAL INFO
+    ================================================== -->
+
     <div class="category-card">
-      <h3 class="category-title">Personal Info</h3>
+
+      <h3 class="category-title">
+        Personal Info
+      </h3>
+
+
       <div class="category-items">
-        <div class="settings-row-item" (click)="goToEditProfile()">
+
+
+        <!-- User Profile -->
+        <div
+          class="settings-row-item"
+          (click)="goToEditProfile()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper user"><i class="fa fa-user"></i></span>
-            <span class="item-text">User Profile</span>
+
+            <span class="item-icon-wrapper user">
+
+              <i
+                class="fa fa-user"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              User Profile
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="changePassword()">
+
+        <!-- Password -->
+        <div
+          class="settings-row-item"
+          (click)="changePassword()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper password"><i class="fa fa-unlock-alt"></i></span>
-            <span class="item-text">Change Password</span>
+
+            <span class="item-icon-wrapper password">
+
+              <i
+                class="fa fa-unlock-alt"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Change Password
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- 2. Vehicle Details -->
+
+    <!-- =================================================
+         2. VEHICLE DETAILS
+    ================================================== -->
+
     <div class="category-card">
-      <h3 class="category-title">Vehicle Details</h3>
+
+      <h3 class="category-title">
+        Vehicle Details
+      </h3>
+
+
       <div class="category-items">
-        <div class="settings-row-item" (click)="goToVehicleDetails()">
+
+
+        <!-- Vehicle -->
+        <div
+          class="settings-row-item"
+          (click)="goToVehicleDetails()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper info"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
-            <span class="item-text">Vehicle Details</span>
+
+            <span class="item-icon-wrapper info">
+
+              <i
+                class="fa fa-car"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Vehicle Details
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="goTostatus()">
+
+        <!-- Rider Status -->
+        <div
+          class="settings-row-item"
+          (click)="goTostatus()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper chart"><i class="fa fa-line-chart"></i></span>
-            <span class="item-text">Rider Status</span>
+
+            <span class="item-icon-wrapper chart">
+
+              <i
+                class="fa fa-line-chart"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Rider Status
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="showRiderDetailPage()">
+
+        <!-- Documentation -->
+        <div
+          class="settings-row-item"
+          (click)="showRiderDetailPage()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper chart"><i class="fa fa-line-chart"></i></span>
-            <span class="item-text">Rider Documentation</span>
+
+            <span class="item-icon-wrapper chart">
+
+              <i
+                class="fa fa-file-text-o"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Rider Documentation
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- 3. History / Analytics -->
-    <!--<div class="category-card">
-      <h3 class="category-title">History & Analytics</h3>
-      <div class="category-items">
-        <div class="settings-row-item" (click)="goToEditProfile()">
-          <div class="row-left">
-            <span class="item-icon-wrapper history"><i class="fa fa-list-alt"></i></span>
-            <span class="item-text">Orders History</span>
-          </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
-        </div>
 
-        <div class="row-divider"></div>
+    <!-- =================================================
+         3. WALLET
+    ================================================== -->
 
-        <div class="settings-row-item" (click)="goToAnalytics()">
-          <div class="row-left">
-            <span class="item-icon-wrapper chart"><i class="fa fa-line-chart"></i></span>
-            <span class="item-text">Analytics</span>
-          </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
-        </div>
-      </div>
-    </div>-->
-
-    <!-- 4. Wallet -->
     <div class="category-card">
-      <h3 class="category-title">Wallet</h3>
+
+      <h3 class="category-title">
+        Wallet
+      </h3>
+
+
       <div class="category-items">
-        <div class="settings-row-item" (click)="goToWallet()">
+
+
+        <!-- Balance -->
+        <div
+          class="settings-row-item"
+          (click)="goToWallet()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper wallet"><i class="fa fa-history" aria-hidden="true"></i></span>
-            <span class="item-text">Balance & History</span>
+
+            <span class="item-icon-wrapper wallet">
+
+              <i
+                class="fa fa-history"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Balance &amp; History
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="goTohistory()">
+
+        <!-- Withdrawal -->
+        <div
+          class="settings-row-item"
+          (click)="goTohistory()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper chart"><i class="fa fa-line-chart"></i></span>
-            <span class="item-text">Withdrawal History</span>
+
+            <span class="item-icon-wrapper history">
+
+              <i
+                class="fa fa-exchange"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Withdrawal History
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- 5. Banking Details -->
+
+    <!-- =================================================
+         4. BANKING DETAILS
+    ================================================== -->
+
     <div class="category-card">
-      <h3 class="category-title">Banking Details</h3>
+
+      <h3 class="category-title">
+        Banking Details
+      </h3>
+
+
       <div class="category-items">
-        <div class="settings-row-item" (click)="goTobank()">
+
+        <div
+          class="settings-row-item"
+          (click)="goTobank()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper bank"><i class="fa fa-university" aria-hidden="true"></i></span>
-            <span class="item-text">Bank Account Info</span>
+
+            <span class="item-icon-wrapper bank">
+
+              <i
+                class="fa fa-university"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Bank Account Info
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- 6. Support -->
+
+    <!-- =================================================
+         5. SUPPORT
+    ================================================== -->
+
     <div class="category-card">
-      <h3 class="category-title">Support</h3>
+
+      <h3 class="category-title">
+        Support
+      </h3>
+
+
       <div class="category-items">
-        <div class="settings-row-item" (click)="goTohelp()">
+
+
+        <!-- Contact Support -->
+        <div
+          class="settings-row-item"
+          (click)="goTohelp()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper support"><i class="fa fa-question-circle" aria-hidden="true"></i></span>
-            <span class="item-text">Contact Support</span>
+
+            <span class="item-icon-wrapper support">
+
+              <i
+                class="fa fa-question-circle"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Contact Support
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="goToFAQS()">
+
+        <!-- FAQs -->
+        <div
+          class="settings-row-item"
+          (click)="goToFAQS()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper chart"><i class="fa fa-line-chart"></i></span>
-            <span class="item-text">FAQs</span>
+
+            <span class="item-icon-wrapper chart">
+
+              <i
+                class="fa fa-comments-o"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              FAQs
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="goToTerms()">
+
+        <!-- Terms -->
+        <div
+          class="settings-row-item"
+          (click)="goToTerms()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper chart"><i class="fa fa-line-chart"></i></span>
-            <span class="item-text">Terms & Conditions</span>
+
+            <span class="item-icon-wrapper chart">
+
+              <i
+                class="fa fa-file-text-o"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Terms &amp; Conditions
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
 
         <div class="row-divider"></div>
 
-        <div class="settings-row-item" (click)="goToPrivacy()">
+
+        <!-- Privacy -->
+        <div
+          class="settings-row-item"
+          (click)="goToPrivacy()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper privacy"><i class="fa fa-lock" aria-hidden="true"></i></span>
-            <span class="item-text">Privacy Policy</span>
+
+            <span class="item-icon-wrapper privacy">
+
+              <i
+                class="fa fa-lock"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Privacy Policy
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- 7. Reviews -->
+
+    <!-- =================================================
+         6. REVIEWS
+    ================================================== -->
+
     <div class="category-card">
-      <h3 class="category-title">Reviews</h3>
+
+      <h3 class="category-title">
+        Reviews
+      </h3>
+
+
       <div class="category-items">
-        <div class="settings-row-item" (click)="goToRatings()">
+
+        <div
+          class="settings-row-item"
+          (click)="goToRatings()">
+
           <div class="row-left">
-            <span class="item-icon-wrapper star"><i class="fa fa-star" aria-hidden="true"></i></span>
-            <span class="item-text">Ratings & Reviews</span>
+
+            <span class="item-icon-wrapper star">
+
+              <i
+                class="fa fa-star"
+                aria-hidden="true">
+              </i>
+
+            </span>
+
+
+            <span class="item-text">
+              Ratings &amp; Reviews
+            </span>
+
           </div>
-          <span class="item-chevron"><i class="fa fa-angle-right"></i></span>
+
+
+          <span class="item-chevron">
+
+            <i
+              class="fa fa-angle-right"
+              aria-hidden="true">
+            </i>
+
+          </span>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- Logout Action Button -->
+
+    <!-- =================================================
+         LOGOUT
+    ================================================== -->
+
     <div class="logout-btn-container">
-      <button class="logout-btn" (click)="logoutUser()">
-        <i class="fa fa-sign-out" aria-hidden="true"></i>
-        Logout
+
+      <button
+        type="button"
+        class="logout-btn"
+        [disabled]="logoutLoading"
+        (click)="logoutUser()">
+
+        <ng-container *ngIf="!logoutLoading; else logoutTemplate">
+
+          <i
+            class="fa fa-sign-out"
+            aria-hidden="true">
+          </i>
+
+          Logout
+
+        </ng-container>
+
+
+        <ng-template #logoutTemplate>
+
+          <ion-spinner
+            name="crescent"
+            class="logout-spinner">
+          </ion-spinner>
+
+          <span>
+            Logging out...
+          </span>
+
+        </ng-template>
+
       </button>
+
     </div>
+
   </div>
+
 </ion-content>
+
+
+<app-footer-tabs></app-footer-tabs>

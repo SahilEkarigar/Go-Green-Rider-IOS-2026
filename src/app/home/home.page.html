@@ -1,335 +1,1069 @@
-<ion-header [translucent]="false" class="custom-header" [class.scrolled]="isScrolled">
+<ion-header
+  [translucent]="false"
+  class="custom-header"
+  [class.scrolled]="isScrolled">
+
   <ion-toolbar>
+
     <div class="header-container">
+
       <div class="profile-section">
+
+        <!-- Rider Profile -->
         <div class="rider-profile">
-          <img [src]="user.data?.profile_pic || '../../assets/home/rider_profile.png'" class="avatar-img"
-            alt="avatar" />
+
+          <img
+            [src]="user.data?.profile_pic || '../../assets/home/rider_profile.png'"
+            class="avatar-img"
+            alt="Rider profile"
+            loading="eager"
+            fetchpriority="high"
+            (error)="handleAvatarError($event)">
+
           <div class="profile-info">
-            <h2>{{ user.data?.firstname }} {{ user.data?.lastname }}</h2>
-            <p class="rider-address">{{ user.data?.address }}</p>
+
+            <h2>
+              {{ user.data?.firstname || 'Rider' }}
+              {{ user.data?.lastname || '' }}
+            </h2>
+
+            <p class="rider-address">
+              {{ user.data?.address || 'Your delivery dashboard' }}
+            </p>
+
           </div>
+
         </div>
 
+
+        <!-- Status -->
         <div class="status-toggle-box">
-          <p class="status-title">Store Status</p>
-          <div class="toggle-capsule" [class.active]="isActive">
+
+          <p class="status-title">
+            Store Status
+          </p>
+
+          <div
+            class="toggle-capsule"
+            [class.active]="isActive">
+
             <div class="toggle-slider"></div>
-            <div class="toggle-option offline" (click)="setStatus(false)">
+
+            <div
+              class="toggle-option offline"
+              (click)="setStatus(false)">
+
               Offline
+
             </div>
-            <div class="toggle-option online" (click)="setStatus(true)">
+
+            <div
+              class="toggle-option online"
+              (click)="setStatus(true)">
+
               Online
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   </ion-toolbar>
+
 </ion-header>
 
-<ion-content scrollEvents="true" (ionScroll)="onScroll($event)">
-  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
+
+<ion-content
+  scrollEvents="true"
+  (ionScroll)="onScroll($event)">
+
+  <!-- Pull To Refresh -->
+  <ion-refresher
+    slot="fixed"
+    (ionRefresh)="handleRefresh($event)">
+
+    <ion-refresher-content
+      pullingText="Pull to refresh"
+      refreshingSpinner="crescent">
+    </ion-refresher-content>
+
   </ion-refresher>
 
+
   <div class="main-container">
-    <!-- Tracking Details Section -->
+
+
+    <!-- ===============================================
+         TRACKING DETAILS
+    ================================================ -->
+
     <div class="tracking-section">
-      <h3 class="section-heading">Tracking Details</h3>
+
+      <h3 class="section-heading">
+        Tracking Details
+      </h3>
+
+
       <div class="metrics-card">
+
         <div class="metrics-grid">
+
+
           <!-- Total Orders -->
           <div class="metric-box">
+
             <div class="icon-wrapper total">
-              <img src="../../assets/home/total_earn_image.svg" alt="Total" />
+
+              <img
+                src="../../assets/home/total_earn_image.svg"
+                alt="Total orders">
+
             </div>
+
             <div class="metric-content">
-              <span class="metric-value">{{ user.data?.total_orders }}</span>
-              <span class="metric-label">Total Orders</span>
+
+              <span class="metric-value">
+                {{ user.data?.total_orders || 0 }}
+              </span>
+
+              <span class="metric-label">
+                Total Orders
+              </span>
+
             </div>
+
           </div>
 
+
           <div class="vertical-divider"></div>
+
 
           <!-- Completed Orders -->
           <div class="metric-box">
+
             <div class="icon-wrapper completed">
-              <img src="../../assets/home/total_orders_images.svg" alt="Completed" />
+
+              <img
+                src="../../assets/home/total_orders_images.svg"
+                alt="Completed orders">
+
             </div>
+
             <div class="metric-content">
-              <span class="metric-value">{{ user.data?.completed_orders }}</span>
-              <span class="metric-label">Completed Orders</span>
+
+              <span class="metric-value">
+                {{ user.data?.completed_orders || 0 }}
+              </span>
+
+              <span class="metric-label">
+                Completed Orders
+              </span>
+
             </div>
+
           </div>
+
 
           <div class="vertical-divider"></div>
 
+
           <!-- Rejected Orders -->
           <div class="metric-box">
+
             <div class="icon-wrapper rejected">
-              <img src="../../assets/home/pendingOrder.svg" alt="Pending" />
+
+              <img
+                src="../../assets/home/pendingOrder.svg"
+                alt="Rejected orders">
+
             </div>
+
             <div class="metric-content">
-              <span class="metric-value">{{ user.data?.rejected_orders }}</span>
-              <span class="metric-label">Rejected Orders</span>
+
+              <span class="metric-value">
+                {{ user.data?.rejected_orders || 0 }}
+              </span>
+
+              <span class="metric-label">
+                Rejected Orders
+              </span>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
 
-    <!-- Segmented Tab Switcher -->
+
+    <!-- ===============================================
+         TABS
+    ================================================ -->
+
     <div class="tabs-container">
+
       <div class="custom-segmented-control">
-        <button class="segment-btn" [class.active]="selectedTab === 'receive'" (click)="selectTab('receive')">
-          <img [src]="selectedTab === 'receive' 
-                ? '../../assets/home/resive_order_image.svg' 
-                : '../../assets/home/resive_order_image_black.svg'" class="segment-icon" />
-          <span>Receive Order</span>
+
+        <button
+          type="button"
+          class="segment-btn"
+          [class.active]="selectedTab === 'receive'"
+          (click)="selectTab('receive')">
+
+          <img
+            [src]="selectedTab === 'receive'
+              ? '../../assets/home/resive_order_image.svg'
+              : '../../assets/home/resive_order_image_black.svg'"
+            class="segment-icon"
+            alt="Receive orders">
+
+          <span>
+            Receive Order
+          </span>
+
         </button>
 
-        <button class="segment-btn" [class.active]="selectedTab === 'completed'" (click)="selectTab('completed')">
-          <img [src]="selectedTab === 'completed' 
-                ? '../../assets/home/total_orders_images.svg' 
-                : '../../assets/home/completed_icon_button.svg'" class="segment-icon" />
-          <span>Completed Order</span>
+
+        <button
+          type="button"
+          class="segment-btn"
+          [class.active]="selectedTab === 'completed'"
+          (click)="selectTab('completed')">
+
+          <img
+            [src]="selectedTab === 'completed'
+              ? '../../assets/home/total_orders_images.svg'
+              : '../../assets/home/completed_icon_button.svg'"
+            class="segment-icon"
+            alt="Completed orders">
+
+          <span>
+            Completed Order
+          </span>
+
         </button>
+
       </div>
+
     </div>
 
-    <!-- Receive Tab Content -->
-    <ng-container *ngIf="selectedTab === 'receive'">
-      <div class="orders-list-section">
-        <h3 class="orders-section-heading">New Orders</h3>
 
-        <div *ngIf="!receivedOrders || receivedOrders.length === 0" class="empty-state">
+    <!-- ===============================================
+         RECEIVE ORDERS
+    ================================================ -->
+
+    <ng-container *ngIf="selectedTab === 'receive'">
+
+      <div class="orders-list-section">
+
+        <h3 class="orders-section-heading">
+          New Orders
+        </h3>
+
+
+        <!-- Empty -->
+        <div
+          *ngIf="!receivedOrders || receivedOrders.length === 0"
+          class="empty-state">
+
           No orders found for this rider today.
+
         </div>
 
-        <div class="order-card" *ngFor="let order of receivedOrders">
+
+        <!-- Order Card -->
+        <div
+          class="order-card"
+          *ngFor="
+            let order of receivedOrders;
+            trackBy: trackByOrderId
+          ">
+
           <div class="card-accent-bar"></div>
 
+
+          <!-- Card Header -->
           <div class="order-card-header">
-            <span class="order-id">ID: <strong>{{ order.order_uid }}</strong></span>
-            <div class="delivery-badge" *ngIf="order.is_fast_delivery">
-              <img src="../../assets/home/fast_delavery_image.svg" class="badge-icon" />
-              <span>Fast Delivery</span>
+
+            <span class="order-id">
+
+              ID:
+              <strong>
+                {{ order.order_uid }}
+              </strong>
+
+            </span>
+
+
+            <div
+              class="delivery-badge"
+              *ngIf="order.is_fast_delivery">
+
+              <img
+                src="../../assets/home/fast_delavery_image.svg"
+                class="badge-icon"
+                alt="Fast delivery">
+
+              <span>
+                Fast Delivery
+              </span>
+
             </div>
+
           </div>
 
+
+          <!-- Meta -->
           <div class="order-meta-info">
+
             <div class="meta-item">
-              <span class="meta-label">Pick Time:</span>
-              <span class="meta-value highlight">{{ order.preparing_time }} min</span>
+
+              <span class="meta-label">
+                Pick Time:
+              </span>
+
+              <span class="meta-value highlight">
+                {{ order.preparing_time }} min
+              </span>
+
             </div>
-            <span class="order-time">{{ order.order_created_at | date:'shortTime' }}</span>
+
+
+            <span class="order-time">
+              {{ order.order_created_at | date:'shortTime' }}
+            </span>
+
           </div>
+
 
           <div class="order-divider"></div>
 
-          <!-- Items List (Direct Display in New Orders) -->
+
+          <!-- Order Items -->
           <div class="card-details-section">
-            <span class="details-heading">Order Items</span>
+
+            <span class="details-heading">
+              Order Items
+            </span>
+
+
             <div class="items-list">
-              <div class="item-row" *ngFor="let item of order.items">
+
+              <div
+                class="item-row"
+                *ngFor="
+                  let item of order.items;
+                  trackBy: trackByItem
+                ">
+
                 <div class="item-left">
-                  <span class="food-dot"
-                    [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
-                  <span class="item-name">{{ item.product_quantity }} x {{ item.product_name }}</span>
+
+                  <span
+                    class="food-dot"
+                    [ngClass]="{
+                      'green-dot': item.food_type === 'veg',
+                      'red-dot': item.food_type !== 'veg'
+                    }">
+                  </span>
+
+
+                  <span class="item-name">
+
+                    {{ item.product_quantity }}
+                    x
+                    {{ item.product_name }}
+
+                  </span>
+
                 </div>
-                <span class="item-price">$ {{ item.total_item_price || item.product_price }}</span>
+
+
+                <span class="item-price">
+
+                  $
+                  {{
+                    item.total_item_price ||
+                    item.product_price
+                  }}
+
+                </span>
+
               </div>
+
             </div>
+
           </div>
 
-          <!-- Collapsible Customer & Store Sections -->
+
+          <!-- ===========================================
+               ACCORDIONS
+          ============================================ -->
+
           <div class="collapsible-group">
-            <!-- Customer Details Accordion -->
-            <div class="accordion-item" [class.expanded]="isExpanded(order.order_id, 'customer')">
-              <div class="accordion-header" (click)="toggleSection(order.order_id, 'customer')">
+
+
+            <!-- Customer Details -->
+            <div
+              class="accordion-item"
+              [class.expanded]="
+                isExpanded(
+                  order.order_id,
+                  'customer'
+                )
+              ">
+
+              <div
+                class="accordion-header"
+                [attr.aria-expanded]="
+                  isExpanded(
+                    order.order_id,
+                    'customer'
+                  )
+                "
+                (click)="
+                  toggleSection(
+                    order.order_id,
+                    'customer'
+                  )
+                ">
+
                 <div class="header-left">
-                  <img src="../../assets/home/customer_details_image.svg" class="accordion-icon" />
-                  <span class="accordion-title">Customer Details</span>
+
+                  <img
+                    src="../../assets/home/customer_details_image.svg"
+                    class="accordion-icon"
+                    alt="Customer">
+
+                  <span class="accordion-title">
+                    Customer Details
+                  </span>
+
                 </div>
-                <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
+
+
+                <img
+                  src="../../assets/home/arrow_viewMore.svg"
+                  class="arrow-icon"
+                  alt="Expand">
+
               </div>
 
-              <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'customer')">
+
+              <div
+                class="accordion-body"
+                *ngIf="
+                  isExpanded(
+                    order.order_id,
+                    'customer'
+                  )
+                ">
+
                 <div class="details-grid">
+
                   <div class="details-row">
-                    <span class="detail-label">Name</span>
-                    <span class="detail-value">{{ order.firstname }} {{ order.lastname }}</span>
+
+                    <span class="detail-label">
+                      Name
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.firstname }}
+                      {{ order.lastname }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Address</span>
-                    <span class="detail-value">{{ order.address }}</span>
+
+                    <span class="detail-label">
+                      Address
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.address }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Contact</span>
-                    <span class="detail-value">{{ order.phonenumber }}</span>
+
+                    <span class="detail-label">
+                      Contact
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.phonenumber }}
+                    </span>
+
                   </div>
+
                 </div>
+
               </div>
+
             </div>
 
-            <!-- Store Details Accordion -->
-            <div class="accordion-item" [class.expanded]="isExpanded(order.order_id, 'store')">
-              <div class="accordion-header" (click)="toggleSection(order.order_id, 'store')">
+
+            <!-- Store Details -->
+            <div
+              class="accordion-item"
+              [class.expanded]="
+                isExpanded(
+                  order.order_id,
+                  'store'
+                )
+              ">
+
+              <div
+                class="accordion-header"
+                [attr.aria-expanded]="
+                  isExpanded(
+                    order.order_id,
+                    'store'
+                  )
+                "
+                (click)="
+                  toggleSection(
+                    order.order_id,
+                    'store'
+                  )
+                ">
+
                 <div class="header-left">
-                  <img src="../../assets/home/store_details_svgImgage.svg" class="accordion-icon" />
-                  <span class="accordion-title">Store Details</span>
+
+                  <img
+                    src="../../assets/home/store_details_svgImgage.svg"
+                    class="accordion-icon"
+                    alt="Store">
+
+                  <span class="accordion-title">
+                    Store Details
+                  </span>
+
                 </div>
-                <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
+
+
+                <img
+                  src="../../assets/home/arrow_viewMore.svg"
+                  class="arrow-icon"
+                  alt="Expand">
+
               </div>
 
-              <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'store')">
+
+              <div
+                class="accordion-body"
+                *ngIf="
+                  isExpanded(
+                    order.order_id,
+                    'store'
+                  )
+                ">
+
                 <div class="details-grid">
+
                   <div class="details-row">
-                    <span class="detail-label">Store</span>
-                    <span class="detail-value">{{ order.store_name }}</span>
+
+                    <span class="detail-label">
+                      Store
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.store_name }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Address</span>
-                    <span class="detail-value">{{ order.store_address }}</span>
+
+                    <span class="detail-label">
+                      Address
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.store_address }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Contact</span>
-                    <span class="detail-value">{{ order.vendor_prefix }} {{ order.vendor_phonenumber }}</span>
+
+                    <span class="detail-label">
+                      Contact
+                    </span>
+
+                    <span class="detail-value">
+
+                      {{ order.vendor_prefix }}
+                      {{ order.vendor_phonenumber }}
+
+                    </span>
+
                   </div>
+
                 </div>
+
               </div>
+
             </div>
+
           </div>
 
+
+          <!-- Map Button -->
           <div class="action-footer">
-            <button class="primary-action-btn" (click)="navigateStoreDetails(order)">
-              <span>View Map</span>
+
+            <button
+              type="button"
+              class="primary-action-btn"
+              (click)="navigateStoreDetails(order)">
+
+              <span>
+                View Map
+              </span>
+
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </ng-container>
 
-    <!-- Completed Tab Content -->
-    <ng-container *ngIf="selectedTab === 'completed'">
-      <div class="orders-list-section">
-        <h3 class="orders-section-heading">Delivered Orders</h3>
 
-        <div *ngIf="!completedOrders || completedOrders.length === 0" class="empty-state">
+    <!-- ===============================================
+         COMPLETED ORDERS
+    ================================================ -->
+
+    <ng-container *ngIf="selectedTab === 'completed'">
+
+      <div class="orders-list-section">
+
+        <h3 class="orders-section-heading">
+          Delivered Orders
+        </h3>
+
+
+        <!-- Empty -->
+        <div
+          *ngIf="
+            !completedOrders ||
+            completedOrders.length === 0
+          "
+          class="empty-state">
+
           No delivered orders were found for this rider today.
+
         </div>
 
-        <div class="order-card completed-state" *ngFor="let order of completedOrders">
+
+        <!-- Completed Card -->
+        <div
+          class="order-card completed-state"
+          *ngFor="
+            let order of completedOrders;
+            trackBy: trackByOrderId
+          ">
+
           <div class="card-accent-bar completed"></div>
 
+
+          <!-- Header -->
           <div class="order-card-header">
-            <span class="order-id">ID: <strong>{{ order.order_uid }}</strong></span>
-            <div class="delivery-badge" *ngIf="order.is_fast_delivery">
-              <img src="../../assets/home/fast_delavery_image.svg" class="badge-icon" />
-              <span>Fast Delivery</span>
+
+            <span class="order-id">
+
+              ID:
+              <strong>
+                {{ order.order_uid }}
+              </strong>
+
+            </span>
+
+
+            <div
+              class="delivery-badge"
+              *ngIf="order.is_fast_delivery">
+
+              <img
+                src="../../assets/home/fast_delavery_image.svg"
+                class="badge-icon"
+                alt="Fast delivery">
+
+              <span>
+                Fast Delivery
+              </span>
+
             </div>
+
           </div>
 
+
+          <!-- Meta -->
           <div class="order-meta-info">
+
             <div class="meta-item">
-              <span class="meta-label">Pick Time:</span>
-              <span class="meta-value">{{ order.preparing_time }} min</span>
+
+              <span class="meta-label">
+                Pick Time:
+              </span>
+
+              <span class="meta-value">
+                {{ order.preparing_time }} min
+              </span>
+
             </div>
-            <span class="order-time">{{ order.order_created_at | date:'shortTime' }}</span>
+
+
+            <span class="order-time">
+              {{ order.order_created_at | date:'shortTime' }}
+            </span>
+
           </div>
+
 
           <div class="order-divider"></div>
 
-          <!-- Accordion Group for Completed Tab -->
+
           <div class="collapsible-group">
-            <!-- Order Items Accordion -->
-            <div class="accordion-item" [class.expanded]="isExpanded(order.order_id, 'items')">
-              <div class="accordion-header" (click)="toggleSection(order.order_id, 'items')">
+
+
+            <!-- Order Items -->
+            <div
+              class="accordion-item"
+              [class.expanded]="
+                isExpanded(
+                  order.order_id,
+                  'items'
+                )
+              ">
+
+              <div
+                class="accordion-header"
+                [attr.aria-expanded]="
+                  isExpanded(
+                    order.order_id,
+                    'items'
+                  )
+                "
+                (click)="
+                  toggleSection(
+                    order.order_id,
+                    'items'
+                  )
+                ">
+
                 <div class="header-left">
-                  <img src="../../assets/home/customer_details_image.svg" class="accordion-icon" />
-                  <span class="accordion-title">Order Items</span>
+
+                  <img
+                    src="../../assets/home/customer_details_image.svg"
+                    class="accordion-icon"
+                    alt="Order items">
+
+                  <span class="accordion-title">
+                    Order Items
+                  </span>
+
                 </div>
-                <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
+
+
+                <img
+                  src="../../assets/home/arrow_viewMore.svg"
+                  class="arrow-icon"
+                  alt="Expand">
+
               </div>
 
-              <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'items')">
+
+              <div
+                class="accordion-body"
+                *ngIf="
+                  isExpanded(
+                    order.order_id,
+                    'items'
+                  )
+                ">
+
                 <div class="items-list pb-2">
-                  <div class="item-row" *ngFor="let item of order.items">
+
+                  <div
+                    class="item-row"
+                    *ngFor="
+                      let item of order.items;
+                      trackBy: trackByItem
+                    ">
+
                     <div class="item-left">
-                      <span class="food-dot"
-                        [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
-                      <span class="item-name">{{ item.product_quantity }} x {{ item.product_name }}</span>
+
+                      <span
+                        class="food-dot"
+                        [ngClass]="{
+                          'green-dot': item.food_type === 'veg',
+                          'red-dot': item.food_type !== 'veg'
+                        }">
+                      </span>
+
+
+                      <span class="item-name">
+
+                        {{ item.product_quantity }}
+                        x
+                        {{ item.product_name }}
+
+                      </span>
+
                     </div>
-                    <span class="item-price">$ {{ item.total_item_price }}</span>
+
+
+                    <span class="item-price">
+                      $ {{ item.total_item_price }}
+                    </span>
+
                   </div>
+
                 </div>
+
               </div>
+
             </div>
 
-            <!-- Customer Details Accordion -->
-            <div class="accordion-item" [class.expanded]="isExpanded(order.order_id, 'customer')">
-              <div class="accordion-header" (click)="toggleSection(order.order_id, 'customer')">
+
+            <!-- Customer Details -->
+            <div
+              class="accordion-item"
+              [class.expanded]="
+                isExpanded(
+                  order.order_id,
+                  'customer'
+                )
+              ">
+
+              <div
+                class="accordion-header"
+                [attr.aria-expanded]="
+                  isExpanded(
+                    order.order_id,
+                    'customer'
+                  )
+                "
+                (click)="
+                  toggleSection(
+                    order.order_id,
+                    'customer'
+                  )
+                ">
+
                 <div class="header-left">
-                  <img src="../../assets/home/customer_details_image.svg" class="accordion-icon" />
-                  <span class="accordion-title">Customer Details</span>
+
+                  <img
+                    src="../../assets/home/customer_details_image.svg"
+                    class="accordion-icon"
+                    alt="Customer">
+
+                  <span class="accordion-title">
+                    Customer Details
+                  </span>
+
                 </div>
-                <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
+
+
+                <img
+                  src="../../assets/home/arrow_viewMore.svg"
+                  class="arrow-icon"
+                  alt="Expand">
+
               </div>
 
-              <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'customer')">
+
+              <div
+                class="accordion-body"
+                *ngIf="
+                  isExpanded(
+                    order.order_id,
+                    'customer'
+                  )
+                ">
+
                 <div class="details-grid">
+
                   <div class="details-row">
-                    <span class="detail-label">Name</span>
-                    <span class="detail-value">{{ order.firstname }} {{ order.lastname }}</span>
+
+                    <span class="detail-label">
+                      Name
+                    </span>
+
+                    <span class="detail-value">
+
+                      {{ order.firstname }}
+                      {{ order.lastname }}
+
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Address</span>
-                    <span class="detail-value">{{ order.address }}</span>
+
+                    <span class="detail-label">
+                      Address
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.address }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Contact</span>
-                    <span class="detail-value">{{ order.phonenumber }}</span>
+
+                    <span class="detail-label">
+                      Contact
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.phonenumber }}
+                    </span>
+
                   </div>
+
                 </div>
+
               </div>
+
             </div>
 
-            <!-- Store Details Accordion -->
-            <div class="accordion-item" [class.expanded]="isExpanded(order.order_id, 'store')">
-              <div class="accordion-header" (click)="toggleSection(order.order_id, 'store')">
+
+            <!-- Store Details -->
+            <div
+              class="accordion-item"
+              [class.expanded]="
+                isExpanded(
+                  order.order_id,
+                  'store'
+                )
+              ">
+
+              <div
+                class="accordion-header"
+                [attr.aria-expanded]="
+                  isExpanded(
+                    order.order_id,
+                    'store'
+                  )
+                "
+                (click)="
+                  toggleSection(
+                    order.order_id,
+                    'store'
+                  )
+                ">
+
                 <div class="header-left">
-                  <img src="../../assets/home/store_details_svgImgage.svg" class="accordion-icon" />
-                  <span class="accordion-title">Store Details</span>
+
+                  <img
+                    src="../../assets/home/store_details_svgImgage.svg"
+                    class="accordion-icon"
+                    alt="Store">
+
+                  <span class="accordion-title">
+                    Store Details
+                  </span>
+
                 </div>
-                <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
+
+
+                <img
+                  src="../../assets/home/arrow_viewMore.svg"
+                  class="arrow-icon"
+                  alt="Expand">
+
               </div>
 
-              <div class="accordion-body" *ngIf="isExpanded(order.order_id, 'store')">
+
+              <div
+                class="accordion-body"
+                *ngIf="
+                  isExpanded(
+                    order.order_id,
+                    'store'
+                  )
+                ">
+
                 <div class="details-grid">
+
                   <div class="details-row">
-                    <span class="detail-label">Store</span>
-                    <span class="detail-value">{{ order.store_name }}</span>
+
+                    <span class="detail-label">
+                      Store
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.store_name }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Address</span>
-                    <span class="detail-value">{{ order.store_address }}</span>
+
+                    <span class="detail-label">
+                      Address
+                    </span>
+
+                    <span class="detail-value">
+                      {{ order.store_address }}
+                    </span>
+
                   </div>
+
+
                   <div class="details-row">
-                    <span class="detail-label">Contact</span>
-                    <span class="detail-value">{{ order.vendor_prefix }} {{ order.vendor_phonenumber }}</span>
+
+                    <span class="detail-label">
+                      Contact
+                    </span>
+
+                    <span class="detail-value">
+
+                      {{ order.vendor_prefix }}
+                      {{ order.vendor_phonenumber }}
+
+                    </span>
+
                   </div>
+
                 </div>
+
               </div>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
+
     </ng-container>
+
   </div>
 
-  <ng-template #loadingBlock>
-    <ion-spinner name="crescent"></ion-spinner>
-  </ng-template>
 </ion-content>
+
+
 <app-footer-tabs></app-footer-tabs>
