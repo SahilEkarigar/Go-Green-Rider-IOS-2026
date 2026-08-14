@@ -86,26 +86,49 @@
 
       <!-- Buttons footer section -->
       <div class="btn-outer-div" *ngIf="!hideButton">
-        <!-- OTP Display Code Grid -->
-        <div class="otp-container" *ngIf="otp && otp.length === 6">
-          <div class="otp-box" *ngFor="let digit of otpDigits">
-            {{ digit }}
+        <!-- 6-digit OTP input block when rider is going to customer (order_status: 2 & rider_status: 3) -->
+        <div *ngIf="headerText.includes('Customer') || pickupButtonText === 'Order Delivered'" class="otp-entry-section">
+          <p class="otp-instruction-label">Enter 6-Digit Delivery OTP from Customer</p>
+          <div class="otp-input-container">
+            <input 
+              *ngFor="let digit of inputOtp; let i = index"
+              [id]="'rider-otp-input-' + i"
+              type="text" 
+              inputmode="numeric"
+              maxLength="1"
+              [(ngModel)]="inputOtp[i]"
+              (input)="onOtpDigitInput($event, i)"
+              (keydown)="onOtpKeyDown($event, i)"
+              class="otp-digit-input"
+            />
           </div>
+          <div *ngIf="otpErrorMessage" class="otp-error-text">
+            {{ otpErrorMessage }}
+          </div>
+          <button class="primary-action-btn w-100 verify-otp-btn" (click)="verifyCustomerOtp()" [disabled]="isVerifyingOtp">
+            {{ isVerifyingOtp ? 'Verifying...' : 'Verify OTP & Complete Delivery' }}
+          </button>
         </div>
 
-        <button *ngIf="pickupButtonText === 'Order Delivered'" class="primary-action-btn w-100" (click)="deliverOrder(order?.order_id)">
-          Order Delivered
-        </button>
+        <!-- Vendor pickup button section when rider is on the way to vendor -->
+        <div *ngIf="!headerText.includes('Customer') && pickupButtonText !== 'Order Delivered'">
+          <!-- OTP Display Code Grid for vendor if needed -->
+          <div class="otp-container" *ngIf="otp && otp.length === 6">
+            <div class="otp-box" *ngFor="let digit of otpDigits">
+              {{ digit }}
+            </div>
+          </div>
 
-        <button *ngIf="pickupButtonText !== 'Send OTP Again' && pickupButtonText !== 'Order Delivered'"
-          class="primary-action-btn w-100" (click)="reachedPickup(order?.order_id)">
-          {{ pickupButtonText }}
-        </button>
-
-        <div class="button-row" *ngIf="pickupButtonText === 'Send OTP Again'">
-          <button class="primary-action-btn send-otp-again-btn w-100" (click)="reachedPickup(order?.order_id)">
+          <button *ngIf="pickupButtonText !== 'Send OTP Again'"
+            class="primary-action-btn w-100" (click)="reachedPickup(order?.order_id)">
             {{ pickupButtonText }}
           </button>
+
+          <div class="button-row" *ngIf="pickupButtonText === 'Send OTP Again'">
+            <button class="primary-action-btn send-otp-again-btn w-100" (click)="reachedPickup(order?.order_id)">
+              {{ pickupButtonText }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

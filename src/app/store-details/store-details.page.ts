@@ -1,6 +1,7 @@
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Geolocation } from '@capacitor/geolocation';
 import { AuthserviceService } from '../services/authservice.service';
@@ -15,7 +16,7 @@ declare var google: any;
   templateUrl: './store-details.page.html',
   styleUrls: ['./store-details.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
@@ -33,6 +34,9 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
   otp: string = '';
   otpDigits: string[] = [];
+  inputOtp: string[] = ['', '', '', '', '', ''];
+  otpErrorMessage: string = '';
+  isVerifyingOtp: boolean = false;
 
   // ------------------------
   // MAP
@@ -93,11 +97,18 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     this.riderId = localStorage.getItem('user_id') || '';
 
     if (history.state?.order) {
-      console.log('order-Data:-', history.state.order)
+      console.log('order-Data:-', history.state.order);
       this.order = history.state.order;
       this.orderId = this.order.order_id;
+
+      // Check if rider is already on their way to customer (order_status: 2 and rider_status: 3)
+      if (Number(this.order.order_status) === 2 && Number(this.order.rider_status) === 3) {
+        this.headerText = 'Your Way To Customer';
+        this.pickupButtonText = 'Order Delivered';
+      }
+
       this.getCoordinates(this.orderId);
-    } else {
+    } else {   
       this.router.navigate(['/home']);
     }
   }
@@ -127,19 +138,21 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
   initMap() {
     this.isMapLoading = true;
 
+    // Center map immediately on target if available
+    const initialCenter = this.currentTarget || this.vendorTarget || { lat: 0, lng: 0 };
+
     this.map = new google.maps.Map(
       document.getElementById('map')!,
       {
         zoom: 15,
-        center: { lat: 0, lng: 0 }, // temporary, real center = rider
+        center: initialCenter,
         disableDefaultUI: true,
       }
     );
 
-    google.maps.event.addListenerOnce(this.map, 'tilesloaded', () => {
-      this.mapReady = true;
-      this.hideLoaderIfReady();
-    });
+    // Hide loader immediately once map instance is attached
+    this.isMapLoading = false;
+    this.mapReady = true;
 
     this.directionsService = new google.maps.DirectionsService();
     this.directionsRenderer = new google.maps.DirectionsRenderer({
@@ -149,11 +162,20 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
     this.directionsRenderer.setMap(this.map);
 
-    // Vendor marker (Default Icon)
-    this.vendorMarker = new google.maps.Marker({
-      map: this.map,
-      position: this.vendorTarget,
-    });
+    if (Number(this.order?.order_status) === 2 && Number(this.order?.rider_status) === 3) {
+      this.currentTarget = this.customerTarget;
+      this.customerMarker = new google.maps.Marker({
+        map: this.map,
+        position: this.customerTarget,
+      });
+    } else {
+      this.currentTarget = this.vendorTarget;
+      // Vendor marker (Default Icon)
+      this.vendorMarker = new google.maps.Marker({
+        map: this.map,
+        position: this.vendorTarget,
+      });
+    }
 
     this.startTrackingRider();
   }
@@ -187,13 +209,16 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
         let finalLatLng = rawLatLng;
 
-        // SNAP TO ROAD
+        // SNAP TO ROAD (Non-blocking async)
         if (now - this.lastSnappedTime > 4000) {
-          const snapped = await this.snapToRoad(rawLatLng.lat, rawLatLng.lng);
-          finalLatLng = {
-            lat: snapped.latitude,
-            lng: snapped.longitude,
-          };
+          this.snapToRoad(rawLatLng.lat, rawLatLng.lng).then(snapped => {
+            if (snapped) {
+              this.lastPosition = {
+                lat: snapped.latitude,
+                lng: snapped.longitude
+              };
+            }
+          }).catch(() => {});
           this.lastSnappedTime = now;
         }
 
@@ -222,7 +247,6 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
         if (!this.riderMarker) {
           this.gpsReady = true;
-          this.hideLoaderIfReady();
           this.map.setCenter(finalLatLng);
           this.map.setZoom(17);
 
@@ -251,11 +275,6 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         }
 
         // UPDATED: Throttled route drawing
-        // Only redraw if:
-        // 1. Destination changed (handled by checking currentTarget vs lastTarget - simplified here by forcing on event)
-        // 2. Moved significantly (> 20 meters)
-        // 3. Time elapsed (> 10 seconds)
-
         const dist = this.getDistanceFromLatLonInKm(
           finalLatLng.lat, finalLatLng.lng,
           this.lastRouteUpdatePos?.lat || 0, this.lastRouteUpdatePos?.lng || 0
@@ -264,7 +283,6 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         const timeDiff = now - this.lastRouteUpdateTime;
 
         if (this.currentTarget && (dist > 30 || timeDiff > 10000 || !this.lastRouteUpdatePos)) {
-          // console.log('🗺️ Redrawing route...', { dist, timeDiff });
           this.drawRoute(finalLatLng, this.currentTarget);
           this.lastRouteUpdatePos = finalLatLng;
           this.lastRouteUpdateTime = now;
@@ -299,11 +317,7 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
   }
 
   hideLoaderIfReady() {
-    if (this.mapReady && this.gpsReady) {
-      requestAnimationFrame(() => {
-        this.isMapLoading = false;
-      });
-    }
+    this.isMapLoading = false;
   }
 
   getBearing(from: google.maps.LatLngLiteral, to: google.maps.LatLngLiteral) {
@@ -346,10 +360,9 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         lat: +res.data.customer_lat,
         lng: +res.data.customer_lng,
       };
-      // console.log('Vendor cordinates: ', this.vendorTarget)
-      // console.log('Customer cordinates: ', this.customerTarget)
-      setTimeout(() => this.initMap(), 300);
-
+      
+      // Initialize map immediately without unnecessary delay
+      this.initMap();
     });
   }
 
@@ -450,6 +463,67 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     }
   }
 
+  onOtpDigitInput(event: any, index: number) {
+    const inputVal = event.target.value;
+    if (inputVal && inputVal.length > 0) {
+      this.inputOtp[index] = inputVal.substring(inputVal.length - 1);
+      if (index < 5) {
+        const nextInput = document.getElementById(`rider-otp-input-${index + 1}`) as HTMLInputElement;
+        if (nextInput) {
+          nextInput.focus();
+        }
+      }
+    }
+  }
+
+  onOtpKeyDown(event: KeyboardEvent, index: number) {
+    if (event.key === 'Backspace' && !this.inputOtp[index] && index > 0) {
+      const prevInput = document.getElementById(`rider-otp-input-${index - 1}`) as HTMLInputElement;
+      if (prevInput) {
+        prevInput.focus();
+      }
+    }
+  }
+
+  async verifyCustomerOtp() {
+    this.otpErrorMessage = '';
+    const enteredOtp = this.inputOtp.join('');
+
+    if (enteredOtp.length < 6) {
+      this.otpErrorMessage = 'Please enter complete 6 digit OTP';
+      return;
+    }
+
+    this.isVerifyingOtp = true;
+    const body = {
+      order_id: this.orderId,
+      otp: enteredOtp
+    };
+
+    try {
+      (await this.authService.riderVerifyOtp(body)).subscribe({
+        next: async (res: any) => {
+          this.isVerifyingOtp = false;
+          if (res?.status === true || res?.success === true) {
+            alert('OTP verified successfully! Order delivered to customer.');
+            await this.deliverOrder(this.orderId);
+          } else {
+            this.otpErrorMessage = res?.message || 'Invalid OTP. Please try again.';
+          }
+        },
+        error: (err: any) => {
+          this.isVerifyingOtp = false;
+          console.error('Error verifying OTP:', err);
+          this.otpErrorMessage = err?.error?.message || 'OTP verification failed. Please check OTP and try again.';
+        }
+      });
+    } catch (err) {
+      this.isVerifyingOtp = false;
+      console.error(err);
+      this.otpErrorMessage = 'An error occurred during verification.';
+    }
+  }
+
   async deliverOrder(orderId: string | undefined) {
     if (!orderId) {
       console.error('deliverOrder called without orderId');
@@ -465,9 +539,6 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         next: (res: any) => {
           // console.log('Order marked delivered:', res);
           this.pickupButtonText = '';
-
-          // ✅ Show alert
-          alert('Order completed successfully!');
 
           // ✅ Navigate to home after success
           this.router.navigate(['/home']);
