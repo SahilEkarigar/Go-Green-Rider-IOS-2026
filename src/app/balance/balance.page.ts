@@ -46,7 +46,7 @@ export class BalancePage implements OnInit {
     const value = event.detail.value;
     this.selectedDate = value.split('T')[0];
 
-    console.log('Selected Date:', this.selectedDate);
+    // console.log('Selected Date:', this.selectedDate);
 
     this.getAllOrderHistory(this.rider_id, this.selectedDate);
   }
@@ -60,7 +60,7 @@ export class BalancePage implements OnInit {
     this.authservice.get_all_orders(payload, apiDate)
       .subscribe(response => {
         if (response.status == true) {
-          console.log('Rider Order History', response);
+          // console.log('Rider Order History', response);
           this.orders = response.orders;
         }else{
           this.orders = [];

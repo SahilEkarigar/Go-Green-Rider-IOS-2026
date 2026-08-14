@@ -41,7 +41,7 @@ export class ChatScreenPage implements OnInit {
     this.socketService.connectionStatus$().subscribe((isConnected: any) => {
       if (isConnected) {
         this.socketService.joinRiderRoom(this.rider_id);
-        console.log("📌 Rider joined room:", this.rider_id);
+        // console.log("📌 Rider joined room:", this.rider_id);
       }
     });
 
@@ -71,7 +71,7 @@ export class ChatScreenPage implements OnInit {
       api.subscribe((res: any) => {
         if (res.status) {
           this.messages = res.data;
-          console.log("📜 Old messages:", this.messages);
+          // console.log("📜 Old messages:", this.messages);
         }
       });
     });
@@ -92,7 +92,7 @@ export class ChatScreenPage implements OnInit {
       sent_at: this.formatMySQLDate(new Date())
     };
 
-    console.log("🟢 Rider sending:", data);
+    // console.log("🟢 Rider sending:", data);
 
     this.socketService.sendMessage(data);
     this.messages.push(data);

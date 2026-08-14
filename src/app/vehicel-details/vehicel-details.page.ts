@@ -115,7 +115,7 @@ export class VehicelDetailsPage implements OnInit {
       reader.onload = (e: any) => {
         this.regDocumentPreview = e.target.result;
         this.regDocumentName = file;
-        console.log("regDocumentName", this.regDocumentName)
+        // console.log("regDocumentName", this.regDocumentName)
       };
       reader.readAsDataURL(file);
     }
@@ -139,7 +139,7 @@ export class VehicelDetailsPage implements OnInit {
     const decoded: any = jwtDecode(token);
     const user_id = decoded.user_id;
 
-    console.log("vehicel details ", user_id)
+    // console.log("vehicel details ", user_id)
 
     const requestBody = {
       user_id: user_id,

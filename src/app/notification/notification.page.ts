@@ -477,10 +477,10 @@ export class NotificationPage implements OnInit {
             response: any
           ) => {
 
-            console.log(
-              'Notification marked as read:',
-              response
-            );
+            // console.log(
+            //   'Notification marked as read:',
+            //   response
+            // );
 
           },
 

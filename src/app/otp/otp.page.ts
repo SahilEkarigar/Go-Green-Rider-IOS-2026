@@ -460,10 +460,10 @@ export class OtpPage implements OnInit, OnDestroy {
         await otpObservable.toPromise();
 
 
-      console.log(
-        'OTP verified successfully:',
-        response
-      );
+      // console.log(
+      //   'OTP verified successfully:',
+      //   response
+      // );
 
 
       this.router.navigate(

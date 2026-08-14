@@ -43,7 +43,7 @@ export class FcmService {
     PushNotifications.addListener(
       'pushNotificationReceived',
       (notification: PushNotificationSchema) => {
-        console.log('📩 Notification received (foreground):', notification);
+        // console.log('📩 Notification received (foreground):', notification);
       }
     );
 
@@ -52,7 +52,7 @@ export class FcmService {
       'pushNotificationActionPerformed',
       (action: ActionPerformed) => {
         const data = action.notification?.data;
-        console.log('➡️ Notification tapped:', data);
+        // console.log('➡️ Notification tapped:', data);
 
         // ✅ Emit only when app opened from notification tap
         if (data && data.type === 'new_order') {

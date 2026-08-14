@@ -41,7 +41,7 @@ export class ShopstatusPage implements OnInit {
 
     this.authservice.updateStatusPayload(payload).subscribe({
       next: (res) => {
-        console.log('Rider status updated successfully:', res);
+        // console.log('Rider status updated successfully:', res);
         this.navCtrl.navigateBack('/setting');
       },
       error: (err) => {
@@ -54,7 +54,7 @@ export class ShopstatusPage implements OnInit {
     // Subscribe to BehaviorSubject to auto-update UI
     this.userService.user$.subscribe((user) => {
       if (user) {
-        console.log('user is', user);
+        // console.log('user is', user);
         this.shopStatus = user.data.status === 1;
         this.openTime = user.data.rider_start_time || '';
         this.closeTime = user.data.rider_close_time || '';

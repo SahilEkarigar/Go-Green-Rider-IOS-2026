@@ -45,7 +45,7 @@ export class CodeAnalyticsPage implements OnInit {
     this.authservice.getRiderAnalytics(this.user_id).subscribe((res: any) => {
       if (res.success) {
         const data = res.data;
-        console.log("received data", data);
+        // console.log("received data", data);
 
         // 👉 Today data from API
         this.stats.today = {

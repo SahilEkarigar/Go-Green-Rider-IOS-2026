@@ -61,7 +61,7 @@ export class MapPage implements OnInit {
   
   ];
   ngOnInit() {
-      console.log(this.orders);
+      // console.log(this.orders);
   }
 
 

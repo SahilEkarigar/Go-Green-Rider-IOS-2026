@@ -158,10 +158,10 @@ export class LoginPage implements OnInit, OnDestroy {
 
         this.fcmToken = token;
 
-        console.log(
-          'FCM Token:',
-          this.fcmToken
-        );
+        // console.log(
+        //   'FCM Token:',
+        //   this.fcmToken
+        // );
 
       }
 

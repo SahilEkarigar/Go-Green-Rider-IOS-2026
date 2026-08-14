@@ -205,10 +205,10 @@ export class ForgotPasswordPage {
         ).toPromise();
 
 
-      console.log(
-        'OTP sent successfully:',
-        response
-      );
+      // console.log(
+      //   'OTP sent successfully:',
+      //   response
+      // );
 
 
       this.router.navigate(

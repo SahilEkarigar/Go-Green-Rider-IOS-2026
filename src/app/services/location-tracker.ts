@@ -100,7 +100,7 @@ export class LocationTracker {
           rider_lng: longitude,
         };
 
-        console.log('📡 Sending location via socket:', data);
+        // console.log('📡 Sending location via socket:', data);
 
         this.socketService.sendRiderLocation(data);
       }

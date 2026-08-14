@@ -501,16 +501,16 @@ export class SignupPage implements OnInit, OnDestroy {
                     sendTokenResponse?.success
                   ) {
 
-                    console.log(
-                      sendTokenResponse.message
-                    );
+                    // console.log(
+                    //   sendTokenResponse.message
+                    // );
 
                   } else {
 
-                    console.log(
-                      sendTokenResponse?.message ||
-                      'Submission failed'
-                    );
+                    // console.log(
+                    //   sendTokenResponse?.message ||
+                    //   'Submission failed'
+                    // );
 
                   }
 
@@ -1004,10 +1004,10 @@ export class SignupPage implements OnInit, OnDestroy {
         );
 
 
-        console.log(
-          'user_id',
-          user_id
-        );
+        // console.log(
+        //   'user_id',
+        //   user_id
+        // );
 
       } catch (error) {
 
@@ -1044,10 +1044,10 @@ export class SignupPage implements OnInit, OnDestroy {
         await this.googleAuthService.googleAuth();
 
 
-      console.log(
-        'Google authentication result:',
-        result
-      );
+      // console.log(
+      //   'Google authentication result:',
+      //   result
+      // );
 
 
       this.googleAuthToken =
@@ -1155,10 +1155,10 @@ export class SignupPage implements OnInit, OnDestroy {
         });
 
 
-      console.log(
-        'Apple Sign-In success:',
-        result
-      );
+      // console.log(
+      //   'Apple Sign-In success:',
+      //   result
+      // );
 
 
       const appleAuthToken =

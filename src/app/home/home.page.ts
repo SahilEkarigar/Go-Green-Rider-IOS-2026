@@ -822,10 +822,10 @@ export class HomePage implements OnInit, OnDestroy {
           }
 
 
-          console.log(
-            'Status updated successfully:',
-            response
-          );
+          // console.log(
+          //   'Status updated successfully:',
+          //   response
+          // );
 
         },
 

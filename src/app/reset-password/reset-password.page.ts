@@ -438,10 +438,10 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
         await resetObservable.toPromise();
 
 
-      console.log(
-        'Password changed successfully:',
-        response
-      );
+      // console.log(
+      //   'Password changed successfully:',
+      //   response
+      // );
 
 
       this.router.navigate([

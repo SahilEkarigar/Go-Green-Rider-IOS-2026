@@ -34,7 +34,7 @@ export class WalletPage implements OnInit {
     const apiCall = await this.authservice.getOrderDetailsByRiderId(rider_id, 'month');
 
     apiCall.subscribe((response: any) => {
-      console.log('get order earning response', response);
+      // console.log('get order earning response', response);
     });
   }
 }

@@ -53,7 +53,7 @@ export class OrderAcceptedComponent implements OnInit, OnDestroy, AfterViewInit 
     if (this.orderId) {
       this.fetchOrderDetails();
     }
-    console.log('Order Id:', this.orderId)
+    // console.log('Order Id:', this.orderId)
 
     // Ensure socket is connected (connect only if not already connected)
     // if (!this.socketService.isConnected()) {
@@ -63,7 +63,7 @@ export class OrderAcceptedComponent implements OnInit, OnDestroy, AfterViewInit 
 
     // Stop buzzer if another rider accepted the order
     this.socketService.listenForStopBuzzer(this.orderId).subscribe(async (data: { orderId: string }) => {
-      console.log('🚨 Buzzer stopped for this order', data);
+      // console.log('🚨 Buzzer stopped for this order', data);
 
       this.stopBuzzer();
 
@@ -91,7 +91,7 @@ export class OrderAcceptedComponent implements OnInit, OnDestroy, AfterViewInit 
       obs.subscribe({
         next: (res: any) => {
           this.orderDetails = res;
-          console.log("Order Details:", this.orderDetails);
+          // console.log("Order Details:", this.orderDetails);
           this.isLoading = false;
         },
         error: (err: any) => {

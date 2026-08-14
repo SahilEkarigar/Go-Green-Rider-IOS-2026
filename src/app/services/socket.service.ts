@@ -32,14 +32,14 @@ export class SocketService {
     // ✅ socket exists but disconnected → reconnect instead of recreate
     if (this.socket) {
       if (!this.socket.connected) {
-        console.log('🔁 Reconnecting existing socket...');
+        // console.log('🔁 Reconnecting existing socket...');
         this.isConnecting = true;
         this.socket.connect();
         return;
       }
 
       // already connected
-      console.log('⚠️ Socket already connected');
+      // console.log('⚠️ Socket already connected');
       return;
     }
 
@@ -60,7 +60,7 @@ export class SocketService {
     if (!this.socket) return;
 
     this.socket.on('connect', () => {
-      console.log('✅ Socket connected:', this.socket?.id);
+      // console.log('✅ Socket connected:', this.socket?.id);
       this.connected$.next(true);
       this.isConnecting = false;
       this.socket?.emit('join', { role: 'rider', id: String(riderId) });
@@ -68,12 +68,12 @@ export class SocketService {
 
     // ✅ DEBUG: Log ALL incoming events to find the correct order event name
     (this.socket as any).onAny((event: any, ...args: any[]) => {
-      console.log(`🔥 Socket Any Event: ${event}`, args);
+      // console.log(`🔥 Socket Any Event: ${event}`, args);
     });
 
     // ✅ Listen for possible order events (provisional)
     this.socket.on('new_order', (data: any) => {
-      console.log('📦 Socket received new-order:', data);
+      // console.log('📦 Socket received new-order:', data);
       this.newOrderSubject.next(data);
     });
 
@@ -95,7 +95,7 @@ export class SocketService {
   disconnect() {
     if (!this.socket) return;
 
-    console.log('🔌 Disconnecting socket...');
+    // console.log('🔌 Disconnecting socket...');
 
     this.socket.removeAllListeners();
     this.socket.disconnect();
@@ -128,7 +128,7 @@ export class SocketService {
       return;
     }
     this.socket.emit("join_rider", { rider_id });
-    console.log("🚴 Rider joined socket room rider_" + rider_id);
+    // console.log("🚴 Rider joined socket room rider_" + rider_id);
   }
 
   sendRiderLocation(data: { user_id: string | number; rider_lat: number; rider_lng: number }) {
@@ -137,7 +137,7 @@ export class SocketService {
       return;
     }
 
-    console.log("📡 Sending rider location via socket:", data);
+    // console.log("📡 Sending rider location via socket:", data);
     this.socket.emit("rider-location", data);
   }
 
@@ -148,7 +148,7 @@ export class SocketService {
     orderId: string
   ): Observable<{ orderId: string; riderId: string; otp: string }> {
 
-    console.log("listenToOtp called for orderId:", orderId);
+    // console.log("listenToOtp called for orderId:", orderId);
 
     return new Observable(subscriber => {
       // ❌ Do NOT connect here
@@ -157,7 +157,7 @@ export class SocketService {
         return;
       }
 
-      console.log("✅ Socket already connected, subscribing to OTP event");
+      // console.log("✅ Socket already connected, subscribing to OTP event");
       this.subscribeToOtpEvent(orderId, subscriber);
     });
   }
@@ -168,10 +168,10 @@ export class SocketService {
     if (!this.socket) return;
 
     const eventName = `otp-generated-${orderId}`;
-    console.log("Listening to socket event:", eventName);
+    // console.log("Listening to socket event:", eventName);
 
     const listener = (data: { orderId: string; riderId: string; otp: string }) => {
-      console.log("Socket event received:", eventName, data);
+      // console.log("Socket event received:", eventName, data);
       subscriber.next(data);
     };
 
@@ -179,7 +179,7 @@ export class SocketService {
 
     // Cleanup when unsubscribed
     subscriber.add(() => {
-      console.log("Unsubscribing from socket event:", eventName);
+      // console.log("Unsubscribing from socket event:", eventName);
       this.socket?.off(eventName, listener);
     });
   }
@@ -196,7 +196,7 @@ export class SocketService {
 
       const eventName = `stop-buzzer-${orderId}`;
       const listener = (data: { orderId: string }) => {
-        console.log(`Stop buzzer event received for ${orderId}:`, data);
+        // console.log(`Stop buzzer event received for ${orderId}:`, data);
         observer.next(data);
       };
 
@@ -219,7 +219,7 @@ export class SocketService {
       return;
     }
 
-    console.log(`Joining order room: ${orderId}`);
+    // console.log(`Joining order room: ${orderId}`);
     this.socket.emit('joinOrderRoom', orderId);
   }
 
@@ -230,7 +230,7 @@ export class SocketService {
       return;
     }
 
-    console.log(`Leaving order room: ${orderId}`);
+    // console.log(`Leaving order room: ${orderId}`);
     this.socket.emit('leaveOrderRoom', orderId);
   }
 
@@ -240,12 +240,12 @@ export class SocketService {
       return;
     }
 
-    console.log(`Handling order: ${data.orderId} by rider: ${data.riderId}, status: ${data.status}`);
+    // console.log(`Handling order: ${data.orderId} by rider: ${data.riderId}, status: ${data.status}`);
     this.socket.emit('handleOrder', data);
 
     if (data.status === 2) {
       (await this.authservice.handleOrderByRider(data)).subscribe((response) => {
-        console.log('Order handled:', response);
+        // console.log('Order handled:', response);
       });
     }
   }
@@ -280,7 +280,7 @@ export class SocketService {
       return;
     }
 
-    console.log("📤 Sending chat message:", data);
+    // console.log("📤 Sending chat message:", data);
     this.socket.emit("send_message", data);
   }
 
@@ -290,7 +290,7 @@ export class SocketService {
       if (!this.socket) return;
 
       const eventName = `chat_message_${chatId}`;
-      console.log("👂 Listening for:", eventName);
+      // console.log("👂 Listening for:", eventName);
 
       this.socket.on(eventName, (data: any) => {
         subscriber.next(data);

@@ -830,10 +830,10 @@ export class SignupStep4Page implements OnInit, OnDestroy {
             response.success
           ) {
 
-            console.log(
-              'Step 2 API response:',
-              response.message
-            );
+            // console.log(
+            //   'Step 2 API response:',
+            //   response.message
+            // );
 
 
             this.router.navigate([

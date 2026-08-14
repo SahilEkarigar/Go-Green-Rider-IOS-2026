@@ -383,16 +383,16 @@ export class SettingPage implements OnInit, OnDestroy {
             response?.success
           ) {
 
-            console.log(
-              response.message
-            );
+            // console.log(
+            //   response.message
+            // );
 
           } else {
 
-            console.log(
-              response?.message ||
-              'FCM token removal was not confirmed.'
-            );
+            // console.log(
+            //   response?.message ||
+            //   'FCM token removal was not confirmed.'
+            // );
 
           }
 

@@ -23,7 +23,7 @@ export class SocketManager {
 
   async initialize(notificationHandler: any, isAppActive: boolean) {
     if (this.initialized) {
-      console.log('⚠️ SocketManager already initialized — skipping');
+      // console.log('⚠️ SocketManager already initialized — skipping');
       return;
     }
 
@@ -40,7 +40,7 @@ export class SocketManager {
       return;
     }
 
-    console.log('🛰 Initializing socket for rider:', user_id);
+    // console.log('🛰 Initializing socket for rider:', user_id);
 
     // ✅ Listen for socket new orders
     this.socketService.newOrder$
@@ -69,7 +69,7 @@ export class SocketManager {
     // ✅ Reconnect on network regain
     Network.addListener('networkStatusChange', async (status) => {
       if (status.connected) {
-        console.log('📡 Network restored — reconnecting socket...');
+        // console.log('📡 Network restored — reconnecting socket...');
         const id = await this.storage.get('user_id');
         if (id) this.safeConnect(id);
       }
@@ -112,10 +112,10 @@ export class SocketManager {
     if (!user_id) return;
 
     if (isActive) {
-      console.log('▶️ App foregrounded — reconnecting socket.');
+      // console.log('▶️ App foregrounded — reconnecting socket.');
       this.safeConnect(user_id);
     } else {
-      console.log('⏸️ App backgrounded — disconnecting socket.');
+      // console.log('⏸️ App backgrounded — disconnecting socket.');
       this.socketService.disconnect();
     }
   }

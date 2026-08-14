@@ -22,7 +22,7 @@ export class SplashscreenPage implements OnInit {
   async ngOnInit() {
     await this.storage.create();
     const token = await this.storage.get('token');
-    console.log('✅ User verified redirect to home page :', token);
+    // console.log('✅ User verified redirect to home page :', token);
 
     if (!this.openedByNotification) {
       if (token) {

@@ -115,7 +115,7 @@ export class AppComponent {
     this.fcm.onNotificationTapped$.subscribe((data) => {
       if (!data) return;
       // this.ngZone.run(() => {
-        console.log('📩 Push notification tapped:', data);
+        // console.log('📩 Push notification tapped:', data);
         this.notificationHandler.handleNewOrderNotification({ ...data, source: 'push_notification' });
       // });
     });
@@ -123,7 +123,7 @@ export class AppComponent {
     let userId = await this.storage.get('user_id');
 
     while (!userId) {
-      console.log('⏳ Waiting for user_id...');
+      // console.log('⏳ Waiting for user_id...');
       await new Promise(r => setTimeout(r, 500));
       userId = await this.storage.get('user_id');
     }
@@ -139,6 +139,6 @@ export class AppComponent {
       console.error('⚠️ Location tracking failed:', err);
     }
 
-    console.log('✅ App initialization complete.');
+    // console.log('✅ App initialization complete.');
   }
 }

@@ -9,7 +9,7 @@ export class NotificationHandler {
   constructor(private modalCtrl: ModalController, private platform: Platform) {}
 
   async handleNewOrderNotification(data: any) {
-    console.log('📥 Raw Notification Data:', data);
+    // console.log('📥 Raw Notification Data:', data);
 
     if (!data) {
       console.warn('⚠️ Notification data is empty');
@@ -25,17 +25,17 @@ export class NotificationHandler {
       data.vendor_to_customer_distance_km ?? '0.00';
     const type = data.type ?? data.event ?? 'new_order';
 
-    console.log('🧾 Normalized Notification Data:', {
-      orderId,
-      vendorId,
-      rider_to_vendor_distance_km,
-      vendor_to_customer_distance_km,
-      type,
-    });
+    // console.log('🧾 Normalized Notification Data:', {
+    //   orderId,
+    //   vendorId,
+    //   rider_to_vendor_distance_km,
+    //   vendor_to_customer_distance_km,
+    //   type,
+    // });
 
     // Only handle new order notifications
     if (type !== 'new_order') {
-      console.log('ℹ️ Ignored notification type:', type);
+      // console.log('ℹ️ Ignored notification type:', type);
       return;
     }
 
@@ -69,16 +69,16 @@ export class NotificationHandler {
     this.stopBuzzer();
 
     if (result?.action === 'accepted') {
-      console.log('✅ Order accepted');
+      // console.log('✅ Order accepted');
     } else if (result?.action === 'declined') {
-      console.log('❌ Order declined');
+      // console.log('❌ Order declined');
     } else {
-      console.log('ℹ️ Modal dismissed without action');
+      // console.log('ℹ️ Modal dismissed without action');
     }
   }
 
   private playBuzzer() {
-    console.log('🔊 Playing buzzer sound');
+    // console.log('🔊 Playing buzzer sound');
     this.stopBuzzer();
     this.buzzerAudio = new Audio('assets/sound/order.mp3');
     this.buzzerAudio.loop = true;
@@ -89,7 +89,7 @@ export class NotificationHandler {
 
   private stopBuzzer() {
     if (this.buzzerAudio) {
-      console.log('🔇 Stopping buzzer sound');
+      // console.log('🔇 Stopping buzzer sound');
       this.buzzerAudio.pause();
       this.buzzerAudio.currentTime = 0;
       this.buzzerAudio = null;

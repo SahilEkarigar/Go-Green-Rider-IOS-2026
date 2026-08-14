@@ -75,7 +75,7 @@ export class RatingsPage implements OnInit {
   submitReply(index: number) {
     const reply = this.replyText[index];
     if (reply && reply.trim()) {
-      console.log(`Reply to comment ${index}:`, reply);
+      // console.log(`Reply to comment ${index}:`, reply);
       this.replyText[index] = '';
       this.showReplyIndex = null;
     }

@@ -173,7 +173,6 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     );
   }
 
-
   startTrackingRider() {
     this.watchId = Geolocation.watchPosition(
       { enableHighAccuracy: true, timeout: 1000 },
@@ -265,7 +264,7 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         const timeDiff = now - this.lastRouteUpdateTime;
 
         if (this.currentTarget && (dist > 30 || timeDiff > 10000 || !this.lastRouteUpdatePos)) {
-          console.log('🗺️ Redrawing route...', { dist, timeDiff });
+          // console.log('🗺️ Redrawing route...', { dist, timeDiff });
           this.drawRoute(finalLatLng, this.currentTarget);
           this.lastRouteUpdatePos = finalLatLng;
           this.lastRouteUpdateTime = now;
@@ -320,7 +319,6 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
   }
 
-
   async snapToRoad(lat: number, lng: number) {
     const url =
       `https://roads.googleapis.com/v1/snapToRoads?` +
@@ -348,25 +346,24 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         lat: +res.data.customer_lat,
         lng: +res.data.customer_lng,
       };
-      console.log('Vendor cordinates: ', this.vendorTarget)
-      console.log('Customer cordinates: ', this.customerTarget)
+      // console.log('Vendor cordinates: ', this.vendorTarget)
+      // console.log('Customer cordinates: ', this.customerTarget)
       setTimeout(() => this.initMap(), 300);
 
     });
   }
 
-
   async reachedPickup(orderId: string) {
     this.orderId = orderId;
     this.socketService.joinOrderRoom(orderId);
-    console.log('order-id: ', orderId)
-    console.log('this.otpSub: ', this.otpSub)
+    // console.log('order-id: ', orderId)
+    // console.log('this.otpSub: ', this.otpSub)
 
     // ✅ Listen for OTP generated
     if (!this.otpSub) {
       this.otpSub = this.socketService.listenToOtp(orderId).subscribe({
         next: (otpData) => {
-          console.log("OTP received:", otpData.otp);
+          // console.log("OTP received:", otpData.otp);
           this.otp = otpData.otp.toString();
           this.otpDigits = this.otp.split('');
           this.pickupButtonText = 'Send OTP Again';
@@ -378,7 +375,7 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     if (!this.otpVerifiedSub) {
       this.otpVerifiedSub = this.socketService.listenToOtpVerified(orderId).subscribe({
         next: (data) => {
-          console.log("OTP Verified Event:", data);
+          // console.log("OTP Verified Event:", data);
 
           // Clear OTP UI
           this.otp = '';
@@ -404,7 +401,7 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
   }
 
   onOtpVerified() {
-    console.log("OTP Verified - Switching path to Customer");
+    // console.log("OTP Verified - Switching path to Customer");
 
     // 1. Change the target to Customer
     this.currentTarget = this.customerTarget;
@@ -466,7 +463,7 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     try {
       (await this.authService.handleOrderByRider(body)).subscribe({
         next: (res: any) => {
-          console.log('Order marked delivered:', res);
+          // console.log('Order marked delivered:', res);
           this.pickupButtonText = '';
 
           // ✅ Show alert

@@ -73,7 +73,7 @@ export class EditAccountPage implements OnInit {
       reader.onload = (e: any) => {
         this.riderProfilePicture = e.target.result;
         this.uploadFileRiderProfilePicture = file;
-        console.log("riderProfilePicture", this.riderProfilePicture)
+        // console.log("riderProfilePicture", this.riderProfilePicture)
       };
       reader.readAsDataURL(file);
     }

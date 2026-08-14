@@ -28,7 +28,7 @@ export class UserService {
     if (token) {
       this.fetchUserInfo(token);
     } else {
-      console.log('⚠️ No token found in storage');
+      // console.log('⚠️ No token found in storage');
     }
   }
 
@@ -39,12 +39,12 @@ export class UserService {
       const decoded: any = jwtDecode(token);
       const user_id = decoded.user_id;
       const requestBody = { user_id, role_id: 4 };
-      console.log('RequestBody:', requestBody);
+      // console.log('RequestBody:', requestBody);
 
       (await this.authService.riderProfileDetails(requestBody)).subscribe({
         next: (user) => {
           this.userSubject.next(user);
-          console.log('✅ User Data Fetched:', user);
+          // console.log('✅ User Data Fetched:', user);
         },
         error: (err) => {
           console.error('❌ Failed to fetch user', err);
@@ -59,7 +59,7 @@ export class UserService {
   async refreshUserData(): Promise<void> {
     const token = await this.storage.get('token');
     if (!token) {
-      console.log('⚠️ No token found for refresh');
+      // console.log('⚠️ No token found for refresh');
       return;
     }
     await this.fetchUserInfo(token); // fetch fresh data and update BehaviorSubject
@@ -71,12 +71,12 @@ export class UserService {
 
   setUser(user: any) {
     this.userSubject.next(user);
-    console.log('✅ User manually set:', user);
+    // console.log('✅ User manually set:', user);
   }
 
   clearUser() {
     this.userSubject.next(null);
     this.storage.remove('token');
-    console.log('🚪 User logged out');
+    // console.log('🚪 User logged out');
   }
 }

@@ -35,8 +35,8 @@ export class GoogleAuthService {
         const additionalInfo = getAdditionalUserInfo(result);
         const token = await result.user.getIdToken();  // Get ID token from Firebase
 
-        console.log('User ID Token:', token);  // Log the token for debugging
-        console.log('Is New User:', additionalInfo?.isNewUser);  // Check if user is new
+        // console.log('User ID Token:', token);  // Log the token for debugging
+        // console.log('Is New User:', additionalInfo?.isNewUser);  // Check if user is new
 
         return {
           user: result.user,
@@ -52,8 +52,8 @@ export class GoogleAuthService {
         const additionalInfo = getAdditionalUserInfo(result);
         const token = await result.user.getIdToken();  // Get ID token from Firebase
 
-        console.log('User ID Token:', token);  // Log the token for debugging
-        console.log('Is New User:', additionalInfo?.isNewUser);  // Check if user is new
+        // console.log('User ID Token:', token);  // Log the token for debugging
+        // console.log('Is New User:', additionalInfo?.isNewUser);  // Check if user is new
 
         return {
           user: result.user,
@@ -69,7 +69,7 @@ export class GoogleAuthService {
   async checkAndRequestPermissions() {
     const permissionStatus = await Geolocation.requestPermissions();
     if (permissionStatus.location !== 'granted') {
-      console.log('Location permission denied');
+      // console.log('Location permission denied');
       return false;
     }
     return true;
