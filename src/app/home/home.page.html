@@ -303,18 +303,29 @@
             </span>
 
 
-            <div
-              class="delivery-badge"
-              *ngIf="order.is_fast_delivery">
+            <div class="header-badges">
 
-              <img
-                src="../../assets/home/fast_delavery_image.svg"
-                class="badge-icon"
-                alt="Fast delivery">
-
-              <span>
-                Fast Delivery
+              <span
+                class="status-badge"
+                [ngClass]="getOrderStatus(order)">
+                <span class="status-dot"></span>
+                {{ getOrderStatusLabel(order) }}
               </span>
+
+              <div
+                class="delivery-badge"
+                *ngIf="order.is_fast_delivery">
+
+                <img
+                  src="../../assets/home/fast_delavery_image.svg"
+                  class="badge-icon"
+                  alt="Fast delivery">
+
+                <span>
+                  Fast Delivery
+                </span>
+
+              </div>
 
             </div>
 
@@ -338,7 +349,7 @@
 
 
             <span class="order-time">
-              {{ order.order_created_at | date:'shortTime' }}
+              {{ formatOrderDate(order.order_created_at || order.created_at) }}
             </span>
 
           </div>
@@ -695,18 +706,29 @@
             </span>
 
 
-            <div
-              class="delivery-badge"
-              *ngIf="order.is_fast_delivery">
+            <div class="header-badges">
 
-              <img
-                src="../../assets/home/fast_delavery_image.svg"
-                class="badge-icon"
-                alt="Fast delivery">
-
-              <span>
-                Fast Delivery
+              <span
+                class="status-badge"
+                [ngClass]="getOrderStatus(order)">
+                <span class="status-dot"></span>
+                {{ getOrderStatusLabel(order) }}
               </span>
+
+              <div
+                class="delivery-badge"
+                *ngIf="order.is_fast_delivery">
+
+                <img
+                  src="../../assets/home/fast_delavery_image.svg"
+                  class="badge-icon"
+                  alt="Fast delivery">
+
+                <span>
+                  Fast Delivery
+                </span>
+
+              </div>
 
             </div>
 
@@ -730,7 +752,7 @@
 
 
             <span class="order-time">
-              {{ order.order_created_at | date:'shortTime' }}
+              {{ formatOrderDate(order.order_created_at || order.created_at) }}
             </span>
 
           </div>

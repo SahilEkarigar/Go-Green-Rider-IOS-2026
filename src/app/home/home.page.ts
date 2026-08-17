@@ -983,4 +983,95 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
+
+  /* =====================================================
+     DATE & STATUS HELPERS
+  ===================================================== */
+
+  formatOrderDate(dateInput: any): string {
+    if (!dateInput) return '';
+
+    let dStr = String(dateInput).trim();
+
+    if (dStr.includes(' ') && !dStr.includes('T')) {
+      dStr = dStr.replace(' ', 'T');
+    }
+
+    const date = new Date(dStr);
+    if (isNaN(date.getTime())) {
+      return String(dateInput);
+    }
+
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const orderDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    const timeString = date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
+
+    if (orderDate.getTime() === today.getTime()) {
+      return `Today, ${timeString}`;
+    } else if (orderDate.getTime() === yesterday.getTime()) {
+      return `Yesterday, ${timeString}`;
+    } else {
+      const day = date.getDate();
+      const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      const month = monthNames[date.getMonth()];
+      const year = date.getFullYear();
+
+      if (year === now.getFullYear()) {
+        return `${day} ${month}, ${timeString}`;
+      }
+      return `${day} ${month} ${year}, ${timeString}`;
+    }
+  }
+
+
+  getOrderStatus(order: any): 'completed' | 'processing' | 'new' {
+    if (!order) return 'new';
+
+    const riderStatus = Number(order.rider_status);
+    const orderStatus = Number(order.order_status);
+    const statusText = String(order.status || '').toLowerCase();
+
+    if (
+      riderStatus === 4 ||
+      orderStatus === 3 ||
+      orderStatus === 4 ||
+      order.is_completed === true ||
+      statusText === 'completed' ||
+      statusText === 'delivered'
+    ) {
+      return 'completed';
+    }
+
+    if (
+      riderStatus === 2 ||
+      riderStatus === 3 ||
+      orderStatus === 2 ||
+      statusText === 'processing' ||
+      statusText === 'in_transit' ||
+      statusText === 'accepted' ||
+      statusText === 'picked_up'
+    ) {
+      return 'processing';
+    }
+
+    return 'new';
+  }
+
+
+  getOrderStatusLabel(order: any): string {
+    const status = this.getOrderStatus(order);
+    if (status === 'completed') return 'Completed';
+    if (status === 'processing') return 'Processing';
+    return 'New';
+  }
+
 }
