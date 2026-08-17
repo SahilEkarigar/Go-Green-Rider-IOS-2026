@@ -1,136 +1,422 @@
+<ion-content [fullscreen]="true">
 
-
-<ion-content fullscreen>
   <div class="store-page">
-    <!-- Map Canvas Area -->
-    <div class="map-wrapper">
-      <div class="map-toolbar">
-        <button class="back-btn" (click)="navigateToHome()">
-          <i class="fa fa-chevron-left" aria-hidden="true"></i>
-        </button>
-        <div class="map-info">
-        </div>
 
-        <button class="drive-btn-floating" (click)="openGoogleMaps()">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg" alt="Maps" class="drive-btn-icon">
+    <!-- =========================
+         MAP SECTION
+    ========================== -->
+    <div class="map-wrapper">
+
+      <div class="map-toolbar">
+
+        <button
+          type="button"
+          class="back-btn"
+          (click)="navigateToHome()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
         </button>
+
+        <button
+          type="button"
+          class="drive-btn-floating"
+          (click)="openGoogleMaps()">
+
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/a/aa/Google_Maps_icon_%282020%29.svg"
+            alt="Maps"
+            class="drive-btn-icon">
+
+        </button>
+
       </div>
-      <ion-loading [isOpen]="isMapLoading" message="Loading map..." spinner="crescent">
+
+      <ion-loading
+        [isOpen]="isMapLoading"
+        message="Loading map..."
+        spinner="crescent">
       </ion-loading>
+
       <div id="map" class="map-canvas"></div>
+
     </div>
 
-    <!-- Store Details Info Panel -->
+
+    <!-- =========================
+         DETAILS PANEL
+    ========================== -->
     <div class="details-panel">
+
+      <!-- Route Heading -->
       <div class="heading_route">
-        <span class="map-info__title">{{ headerText }}</span>
+        <span class="map-info__title">
+          {{ headerText }}
+        </span>
       </div>
 
-      <!-- Store Info Card Header -->
+
+      <!-- =========================
+           STORE DETAILS
+      ========================== -->
       <div class="panel-header">
+
         <div class="store-text-info">
-          <p class="panel-label">Store Details</p>
-          <h2 class="store-name">{{ order?.store_name }}</h2>
-          <p class="panel-address">{{ order?.store_address }}</p>
+
+          <p class="panel-label">
+            Store Details
+          </p>
+
+          <h2 class="store-name">
+            {{ order?.store_name }}
+          </h2>
+
+          <p class="panel-address">
+            {{ order?.store_address }}
+          </p>
+
         </div>
-        <img class="panel-store-img" [src]="order?.store_image || '../../assets/home/store-logo.png'" alt="{{ order?.store_name }}">
+
+        <img
+          class="panel-store-img"
+          [src]="order?.store_image || '../../assets/home/store-logo.png'"
+          [alt]="order?.store_name || 'Store'">
+
       </div>
 
-      <!-- Payment details segment -->
+
+      <!-- =========================
+           PAYMENT DETAILS
+      ========================== -->
       <div class="info-segment">
-        <div class="payment-status-row">
-          <span class="label">Payment Method</span>
-          <span class="value">{{ order?.payment_method }}</span>
-        </div>
 
         <div class="payment-status-row">
-          <span class="label">Payment Status</span>
-          <span class="status-badge" [ngClass]="{
+
+          <span class="label">
+            Payment Method
+          </span>
+
+          <span class="value">
+            {{ order?.payment_method }}
+          </span>
+
+        </div>
+
+
+        <div class="payment-status-row">
+
+          <span class="label">
+            Payment Status
+          </span>
+
+          <span
+            class="status-badge"
+            [ngClass]="{
               'pending': order?.payment_method === 'COD',
               'done': order?.payment_method !== 'COD'
             }">
-            {{ order?.payment_method === 'COD' ? 'Pending' : 'Done' }}
+
+            {{
+              order?.payment_method === 'COD'
+                ? 'Pending'
+                : 'Done'
+            }}
+
           </span>
+
         </div>
+
       </div>
 
-      <!-- Interactive Chat Banner -->
-      <div class="chat-action-bar" (click)="gotochatscreen()">
+
+      <!-- =========================
+           CHAT
+      ========================== -->
+      <div
+        class="chat-action-bar"
+        (click)="gotochatscreen()">
+
         <div class="chat-bar-content">
-          <span class="chat-bar-text">Chat with {{ order?.firstname }} {{ order?.lastname }}</span>
+
+          <span class="chat-bar-text">
+            Chat with {{ order?.firstname }} {{ order?.lastname }}
+          </span>
+
           <div class="chat-bar-icon-wrapper">
-            <img src="../../assets/icon/chat-icon.png" alt="Chat" class="chat-bar-icon">
+
+            <img
+              src="../../assets/icon/chat-icon.png"
+              alt="Chat"
+              class="chat-bar-icon">
+
           </div>
+
         </div>
+
       </div>
 
-      <!-- Angular-collapsible Order details accordion -->
-      <div class="accordion-item-details" [class.expanded]="isOrderDetailsExpanded">
-        <div class="accordion-header-details" (click)="toggleOrderDetails()">
-          <span class="accordion-title">Order Details</span>
-          <img src="../../assets/home/arrow_viewMore.svg" class="arrow-icon" />
+
+      <!-- =========================
+           ORDER DETAILS
+      ========================== -->
+      <div
+        class="accordion-item-details"
+        [class.expanded]="isOrderDetailsExpanded">
+
+        <div
+          class="accordion-header-details"
+          (click)="toggleOrderDetails()">
+
+          <span class="accordion-title">
+            Order Details
+          </span>
+
+          <img
+            src="../../assets/home/arrow_viewMore.svg"
+            class="arrow-icon"
+            alt="View Details">
+
         </div>
-        
-        <div class="accordion-body-details" *ngIf="isOrderDetailsExpanded">
+
+
+        <div
+          class="accordion-body-details"
+          *ngIf="isOrderDetailsExpanded">
+
           <div class="order-items-list">
-            <div class="item-row" *ngFor="let item of order?.items">
+
+            <div
+              class="item-row"
+              *ngFor="let item of order?.items">
+
               <div class="item-left">
-                <span class="food-dot" [ngClass]="{'green-dot': item.food_type === 'veg', 'red-dot': item.food_type !== 'veg'}"></span>
-                <span class="item-name">{{ item.product_quantity }} x {{ item.product_name }}</span>
+
+                <span
+                  class="food-dot"
+                  [ngClass]="{
+                    'green-dot': item.food_type === 'veg',
+                    'red-dot': item.food_type !== 'veg'
+                  }">
+                </span>
+
+                <span class="item-name">
+                  {{ item.product_quantity }} x {{ item.product_name }}
+                </span>
+
               </div>
-              <span class="item-price">$ {{ item.total_item_price || item.product_price }}</span>
+
+              <span class="item-price">
+                $ {{ item.total_item_price || item.product_price }}
+              </span>
+
             </div>
+
           </div>
+
         </div>
+
       </div>
 
-      <!-- Buttons footer section -->
-      <div class="btn-outer-div" *ngIf="!hideButton">
-        <!-- 6-digit OTP input block when rider is going to customer (order_status: 2 & rider_status: 3) -->
-        <div *ngIf="headerText.includes('Customer') || pickupButtonText === 'Order Delivered'" class="otp-entry-section">
-          <p class="otp-instruction-label">Enter 6-Digit Delivery OTP from Customer</p>
-          <div class="otp-input-container">
-            <input 
-              *ngFor="let digit of inputOtp; let i = index"
-              [id]="'rider-otp-input-' + i"
-              type="text" 
+
+      <!-- =========================
+           BUTTON / OTP SECTION
+      ========================== -->
+      <div
+        class="btn-outer-div"
+        *ngIf="!hideButton">
+
+
+        <!-- =================================================
+             CUSTOMER DELIVERY OTP
+        ================================================== -->
+        <div
+          *ngIf="isCustomerDeliveryStage"
+          class="otp-entry-section">
+
+
+          <div class="otp-heading-area">
+
+            <h3 class="otp-title">
+              Delivery Verification
+            </h3>
+
+            <p class="otp-instruction-label">
+              Ask the customer for their 6-digit delivery OTP
+            </p>
+
+          </div>
+
+
+          <!-- ===============================================
+               IMPORTANT:
+               ONE REAL INPUT + SIX VISUAL BOXES
+
+               This prevents duplicate digit entry.
+          ================================================ -->
+          <div
+            class="professional-otp-wrapper"
+            [class.has-error]="otpErrorMessage">
+
+
+            <!-- Visual OTP boxes -->
+            <div class="otp-visual-container">
+
+              <div
+                class="otp-visual-box"
+                *ngFor="let i of otpIndexes"
+                [class.filled]="customerOtp.length > i"
+                [class.active]="isOtpBoxActive(i)">
+
+                {{ customerOtp.charAt(i) }}
+
+              </div>
+
+            </div>
+
+
+            <!--
+              Single real input.
+
+              It covers the visual boxes invisibly.
+              Every number is entered into THIS ONE input.
+            -->
+            <input
+              #otpMasterInput
+              class="otp-master-input"
+              type="tel"
               inputmode="numeric"
-              maxLength="1"
-              [(ngModel)]="inputOtp[i]"
-              (input)="onOtpDigitInput($event, i)"
-              (keydown)="onOtpKeyDown($event, i)"
-              class="otp-digit-input"
-            />
+              pattern="[0-9]*"
+              maxlength="6"
+              autocomplete="one-time-code"
+              autocapitalize="off"
+              spellcheck="false"
+              [value]="customerOtp"
+              [disabled]="isVerifyingOtp"
+              (input)="onOtpInput($event)"
+              (focus)="onOtpFocus()"
+              (blur)="onOtpBlur()"
+              aria-label="Enter 6 digit delivery OTP">
+
           </div>
-          <div *ngIf="otpErrorMessage" class="otp-error-text">
-            {{ otpErrorMessage }}
+
+
+          <!-- Digit counter -->
+          <div class="otp-helper-row">
+
+            <span class="otp-helper-text">
+              Enter 6 digits
+            </span>
+
+            <span class="otp-counter">
+              {{ customerOtp.length }}/6
+            </span>
+
           </div>
-          <button class="primary-action-btn w-100 verify-otp-btn" (click)="verifyCustomerOtp()" [disabled]="isVerifyingOtp">
-            {{ isVerifyingOtp ? 'Verifying...' : 'Verify OTP & Complete Delivery' }}
+
+
+          <!-- Error -->
+          <div
+            *ngIf="otpErrorMessage"
+            class="otp-error-text">
+
+            <ion-icon name="alert-circle-outline"></ion-icon>
+
+            <span>
+              {{ otpErrorMessage }}
+            </span>
+
+          </div>
+
+
+          <!-- Verify OTP -->
+          <button
+            type="button"
+            class="primary-action-btn verify-otp-btn"
+            (click)="verifyCustomerOtp()"
+            [disabled]="!isOtpComplete || isVerifyingOtp">
+
+
+            <ng-container *ngIf="!isVerifyingOtp">
+
+              <span>
+                Verify OTP & Complete Delivery
+              </span>
+
+            </ng-container>
+
+
+            <ng-container *ngIf="isVerifyingOtp">
+
+              <ion-spinner
+                name="crescent"
+                class="button-spinner">
+              </ion-spinner>
+
+              <span>
+                Verifying OTP...
+              </span>
+
+            </ng-container>
+
           </button>
+
         </div>
 
-        <!-- Vendor pickup button section when rider is on the way to vendor -->
-        <div *ngIf="!headerText.includes('Customer') && pickupButtonText !== 'Order Delivered'">
-          <!-- OTP Display Code Grid for vendor if needed -->
-          <div class="otp-container" *ngIf="otp && otp.length === 6">
-            <div class="otp-box" *ngFor="let digit of otpDigits">
+
+        <!-- =================================================
+             VENDOR PICKUP SECTION
+        ================================================== -->
+        <div *ngIf="!isCustomerDeliveryStage">
+
+
+          <!-- OTP received from server -->
+          <div
+            class="otp-container"
+            *ngIf="otp && otp.length === 6">
+
+            <div
+              class="otp-box"
+              *ngFor="let digit of otpDigits">
+
               {{ digit }}
+
             </div>
+
           </div>
 
-          <button *ngIf="pickupButtonText !== 'Send OTP Again'"
-            class="primary-action-btn w-100" (click)="reachedPickup(order?.order_id)">
+
+          <!-- Reached Pickup -->
+          <button
+            *ngIf="pickupButtonText !== 'Send OTP Again'"
+            type="button"
+            class="primary-action-btn"
+            (click)="reachedPickup(order?.order_id)">
+
             {{ pickupButtonText }}
+
           </button>
 
-          <div class="button-row" *ngIf="pickupButtonText === 'Send OTP Again'">
-            <button class="primary-action-btn send-otp-again-btn w-100" (click)="reachedPickup(order?.order_id)">
+
+          <!-- Send OTP Again -->
+          <div
+            class="button-row"
+            *ngIf="pickupButtonText === 'Send OTP Again'">
+
+            <button
+              type="button"
+              class="primary-action-btn send-otp-again-btn"
+              (click)="reachedPickup(order?.order_id)">
+
               {{ pickupButtonText }}
+
             </button>
+
           </div>
+
         </div>
+
       </div>
+
     </div>
+
   </div>
+
 </ion-content>

@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 @import '../../theme/variables.scss';
 
-// Utility mixins
+
+/* =====================================================
+   MIXINS
+===================================================== */
+
 @mixin flex-center {
   display: flex;
   align-items: center;
@@ -12,514 +16,1214 @@
   transition: $prop $time cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-// Reset within store details component
-p, h2, h3, span {
+
+/* =====================================================
+   RESET
+===================================================== */
+
+p,
+h2,
+h3,
+span {
   margin: 0;
   font-family: 'Open Sans', sans-serif;
 }
 
+
 ion-content {
+
   --background: #f5f7fb;
   --padding-top: 0;
+
   overflow: hidden;
 
+
   .store-page {
+
     display: flex;
     flex-direction: column;
+
     min-height: 100%;
     height: 100%;
+
     padding-top: 0;
 
-    /* ---------------- MAP SECTION ---------------- */
+
+    /* =====================================================
+       MAP
+    ===================================================== */
 
     .map-wrapper {
+
       position: sticky;
       top: 0;
+
       height: clamp(230px, 40vh, 320px);
-      margin: calc(env(safe-area-inset-top, 24px) + 12px) 16px 14px;
+
+      margin:
+        calc(env(safe-area-inset-top, 24px) + 12px)
+        16px
+        14px;
+
       border-radius: 26px;
+
       overflow: hidden;
-      box-shadow: 0 8px 25px rgba(8, 139, 70, 0.12);
+
+      box-shadow:
+        0 8px 25px rgba(8, 139, 70, 0.12);
+
       z-index: 5;
-      border: 1px solid rgba(0, 0, 0, 0.05);
+
+      border:
+        1px solid rgba(0, 0, 0, 0.05);
+
 
       .map-canvas {
+
         height: 100%;
         width: 100%;
+
       }
 
+
       .map-toolbar {
+
         position: absolute;
+
         top: 14px;
         left: 14px;
         right: 14px;
+
         display: flex;
         align-items: center;
         justify-content: space-between;
+
         z-index: 2;
-        padding: 0;
+
 
         .back-btn {
+
           border: none;
-          background: #fff;
+
+          background: #ffffff;
+
           border-radius: 12px;
+
           width: 40px;
           height: 40px;
+
           @include flex-center;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+          box-shadow:
+            0 4px 12px rgba(0, 0, 0, 0.08);
+
           cursor: pointer;
+
           @include transition(transform);
 
-          i {
+
+          ion-icon {
+
             color: $primary-color;
-            font-size: 18px;
+
+            font-size: 22px;
+
           }
 
+
           &:active {
+
             transform: scale(0.92);
+
           }
+
         }
+
 
         .drive-btn-floating {
+
           border: none;
-          background: #fff;
+
+          background: #ffffff;
+
           border-radius: 50%;
+
           width: 40px;
           height: 40px;
+
           @include flex-center;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+          box-shadow:
+            0 4px 12px rgba(0, 0, 0, 0.10);
+
           cursor: pointer;
+
           @include transition(transform);
 
+
           .drive-btn-icon {
+
             width: 22px;
             height: 22px;
+
           }
+
 
           &:active {
+
             transform: scale(0.92);
+
           }
+
         }
+
       }
+
     }
 
-    /* ---------------- DETAILS PANEL ---------------- */
+
+    /* =====================================================
+       DETAILS
+    ===================================================== */
 
     .details-panel {
-      background: #fff;
+
+      background: #ffffff;
+
       border-top-left-radius: 28px;
       border-top-right-radius: 28px;
-      margin-top: 0;
+
       padding: 24px 20px 36px;
+
       flex: 1;
+
       overflow-y: auto;
-      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.04);
-      border: 1px solid #f1f3f5;
+
+      box-shadow:
+        0 -10px 30px rgba(0, 0, 0, 0.04);
+
+      border:
+        1px solid #f1f3f5;
+
+
+      /* =====================================================
+         ROUTE TITLE
+      ===================================================== */
 
       .heading_route {
+
         display: flex;
+
         justify-content: center;
+
         margin-bottom: 20px;
+
 
         .map-info__title {
+
           font-size: 13px;
+
           font-weight: 700;
+
           text-transform: uppercase;
+
           letter-spacing: 0.8px;
+
           color: $primary-color;
-          background-color: rgba($primary-color, 0.08);
-          border: 1px solid rgba($primary-color, 0.15);
+
+          background-color:
+            rgba($primary-color, 0.08);
+
+          border:
+            1px solid rgba($primary-color, 0.15);
+
           padding: 6px 18px;
+
           border-radius: 20px;
-          box-shadow: 0 2px 8px rgba(8, 139, 70, 0.05);
+
         }
+
       }
+
+
+      /* =====================================================
+         STORE
+      ===================================================== */
 
       .panel-header {
+
         display: flex;
+
         justify-content: space-between;
         align-items: flex-start;
+
         gap: 16px;
-        border-bottom: 1px solid #f1f3f5;
+
+        border-bottom:
+          1px solid #f1f3f5;
+
         padding-bottom: 16px;
+
         margin-bottom: 16px;
+
 
         .store-text-info {
+
           min-width: 0;
+
           flex: 1;
+
         }
+
 
         .panel-label {
+
           font-size: 11px;
+
           text-transform: uppercase;
+
           color: #868e96;
+
           font-weight: 700;
+
           margin-bottom: 6px;
+
           letter-spacing: 0.5px;
+
         }
+
 
         .store-name {
+
           font-size: 20px;
+
           font-weight: 700;
+
           color: #212529;
+
           line-height: 1.3;
+
         }
+
 
         .panel-address {
+
           font-size: 13px;
+
           color: #6c757d;
+
           margin-top: 5px;
+
           line-height: 1.4;
+
         }
+
 
         .panel-store-img {
+
           width: 64px;
           height: 64px;
+
           border-radius: 16px;
+
           object-fit: cover;
-          border: 1px solid #eef0f2;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+
+          border:
+            1px solid #eef0f2;
+
           flex-shrink: 0;
+
         }
+
       }
 
-      /* ---------------- INFO SEGMENT ---------------- */
+
+      /* =====================================================
+         PAYMENT
+      ===================================================== */
 
       .info-segment {
+
         display: flex;
+
         flex-direction: column;
+
         gap: 12px;
-        border-bottom: 1px solid #f1f3f5;
+
+        border-bottom:
+          1px solid #f1f3f5;
+
         padding-bottom: 16px;
+
         margin-bottom: 16px;
 
+
         .payment-status-row {
+
           display: flex;
+
           justify-content: space-between;
+
           align-items: center;
+
           font-size: 14px;
 
+
           .label {
+
             font-weight: 600;
+
             color: #495057;
+
           }
+
 
           .value {
+
             font-weight: 700;
+
             color: #212529;
+
           }
+
 
           .status-badge {
+
             padding: 4px 12px;
+
             font-size: 12px;
+
             font-weight: 700;
+
             border-radius: 20px;
 
+
             &.pending {
-              background-color: rgba($red, 0.1);
+
+              background-color:
+                rgba($red, 0.1);
+
               color: $red;
-              border: 1px solid rgba($red, 0.15);
+
+              border:
+                1px solid rgba($red, 0.15);
+
             }
+
 
             &.done {
-              background-color: rgba($primary-color, 0.1);
+
+              background-color:
+                rgba($primary-color, 0.1);
+
               color: $primary-color;
-              border: 1px solid rgba($primary-color, 0.15);
+
+              border:
+                1px solid rgba($primary-color, 0.15);
+
             }
+
           }
+
         }
+
       }
 
-      /* ---------------- CHAT SECTION ---------------- */
+
+      /* =====================================================
+         CHAT
+      ===================================================== */
 
       .chat-action-bar {
+
         background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
+
+        border:
+          1px solid #e9ecef;
+
         border-radius: 14px;
+
         padding: 10px 16px;
+
         margin-bottom: 20px;
+
         cursor: pointer;
+
         @include transition(all);
+
 
         .chat-bar-content {
+
           display: flex;
+
           align-items: center;
+
           justify-content: space-between;
+
 
           .chat-bar-text {
+
             font-size: 14px;
+
             font-weight: 600;
+
             color: #495057;
+
           }
+
 
           .chat-bar-icon-wrapper {
+
             width: 36px;
             height: 36px;
+
             border-radius: 50%;
-            background-color: rgba($primary-color, 0.1);
+
+            background-color:
+              rgba($primary-color, 0.1);
+
             @include flex-center;
 
+
             .chat-bar-icon {
+
               width: 18px;
               height: 18px;
+
               object-fit: contain;
+
             }
+
           }
+
         }
+
 
         &:active {
+
           background-color: #f1f3f5;
-          border-color: #dee2e6;
-          transform: translateY(1px);
+
         }
+
       }
 
-      /* ---------------- ACCORDION SECTION ---------------- */
+
+      /* =====================================================
+         ORDER DETAILS
+      ===================================================== */
 
       .accordion-item-details {
-        border: 1px solid #e9ecef;
+
+        border:
+          1px solid #e9ecef;
+
         border-radius: 14px;
+
         overflow: hidden;
+
         margin-bottom: 24px;
+
         @include transition(all);
 
+
         .accordion-header-details {
+
           display: flex;
+
           justify-content: space-between;
+
           align-items: center;
+
           padding: 14px 16px;
+
           cursor: pointer;
+
           background-color: #fafbfc;
-          @include transition(background-color);
+
 
           .accordion-title {
+
             font-size: 14px;
+
             font-weight: 600;
+
             color: #495057;
+
           }
+
 
           .arrow-icon {
+
             width: 12px;
+
             height: 12px;
+
             opacity: 0.6;
+
             @include transition(transform);
+
           }
 
-          &:active {
-            background-color: #f1f3f5;
-          }
         }
+
 
         .accordion-body-details {
+
           padding: 16px;
-          background-color: #fff;
-          border-top: 1px solid #e9ecef;
+
+          background-color: #ffffff;
+
+          border-top:
+            1px solid #e9ecef;
+
 
           .order-items-list {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 10px;
 
+
             .item-row {
+
               display: flex;
+
               justify-content: space-between;
+
               align-items: center;
+
               font-size: 13px;
 
+
               .item-left {
+
                 display: flex;
+
                 align-items: center;
+
                 gap: 8px;
+
                 min-width: 0;
 
+
                 .item-name {
+
                   color: #343a40;
+
                   font-weight: 500;
+
                   white-space: nowrap;
+
                   overflow: hidden;
+
                   text-overflow: ellipsis;
+
                 }
+
               }
+
 
               .item-price {
+
                 font-weight: 600;
+
                 color: #212529;
+
                 flex-shrink: 0;
+
               }
 
-              // Veg / Non-Veg custom dot indicator
+
               .food-dot {
+
                 width: 14px;
                 height: 14px;
-                border: 1.5px solid currentColor;
+
+                border:
+                  1.5px solid currentColor;
+
                 border-radius: 3px;
+
                 display: flex;
+
                 align-items: center;
                 justify-content: center;
+
                 flex-shrink: 0;
 
+
                 &::after {
-                  content: "";
+
+                  content: '';
+
                   width: 5px;
                   height: 5px;
+
                   border-radius: 50%;
+
                   background-color: currentColor;
+
                 }
+
 
                 &.green-dot {
+
                   color: #199e45;
+
                 }
+
 
                 &.red-dot {
+
                   color: #d62828;
+
                 }
+
               }
+
             }
+
           }
+
         }
 
-        // Expanded state
+
         &.expanded {
-          border-color: rgba($primary-color, 0.25);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+
+          border-color:
+            rgba($primary-color, 0.25);
+
 
           .accordion-header-details {
-            background-color: rgba($primary-color, 0.03);
+
+            background-color:
+              rgba($primary-color, 0.03);
+
 
             .accordion-title {
+
               color: $primary-color;
+
             }
+
 
             .arrow-icon {
+
               transform: rotate(90deg);
-              opacity: 0.8;
+
             }
+
           }
+
         }
+
       }
 
-      /* ---------------- OTP & BUTTONS ---------------- */
+
+      /* =====================================================
+         PROFESSIONAL CUSTOMER OTP
+      ===================================================== */
 
       .otp-entry-section {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+
         width: 100%;
 
-        .otp-instruction-label {
-          font-size: 13px;
-          font-weight: 600;
-          color: #495057;
-          margin-bottom: 12px;
+        box-sizing: border-box;
+
+        background: #ffffff;
+
+        border:
+          1px solid #e5e9ed;
+
+        border-radius: 18px;
+
+        padding: 20px 16px;
+
+        box-shadow:
+          0 5px 20px rgba(0, 0, 0, 0.04);
+
+
+        .otp-heading-area {
+
           text-align: center;
+
+          margin-bottom: 20px;
+
+
+          .otp-title {
+
+            font-size: 17px;
+
+            line-height: 1.3;
+
+            font-weight: 700;
+
+            color: #212529;
+
+            margin-bottom: 5px;
+
+          }
+
+
+          .otp-instruction-label {
+
+            font-size: 12px;
+
+            line-height: 1.5;
+
+            font-weight: 500;
+
+            color: #7a838b;
+
+          }
+
         }
 
-        .otp-input-container {
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-          margin-bottom: 16px;
+
+        /* =================================================
+           ONE INPUT WITH SIX VISUAL BOXES
+        ================================================= */
+
+        .professional-otp-wrapper {
+
+          position: relative;
+
           width: 100%;
 
-          .otp-digit-input {
-            width: 44px;
-            height: 52px;
-            background-color: #f8f9fa;
-            border: 2px solid #dee2e6;
-            color: $primary-color;
-            font-size: 22px;
-            font-weight: 700;
-            text-align: center;
-            border-radius: 10px;
-            outline: none;
-            @include transition(all, 0.2s);
+          height: 58px;
 
-            &:focus {
-              border-color: $primary-color;
-              background-color: rgba($primary-color, 0.05);
-              box-shadow: 0 0 0 3px rgba(8, 139, 70, 0.15);
+          cursor: text;
+
+
+          .otp-visual-container {
+
+            position: absolute;
+
+            inset: 0;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 8px;
+
+            pointer-events: none;
+
+            z-index: 1;
+
+
+            .otp-visual-box {
+
+              width: 44px;
+              height: 56px;
+
+              flex-shrink: 0;
+
+              display: flex;
+
+              justify-content: center;
+
+              align-items: center;
+
+              border:
+                1.5px solid #dce1e5;
+
+              border-radius: 11px;
+
+              background: #f8faf9;
+
+              color: #212529;
+
+              font-family:
+                'Open Sans',
+                sans-serif;
+
+              font-size: 22px;
+
+              font-weight: 700;
+
+              box-sizing: border-box;
+
+              @include transition(all, 0.15s);
+
+
+              &.filled {
+
+                color: $primary-color;
+
+                border-color:
+                  rgba($primary-color, 0.45);
+
+                background-color:
+                  rgba($primary-color, 0.04);
+
+              }
+
+
+              &.active {
+
+                border-color:
+                  $primary-color;
+
+                background: #ffffff;
+
+                box-shadow:
+                  0 0 0 3px rgba(8, 139, 70, 0.10);
+
+              }
+
             }
+
           }
+
+
+          /*
+           * IMPORTANT
+           *
+           * Only ONE actual input exists.
+           * It sits over all six boxes.
+           */
+          .otp-master-input {
+
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            z-index: 3;
+
+            border: 0;
+
+            outline: 0;
+
+            margin: 0;
+            padding: 0;
+
+            background: transparent;
+
+            /*
+             * Keep input nearly invisible rather than
+             * display:none so the mobile keyboard works.
+             */
+            opacity: 0.01;
+
+            color: transparent;
+
+            caret-color: transparent;
+
+            -webkit-text-fill-color: transparent;
+
+            font-size: 16px;
+
+          }
+
+
+          &.has-error {
+
+            .otp-visual-container {
+
+              .otp-visual-box {
+
+                border-color:
+                  rgba(214, 40, 40, 0.55);
+
+              }
+
+            }
+
+          }
+
         }
+
+
+        /* =================================================
+           HELPER
+        ================================================= */
+
+        .otp-helper-row {
+
+          width: 100%;
+
+          display: flex;
+
+          justify-content: space-between;
+
+          align-items: center;
+
+          padding: 0 2px;
+
+          box-sizing: border-box;
+
+          margin-top: 9px;
+
+          margin-bottom: 14px;
+
+
+          .otp-helper-text {
+
+            font-size: 11px;
+
+            font-weight: 500;
+
+            color: #8b9298;
+
+          }
+
+
+          .otp-counter {
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            color: #8b9298;
+
+          }
+
+        }
+
+
+        /* =================================================
+           ERROR
+        ================================================= */
 
         .otp-error-text {
-          font-size: 13px;
+
+          width: 100%;
+
+          box-sizing: border-box;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          gap: 5px;
+
+          padding: 9px 10px;
+
+          margin-bottom: 13px;
+
+          border-radius: 9px;
+
+          background:
+            rgba(214, 40, 40, 0.06);
+
           color: #d62828;
+
+          font-size: 12px;
+
+          line-height: 1.4;
+
           font-weight: 600;
-          margin-bottom: 12px;
-          text-align: center;
+
+
+          ion-icon {
+
+            flex-shrink: 0;
+
+            font-size: 17px;
+
+          }
+
         }
+
 
         .verify-otp-btn {
-          margin-top: 4px;
+
+          gap: 8px;
+
+
+          .button-spinner {
+
+            width: 18px;
+
+            height: 18px;
+
+            color: #ffffff;
+
+          }
+
         }
+
       }
+
+
+      /* =====================================================
+         VENDOR OTP
+      ===================================================== */
 
       .otp-container {
+
         display: flex;
+
         justify-content: center;
+
         gap: 8px;
+
         margin-bottom: 24px;
 
+
         .otp-box {
+
           width: 42px;
+
           height: 52px;
-          background-color: rgba($primary-color, 0.08);
-          border: 2px solid $primary-color;
+
+          background-color:
+            rgba($primary-color, 0.08);
+
+          border:
+            2px solid $primary-color;
+
           color: $primary-color;
+
           font-size: 22px;
+
           font-weight: 700;
-          font-family: 'Courier New', Courier, monospace;
+
           @include flex-center;
+
           border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(8, 139, 70, 0.05);
-          letter-spacing: 0;
+
         }
+
       }
+
+
+      /* =====================================================
+         BUTTON
+      ===================================================== */
 
       .primary-action-btn {
+
         width: 100%;
-        height: 46px;
-        background-color: $primary-color;
-        color: $white;
+
+        height: 48px;
+
         border: none;
+
         border-radius: 12px;
-        font-size: 15px;
+
+        background-color:
+          $primary-color;
+
+        color: #ffffff;
+
+        font-size: 14px;
+
         font-weight: 700;
+
         @include flex-center;
-        box-shadow: 0 4px 12px rgba(8, 139, 70, 0.2);
+
+        box-shadow:
+          0 4px 12px rgba(8, 139, 70, 0.20);
+
         @include transition(all, 0.2s);
+
         cursor: pointer;
 
+
         &:disabled {
-          opacity: 0.7;
+
+          opacity: 0.45;
+
           cursor: not-allowed;
+
+          box-shadow: none;
+
         }
 
-        &.send-otp-again-btn {
-          background-color: $secondary-color;
-          box-shadow: 0 4px 12px rgba(202, 44, 44, 0.2);
-
-          &:active {
-            background-color: #aa1e1e;
-            box-shadow: 0 2px 6px rgba(202, 44, 44, 0.15);
-          }
-        }
 
         &:active:not(:disabled) {
+
           transform: scale(0.98);
-          background-color: #067038;
-          box-shadow: 0 2px 6px rgba(8, 139, 70, 0.15);
+
         }
+
+
+        &.send-otp-again-btn {
+
+          background-color:
+            $secondary-color;
+
+        }
+
       }
+
 
       .button-row {
+
         width: 100%;
+
       }
+
     }
+
   }
+
 }
 
+
 .btn-outer-div {
+
   margin-top: 16px;
+
+}
+
+
+/* =====================================================
+   SMALL PHONE
+===================================================== */
+
+@media (max-width: 380px) {
+
+  ion-content {
+
+    .store-page {
+
+      .details-panel {
+
+        .otp-entry-section {
+
+          padding-left: 12px;
+          padding-right: 12px;
+
+
+          .professional-otp-wrapper {
+
+            .otp-visual-container {
+
+              gap: 5px;
+
+
+              .otp-visual-box {
+
+                width: 39px;
+
+                height: 52px;
+
+                font-size: 20px;
+
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
 }

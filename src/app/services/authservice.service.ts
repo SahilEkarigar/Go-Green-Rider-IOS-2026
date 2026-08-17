@@ -161,6 +161,12 @@ export class AuthserviceService {
     const headers = await this.getHeaders();
     return this.http.post(this.apiUrl + 'riders/verifyotp', data, { headers });
   };
+
+  async riderVerifyOtpthroughtCustomer(data: any): Promise<Observable<any>> {
+    const headers = await this.getHeaders();
+    return this.http.post(this.apiUrl + 'order/verifyotpcustomer', data, { headers });
+  };
+
   async ResetRiderPwd(data: any): Promise<Observable<any>> {
     const headers = await this.getHeaders();
     return this.http.post(this.apiUrl + 'riders/reset-riderPwd', data, { headers });

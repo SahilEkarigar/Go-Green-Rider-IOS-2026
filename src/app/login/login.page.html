@@ -57,12 +57,24 @@
             </div>
 
             <input
-              type="password"
+              [type]="showPassword ? 'text' : 'password'"
               [(ngModel)]="password"
               [ngClass]="{'input-error': isPasswordInvalid}"
               class="input-field"
               placeholder="Enter your password"
               autocomplete="current-password">
+
+            <button
+              type="button"
+              class="eye_box"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="showPassword ? 'Hide password' : 'Show password'">
+              <i
+                class="fa"
+                [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+                aria-hidden="true">
+              </i>
+            </button>
           </div>
 
           <!-- Error + Forgot Password -->

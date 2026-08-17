@@ -42,6 +42,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
   email: string = '';
   password: string = '';
+  showPassword = false;
 
   isEmailInvalid = false;
   isPasswordInvalid = false;
@@ -473,6 +474,13 @@ export class LoginPage implements OnInit, OnDestroy {
     this.router.navigate([
       'forgot-password'
     ]);
+
+  }
+
+
+  togglePasswordVisibility() {
+
+    this.showPassword = !this.showPassword;
 
   }
 

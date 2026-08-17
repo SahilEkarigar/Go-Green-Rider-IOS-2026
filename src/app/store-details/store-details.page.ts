@@ -1,576 +1,2080 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  AfterViewInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
+
 import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { Geolocation } from '@capacitor/geolocation';
+
 import { AuthserviceService } from '../services/authservice.service';
 import { SocketService } from '../services/socket.service';
+
 import { Storage } from '@ionic/storage-angular';
+
 import { environment } from 'environments/environment';
 
+import { firstValueFrom } from 'rxjs';
+
+
 declare var google: any;
+
 
 @Component({
   selector: 'app-store-details',
   templateUrl: './store-details.page.html',
   styleUrls: ['./store-details.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [
+    IonicModule,
+    CommonModule,
+    FormsModule
+  ]
 })
 export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
-  // ------------------------
-  // HTML BOUND VARIABLES
-  // ------------------------
+
+  /* =====================================================
+     OTP INPUT
+  ===================================================== */
+
+  @ViewChild('otpMasterInput')
+  otpMasterInput?: ElementRef<HTMLInputElement>;
+
+
+  /* =====================================================
+     ORDER
+  ===================================================== */
+
   order: any;
+
   riderId: string = '';
+
   orderId: string = '';
 
   pickupButtonText: string = 'Reached Pickup';
+
   headerText: string = 'Your Way To Vendor';
+
   hideButton: boolean = false;
+
   isOrderDetailsExpanded: boolean = true;
 
+
+  /* =====================================================
+     VENDOR OTP
+  ===================================================== */
+
   otp: string = '';
+
   otpDigits: string[] = [];
-  inputOtp: string[] = ['', '', '', '', '', ''];
+
+
+  /* =====================================================
+     CUSTOMER OTP
+  ===================================================== */
+
+  otpIndexes: number[] = [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ];
+
+
+  /*
+   * IMPORTANT:
+   *
+   * Only one string is used for the full OTP.
+   *
+   * Example:
+   * customerOtp = "458921"
+   */
+  customerOtp: string = '';
+
+
   otpErrorMessage: string = '';
+
   isVerifyingOtp: boolean = false;
 
-  // ------------------------
-  // MAP
-  // ------------------------
+  isOtpFocused: boolean = false;
+
+
+  /* =====================================================
+     MAP
+  ===================================================== */
+
   map: any;
+
   directionsService: any;
+
   directionsRenderer: any;
 
+
   riderMarker: any;
+
   vendorMarker: any;
+
   customerMarker: any;
 
-  riderPos!: google.maps.LatLngLiteral;
+
   vendorTarget!: google.maps.LatLngLiteral;
+
   customerTarget!: google.maps.LatLngLiteral;
-  currentTarget: google.maps.LatLngLiteral | null = null;
-
-  // ------------------------
-  // TRACKING
-  // ------------------------
-  watchId: any;
-  // otpSub: any;
-
-  isAutoFollow = true;
-  routePath: { lat: number; lng: number }[] = [];
 
 
-  lastSnappedTime = 0;
-  lastPosition: google.maps.LatLngLiteral | null = null;
+  currentTarget:
+    google.maps.LatLngLiteral | null = null;
 
-  // Route throttling
-  lastRouteUpdatePos: google.maps.LatLngLiteral | null = null;
-  lastRouteUpdateTime = 0;
+
+  /* =====================================================
+     LOCATION TRACKING
+  ===================================================== */
+
+  watchId: any = null;
+
+  lastSnappedTime: number = 0;
+
+  lastPosition:
+    google.maps.LatLngLiteral | null = null;
+
+
+  lastRouteUpdatePos:
+    google.maps.LatLngLiteral | null = null;
+
+  lastRouteUpdateTime: number = 0;
+
   lastHeading: number = 0;
 
-  isMapLoading = true;
 
-  mapReady = false;
-  gpsReady = false;
+  /* =====================================================
+     MAP
+  ===================================================== */
 
-  private readonly GOOGLE_API_KEY = environment.googleMapsApiKey;
+  isMapLoading: boolean = true;
+
+  mapReady: boolean = false;
+
+
+  /* =====================================================
+     SOCKET
+  ===================================================== */
+
   private otpSub: any = null;
+
   private otpVerifiedSub: any = null;
+
+
+  /* =====================================================
+     GOOGLE API
+  ===================================================== */
+
+  private readonly GOOGLE_API_KEY =
+    environment.googleMapsApiKey;
+
+
 
   constructor(
     private router: Router,
     private authService: AuthserviceService,
     private socketService: SocketService,
     private storage: Storage
-  ) { }
+  ) {}
 
-  // ------------------------
-  // INIT
-  // ------------------------
+
+  /* =====================================================
+     CUSTOMER DELIVERY STAGE
+  ===================================================== */
+
+  get isCustomerDeliveryStage(): boolean {
+
+    return (
+      this.headerText.includes('Customer') ||
+      this.pickupButtonText === 'Order Delivered'
+    );
+
+  }
+
+
+
+  /* =====================================================
+     CHECK OTP COMPLETE
+  ===================================================== */
+
+  get isOtpComplete(): boolean {
+
+    return /^[0-9]{6}$/.test(
+      this.customerOtp
+    );
+
+  }
+
+
+
+  /* =====================================================
+     ACTIVE OTP BOX
+  ===================================================== */
+
+  isOtpBoxActive(
+    index: number
+  ): boolean {
+
+    if (!this.isOtpFocused) {
+
+      return false;
+
+    }
+
+
+    /*
+     * User has entered all six digits.
+     * Keep last box active.
+     */
+    if (
+      this.customerOtp.length >= 6
+    ) {
+
+      return index === 5;
+
+    }
+
+
+    return (
+      index === this.customerOtp.length
+    );
+
+  }
+
+
+
+  /* =====================================================
+     INITIALIZE
+  ===================================================== */
+
   async ngAfterViewInit() {
+
     await this.storage.create();
 
-    this.riderId = localStorage.getItem('user_id') || '';
 
-    if (history.state?.order) {
-      console.log('order-Data:-', history.state.order);
-      this.order = history.state.order;
-      this.orderId = this.order.order_id;
+    this.riderId =
+      localStorage.getItem('user_id') || '';
 
-      // Check if rider is already on their way to customer (order_status: 2 and rider_status: 3)
-      if (Number(this.order.order_status) === 2 && Number(this.order.rider_status) === 3) {
-        this.headerText = 'Your Way To Customer';
-        this.pickupButtonText = 'Order Delivered';
-      }
 
-      this.getCoordinates(this.orderId);
-    } else {   
-      this.router.navigate(['/home']);
+    if (!history.state?.order) {
+
+      this.router.navigate([
+        '/home'
+      ]);
+
+      return;
+
     }
+
+
+    this.order =
+      history.state.order;
+
+
+    this.orderId =
+      this.order?.order_id?.toString() || '';
+
+
+    console.log(
+      'Order Data:',
+      this.order
+    );
+
+
+    /*
+     * Rider already travelling to customer.
+     */
+    if (
+      Number(this.order?.order_status) === 2 &&
+      Number(this.order?.rider_status) === 3
+    ) {
+
+      this.headerText =
+        'Your Way To Customer';
+
+
+      this.pickupButtonText =
+        'Order Delivered';
+
+    }
+
+
+    if (this.orderId) {
+
+      this.getCoordinates(
+        this.orderId
+      );
+
+    }
+
   }
 
-  // ------------------------
-  // NAVIGATION
-  // ------------------------
+
+
+  /* =====================================================
+     NAVIGATION
+  ===================================================== */
+
   navigateToHome() {
-    this.router.navigate(['/home']);
+
+    this.router.navigate([
+      '/home'
+    ]);
+
   }
+
+
 
   gotochatscreen() {
-    this.router.navigate(['/chat-screen'], {
-      state: {
-        customerName: `${this.order?.firstname} ${this.order?.lastname}`,
-        orderId: this.orderId,
-        customer_id: this.order?.user_id,
-        rider_id: this.riderId,
-      },
-    });
+
+    this.router.navigate(
+      ['/chat-screen'],
+      {
+
+        state: {
+
+          customerName:
+            `${this.order?.firstname || ''} ${this.order?.lastname || ''}`.trim(),
+
+          orderId:
+            this.orderId,
+
+          customer_id:
+            this.order?.user_id,
+
+          rider_id:
+            this.riderId
+
+        }
+
+      }
+    );
+
   }
+
+
 
   toggleOrderDetails() {
-    this.isOrderDetailsExpanded = !this.isOrderDetailsExpanded;
+
+    this.isOrderDetailsExpanded =
+      !this.isOrderDetailsExpanded;
+
   }
+
+
+
+  /* =====================================================
+     INITIALIZE MAP
+  ===================================================== */
 
   initMap() {
+
     this.isMapLoading = true;
 
-    // Center map immediately on target if available
-    const initialCenter = this.currentTarget || this.vendorTarget || { lat: 0, lng: 0 };
 
-    this.map = new google.maps.Map(
-      document.getElementById('map')!,
+    const initialCenter =
+      this.currentTarget ||
+      this.vendorTarget ||
       {
-        zoom: 15,
-        center: initialCenter,
-        disableDefaultUI: true,
-      }
-    );
+        lat: 0,
+        lng: 0
+      };
 
-    // Hide loader immediately once map instance is attached
-    this.isMapLoading = false;
+
+    this.map =
+      new google.maps.Map(
+        document.getElementById('map')!,
+        {
+
+          zoom: 15,
+
+          center: initialCenter,
+
+          disableDefaultUI: true
+
+        }
+      );
+
+
     this.mapReady = true;
 
-    this.directionsService = new google.maps.DirectionsService();
-    this.directionsRenderer = new google.maps.DirectionsRenderer({
-      suppressMarkers: true,
-      preserveViewport: true,
-    });
+    this.isMapLoading = false;
 
-    this.directionsRenderer.setMap(this.map);
 
-    if (Number(this.order?.order_status) === 2 && Number(this.order?.rider_status) === 3) {
-      this.currentTarget = this.customerTarget;
-      this.customerMarker = new google.maps.Marker({
-        map: this.map,
-        position: this.customerTarget,
+    this.directionsService =
+      new google.maps.DirectionsService();
+
+
+    this.directionsRenderer =
+      new google.maps.DirectionsRenderer({
+
+        suppressMarkers: true,
+
+        preserveViewport: true
+
       });
-    } else {
-      this.currentTarget = this.vendorTarget;
-      // Vendor marker (Default Icon)
-      this.vendorMarker = new google.maps.Marker({
-        map: this.map,
-        position: this.vendorTarget,
-      });
+
+
+    this.directionsRenderer.setMap(
+      this.map
+    );
+
+
+    /*
+     * Already travelling to customer.
+     */
+    if (
+      Number(this.order?.order_status) === 2 &&
+      Number(this.order?.rider_status) === 3
+    ) {
+
+      this.currentTarget =
+        this.customerTarget;
+
+
+      this.customerMarker =
+        new google.maps.Marker({
+
+          map:
+            this.map,
+
+          position:
+            this.customerTarget
+
+        });
+
     }
+
+    else {
+
+      this.currentTarget =
+        this.vendorTarget;
+
+
+      this.vendorMarker =
+        new google.maps.Marker({
+
+          map:
+            this.map,
+
+          position:
+            this.vendorTarget
+
+        });
+
+    }
+
 
     this.startTrackingRider();
+
   }
 
-  drawRoute(origin: google.maps.LatLngLiteral, destination: google.maps.LatLngLiteral) {
+
+
+  /* =====================================================
+     DRAW ROUTE
+  ===================================================== */
+
+  drawRoute(
+    origin: google.maps.LatLngLiteral,
+    destination: google.maps.LatLngLiteral
+  ) {
+
+    if (
+      !this.directionsService ||
+      !destination
+    ) {
+
+      return;
+
+    }
+
+
     this.directionsService.route(
+
       {
+
         origin,
-        destination, // Use the passed destination
-        travelMode: google.maps.TravelMode.DRIVING,
+
+        destination,
+
+        travelMode:
+          google.maps.TravelMode.DRIVING
+
       },
-      (result: any, status: any) => {
+
+      (
+        result: any,
+        status: any
+      ) => {
+
         if (status === 'OK') {
-          this.directionsRenderer.setDirections(result);
+
+          this.directionsRenderer
+            .setDirections(result);
+
         }
+
       }
+
     );
+
   }
+
+
+
+  /* =====================================================
+     TRACK RIDER
+  ===================================================== */
 
   startTrackingRider() {
-    this.watchId = Geolocation.watchPosition(
-      { enableHighAccuracy: true, timeout: 1000 },
-      async (pos) => {
-        if (!pos) return;
 
-        const now = Date.now();
-        const rawLatLng = {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-        };
+    this.watchId =
+      Geolocation.watchPosition(
 
-        let finalLatLng = rawLatLng;
+        {
 
-        // SNAP TO ROAD (Non-blocking async)
-        if (now - this.lastSnappedTime > 4000) {
-          this.snapToRoad(rawLatLng.lat, rawLatLng.lng).then(snapped => {
-            if (snapped) {
-              this.lastPosition = {
-                lat: snapped.latitude,
-                lng: snapped.longitude
-              };
-            }
-          }).catch(() => {});
-          this.lastSnappedTime = now;
-        }
+          enableHighAccuracy:
+            true,
 
-        // CALCULATE DISTANCE MOVED
-        let distFromLast = 0;
-        if (this.lastPosition) {
-          distFromLast = this.getDistanceFromLatLonInKm(
-            finalLatLng.lat, finalLatLng.lng,
-            this.lastPosition.lat, this.lastPosition.lng
-          ) * 1000; // in meters
-        }
+          timeout:
+            1000
 
-        // CALCULATE HEADING (Conditional)
-        // Only update heading if we have significant movement or speed
-        const speed = pos.coords.speed; // meters per second, might be null
-        const isMoving = (speed && speed > 0.5) || (distFromLast > 2); // 2 meters threshold if no speed
+        },
 
-        if (this.lastPosition && isMoving) {
-          this.lastHeading = this.getBearing(this.lastPosition, finalLatLng);
-        }
+        async (pos) => {
 
-        // Set initial target if not set (Default to Vendor)
-        if (!this.currentTarget) {
-          this.currentTarget = this.vendorTarget;
-        }
+          if (!pos) {
 
-        if (!this.riderMarker) {
-          this.gpsReady = true;
-          this.map.setCenter(finalLatLng);
-          this.map.setZoom(17);
+            return;
 
-          this.riderMarker = new google.maps.Marker({
-            map: this.map,
-            position: finalLatLng,
-            icon: {
-              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
-              scale: 6,
-              fillColor: "#4285F4", // Google Blue
-              fillOpacity: 1,
-              strokeColor: "white",
-              strokeWeight: 2,
-              rotation: this.lastHeading, // ✅ Use stable heading
-              anchor: new google.maps.Point(0, 2.5) // Adjust anchor to center rotation
-            },
-          });
-        } else {
-          this.riderMarker.setPosition(finalLatLng);
-          // Update icon with new rotation
-          const icon = this.riderMarker.getIcon();
-          if (icon) {
-            icon.rotation = this.lastHeading;
-            this.riderMarker.setIcon(icon);
           }
+
+
+          const now =
+            Date.now();
+
+
+          const finalLatLng = {
+
+            lat:
+              pos.coords.latitude,
+
+            lng:
+              pos.coords.longitude
+
+          };
+
+
+          /* =================================================
+             SNAP TO ROAD
+          ================================================= */
+
+          if (
+            now -
+            this.lastSnappedTime >
+            4000
+          ) {
+
+            this.snapToRoad(
+              finalLatLng.lat,
+              finalLatLng.lng
+            )
+              .then(snapped => {
+
+                if (!snapped) {
+
+                  return;
+
+                }
+
+
+                this.lastPosition = {
+
+                  lat:
+                    snapped.latitude,
+
+                  lng:
+                    snapped.longitude
+
+                };
+
+              })
+              .catch(() => {});
+
+
+            this.lastSnappedTime =
+              now;
+
+          }
+
+
+          /* =================================================
+             DISTANCE
+          ================================================= */
+
+          let distanceFromLast =
+            0;
+
+
+          if (this.lastPosition) {
+
+            distanceFromLast =
+              this.getDistanceFromLatLonInKm(
+
+                finalLatLng.lat,
+
+                finalLatLng.lng,
+
+                this.lastPosition.lat,
+
+                this.lastPosition.lng
+
+              ) * 1000;
+
+          }
+
+
+          /* =================================================
+             HEADING
+          ================================================= */
+
+          const speed =
+            pos.coords.speed;
+
+
+          const isMoving =
+            (
+              speed !== null &&
+              speed > 0.5
+            )
+            ||
+            distanceFromLast > 2;
+
+
+          if (
+            this.lastPosition &&
+            isMoving
+          ) {
+
+            this.lastHeading =
+              this.getBearing(
+
+                this.lastPosition,
+
+                finalLatLng
+
+              );
+
+          }
+
+
+          if (!this.currentTarget) {
+
+            this.currentTarget =
+              this.vendorTarget;
+
+          }
+
+
+          /* =================================================
+             RIDER MARKER
+          ================================================= */
+
+          if (!this.riderMarker) {
+
+            this.map.setCenter(
+              finalLatLng
+            );
+
+
+            this.map.setZoom(17);
+
+
+            this.riderMarker =
+              new google.maps.Marker({
+
+                map:
+                  this.map,
+
+                position:
+                  finalLatLng,
+
+                icon: {
+
+                  path:
+                    google.maps.SymbolPath
+                      .FORWARD_CLOSED_ARROW,
+
+                  scale:
+                    6,
+
+                  fillColor:
+                    '#4285F4',
+
+                  fillOpacity:
+                    1,
+
+                  strokeColor:
+                    '#ffffff',
+
+                  strokeWeight:
+                    2,
+
+                  rotation:
+                    this.lastHeading,
+
+                  anchor:
+                    new google.maps.Point(
+                      0,
+                      2.5
+                    )
+
+                }
+
+              });
+
+          }
+
+          else {
+
+            this.riderMarker
+              .setPosition(
+                finalLatLng
+              );
+
+
+            const icon =
+              this.riderMarker.getIcon();
+
+
+            if (icon) {
+
+              icon.rotation =
+                this.lastHeading;
+
+
+              this.riderMarker
+                .setIcon(icon);
+
+            }
+
+          }
+
+
+          /* =================================================
+             ROUTE UPDATE
+          ================================================= */
+
+          let routeDistance =
+            0;
+
+
+          if (this.lastRouteUpdatePos) {
+
+            routeDistance =
+              this.getDistanceFromLatLonInKm(
+
+                finalLatLng.lat,
+
+                finalLatLng.lng,
+
+                this.lastRouteUpdatePos.lat,
+
+                this.lastRouteUpdatePos.lng
+
+              ) * 1000;
+
+          }
+
+
+          const timeDifference =
+            now -
+            this.lastRouteUpdateTime;
+
+
+          if (
+            this.currentTarget &&
+            (
+              !this.lastRouteUpdatePos ||
+              routeDistance > 30 ||
+              timeDifference > 10000
+            )
+          ) {
+
+            this.drawRoute(
+
+              finalLatLng,
+
+              this.currentTarget
+
+            );
+
+
+            this.lastRouteUpdatePos =
+              finalLatLng;
+
+
+            this.lastRouteUpdateTime =
+              now;
+
+          }
+
+
+          /*
+           * Follow rider
+           */
+          if (this.map) {
+
+            this.map.panTo(
+              finalLatLng
+            );
+
+          }
+
+
+          this.lastPosition =
+            finalLatLng;
+
         }
 
-        // UPDATED: Throttled route drawing
-        const dist = this.getDistanceFromLatLonInKm(
-          finalLatLng.lat, finalLatLng.lng,
-          this.lastRouteUpdatePos?.lat || 0, this.lastRouteUpdatePos?.lng || 0
-        ) * 1000; // convert to meters
+      );
 
-        const timeDiff = now - this.lastRouteUpdateTime;
-
-        if (this.currentTarget && (dist > 30 || timeDiff > 10000 || !this.lastRouteUpdatePos)) {
-          this.drawRoute(finalLatLng, this.currentTarget);
-          this.lastRouteUpdatePos = finalLatLng;
-          this.lastRouteUpdateTime = now;
-        }
-
-        // ✅ Auto-center map on rider
-        if (this.map) {
-          this.map.panTo(finalLatLng);
-        }
-
-        this.lastPosition = finalLatLng;
-      }
-    );
   }
 
-  // Helper for distance calculation
-  getDistanceFromLatLonInKm(lat1: number, lon1: number, lat2: number, lon2: number) {
-    const R = 6371; // Radius of the earth in km
-    const dLat = this.deg2rad(lat2 - lat1);
-    const dLon = this.deg2rad(lon2 - lon1);
+
+
+  /* =====================================================
+     DISTANCE
+  ===================================================== */
+
+  getDistanceFromLatLonInKm(
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ): number {
+
+    const R =
+      6371;
+
+
+    const dLat =
+      this.deg2rad(
+        lat2 - lat1
+      );
+
+
+    const dLon =
+      this.deg2rad(
+        lon2 - lon1
+      );
+
+
     const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const d = R * c; // Distance in km
-    return d;
+
+      Math.sin(dLat / 2)
+      *
+      Math.sin(dLat / 2)
+
+      +
+
+      Math.cos(
+        this.deg2rad(lat1)
+      )
+      *
+      Math.cos(
+        this.deg2rad(lat2)
+      )
+      *
+      Math.sin(dLon / 2)
+      *
+      Math.sin(dLon / 2);
+
+
+    const c =
+      2 *
+      Math.atan2(
+        Math.sqrt(a),
+        Math.sqrt(1 - a)
+      );
+
+
+    return R * c;
+
   }
 
-  deg2rad(deg: number) {
-    return deg * (Math.PI / 180);
+
+
+  deg2rad(
+    deg: number
+  ): number {
+
+    return deg *
+      (Math.PI / 180);
+
   }
 
-  hideLoaderIfReady() {
-    this.isMapLoading = false;
-  }
 
-  getBearing(from: google.maps.LatLngLiteral, to: google.maps.LatLngLiteral) {
-    const lat1 = from.lat * Math.PI / 180;
-    const lat2 = to.lat * Math.PI / 180;
-    const dLng = (to.lng - from.lng) * Math.PI / 180;
 
-    const y = Math.sin(dLng) * Math.cos(lat2);
+  /* =====================================================
+     GET BEARING
+  ===================================================== */
+
+  getBearing(
+    from: google.maps.LatLngLiteral,
+    to: google.maps.LatLngLiteral
+  ): number {
+
+    const lat1 =
+      from.lat *
+      Math.PI /
+      180;
+
+
+    const lat2 =
+      to.lat *
+      Math.PI /
+      180;
+
+
+    const dLng =
+      (
+        to.lng -
+        from.lng
+      )
+      *
+      Math.PI /
+      180;
+
+
+    const y =
+      Math.sin(dLng) *
+      Math.cos(lat2);
+
+
     const x =
-      Math.cos(lat1) * Math.sin(lat2) -
-      Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
 
-    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+      Math.cos(lat1)
+      *
+      Math.sin(lat2)
+
+      -
+
+      Math.sin(lat1)
+      *
+      Math.cos(lat2)
+      *
+      Math.cos(dLng);
+
+
+    return (
+
+      Math.atan2(y, x)
+      *
+      180
+      /
+      Math.PI
+
+      +
+
+      360
+
+    ) % 360;
+
   }
 
-  async snapToRoad(lat: number, lng: number) {
+
+
+  /* =====================================================
+     SNAP TO ROAD
+  ===================================================== */
+
+  async snapToRoad(
+    lat: number,
+    lng: number
+  ) {
+
     const url =
-      `https://roads.googleapis.com/v1/snapToRoads?` +
-      `path=${lat},${lng}&interpolate=false&key=${this.GOOGLE_API_KEY}`;
 
-    const res = await fetch(url);
-    const data = await res.json();
+      `https://roads.googleapis.com/v1/snapToRoads` +
 
-    return data.snappedPoints?.[0]?.location || { latitude: lat, longitude: lng };
-  }
+      `?path=${lat},${lng}` +
 
-  // ------------------------
-  // GET COORDINATES
-  // ------------------------
-  getCoordinates(orderId: string) {
-    this.authService.getCordinatesofOrder(orderId).subscribe((res: any) => {
-      if (!res?.data) return;
+      `&interpolate=false` +
 
-      this.vendorTarget = {
-        lat: +res.data.vendor_lat,
-        lng: +res.data.vendor_lng,
-      };
+      `&key=${this.GOOGLE_API_KEY}`;
 
-      this.customerTarget = {
-        lat: +res.data.customer_lat,
-        lng: +res.data.customer_lng,
-      };
-      
-      // Initialize map immediately without unnecessary delay
-      this.initMap();
-    });
-  }
 
-  async reachedPickup(orderId: string) {
-    this.orderId = orderId;
-    this.socketService.joinOrderRoom(orderId);
-    // console.log('order-id: ', orderId)
-    // console.log('this.otpSub: ', this.otpSub)
+    const response =
+      await fetch(url);
 
-    // ✅ Listen for OTP generated
-    if (!this.otpSub) {
-      this.otpSub = this.socketService.listenToOtp(orderId).subscribe({
-        next: (otpData) => {
-          // console.log("OTP received:", otpData.otp);
-          this.otp = otpData.otp.toString();
-          this.otpDigits = this.otp.split('');
-          this.pickupButtonText = 'Send OTP Again';
-        }
-      });
-    }
 
-    // ✅ Listen for OTP verified
-    if (!this.otpVerifiedSub) {
-      this.otpVerifiedSub = this.socketService.listenToOtpVerified(orderId).subscribe({
-        next: (data) => {
-          // console.log("OTP Verified Event:", data);
+    const data =
+      await response.json();
 
-          // Clear OTP UI
-          this.otp = '';
-          this.otpDigits = [];
-          this.onOtpVerified();
 
-          // Use toggleSimulation functionality to start the ride
-          const mockEvent = new Event('click');
+    return (
 
-        }
-      });
-    }
+      data?.snappedPoints?.[0]?.location
 
-    const body = { orderId, riderId: this.riderId, status: 3 };
-    try {
-      (await this.authService.handleOrderByRider(body)).subscribe({
-        next: (res: any) => console.log("Order handled successfully:", res),
-        error: (err: any) => console.error("Error handling order:", err)
-      });
-    } catch (err) {
-      console.error(err);
-    }
-  }
+      ||
 
-  onOtpVerified() {
-    // console.log("OTP Verified - Switching path to Customer");
-
-    // 1. Change the target to Customer
-    this.currentTarget = this.customerTarget;
-
-    // 2. Remove the vendor marker if you want
-    if (this.vendorMarker) {
-      this.vendorMarker.setMap(null);
-    }
-
-    // 3. Add the customer marker (Default Icon)
-    this.customerMarker = new google.maps.Marker({
-      map: this.map,
-      position: this.customerTarget,
-    });
-
-    this.headerText = 'Your Way To Customer';
-
-    // 4. Force an immediate route redraw
-    // Reset throttle variables so the next tracking update forces a draw,
-    // or draw immediately if we have a position.
-    this.lastRouteUpdateTime = 0;
-    this.lastRouteUpdatePos = null;
-
-    if (this.lastPosition && this.currentTarget) {
-      this.drawRoute(this.lastPosition, this.currentTarget);
-    }
-
-    this.pickupButtonText = 'Order Delivered';
-  }
-
-  // ------------------------
-  // DELIVERY & EXTERNAL NAV
-  // ------------------------
-
-  openGoogleMaps() {
-    if (!this.vendorTarget && !this.customerTarget) return;
-
-    let target = this.vendorTarget;
-    if (this.pickupButtonText === 'Order Delivered' || this.headerText.includes('Customer')) {
-      target = this.customerTarget;
-    }
-
-    if (target) {
-      const url = `https://www.google.com/maps/dir/?api=1&destination=${target.lat},${target.lng}&travelmode=driving`;
-      window.open(url, '_system');
-    }
-  }
-
-  onOtpDigitInput(event: any, index: number) {
-    const inputVal = event.target.value;
-    if (inputVal && inputVal.length > 0) {
-      this.inputOtp[index] = inputVal.substring(inputVal.length - 1);
-      if (index < 5) {
-        const nextInput = document.getElementById(`rider-otp-input-${index + 1}`) as HTMLInputElement;
-        if (nextInput) {
-          nextInput.focus();
-        }
+      {
+        latitude: lat,
+        longitude: lng
       }
-    }
+
+    );
+
   }
 
-  onOtpKeyDown(event: KeyboardEvent, index: number) {
-    if (event.key === 'Backspace' && !this.inputOtp[index] && index > 0) {
-      const prevInput = document.getElementById(`rider-otp-input-${index - 1}`) as HTMLInputElement;
-      if (prevInput) {
-        prevInput.focus();
-      }
-    }
+
+
+  /* =====================================================
+     GET COORDINATES
+  ===================================================== */
+
+  getCoordinates(
+    orderId: string
+  ) {
+
+    this.authService
+      .getCordinatesofOrder(orderId)
+      .subscribe({
+
+        next: (res: any) => {
+
+          if (!res?.data) {
+
+            console.error(
+              'Coordinates not available'
+            );
+
+            this.isMapLoading =
+              false;
+
+            return;
+
+          }
+
+
+          this.vendorTarget = {
+
+            lat:
+              Number(
+                res.data.vendor_lat
+              ),
+
+            lng:
+              Number(
+                res.data.vendor_lng
+              )
+
+          };
+
+
+          this.customerTarget = {
+
+            lat:
+              Number(
+                res.data.customer_lat
+              ),
+
+            lng:
+              Number(
+                res.data.customer_lng
+              )
+
+          };
+
+
+          this.initMap();
+
+        },
+
+
+        error: (error: any) => {
+
+          console.error(
+            'Coordinate API Error:',
+            error
+          );
+
+
+          this.isMapLoading =
+            false;
+
+        }
+
+      });
+
   }
 
-  async verifyCustomerOtp() {
-    this.otpErrorMessage = '';
-    const enteredOtp = this.inputOtp.join('');
 
-    if (enteredOtp.length < 6) {
-      this.otpErrorMessage = 'Please enter complete 6 digit OTP';
+
+  /* =====================================================
+     REACHED VENDOR
+  ===================================================== */
+
+  async reachedPickup(
+    orderId: string
+  ) {
+
+    if (!orderId) {
+
       return;
+
     }
 
-    this.isVerifyingOtp = true;
+
+    this.orderId =
+      orderId;
+
+
+    this.socketService
+      .joinOrderRoom(
+        orderId
+      );
+
+
+    /* =================================================
+       LISTEN OTP
+    ================================================= */
+
+    if (!this.otpSub) {
+
+      this.otpSub =
+        this.socketService
+          .listenToOtp(orderId)
+          .subscribe({
+
+            next: (otpData: any) => {
+
+              if (!otpData?.otp) {
+
+                return;
+
+              }
+
+
+              this.otp =
+                otpData.otp.toString();
+
+
+              this.otpDigits =
+                this.otp.split('');
+
+
+              this.pickupButtonText =
+                'Send OTP Again';
+
+            }
+
+          });
+
+    }
+
+
+    /* =================================================
+       VENDOR VERIFIED OTP
+    ================================================= */
+
+    if (!this.otpVerifiedSub) {
+
+      this.otpVerifiedSub =
+        this.socketService
+          .listenToOtpVerified(orderId)
+          .subscribe({
+
+            next: (data: any) => {
+
+              console.log(
+                'Vendor OTP Verified:',
+                data
+              );
+
+
+              this.otp =
+                '';
+
+
+              this.otpDigits =
+                [];
+
+
+              this.onOtpVerified();
+
+            }
+
+          });
+
+    }
+
+
+    /*
+     * Rider status 3
+     */
     const body = {
-      order_id: this.orderId,
-      otp: enteredOtp
+
+      orderId:
+        orderId,
+
+      riderId:
+        this.riderId,
+
+      status:
+        3
+
     };
 
+
     try {
-      (await this.authService.riderVerifyOtp(body)).subscribe({
-        next: async (res: any) => {
-          this.isVerifyingOtp = false;
-          if (res?.status === true || res?.success === true) {
-            alert('OTP verified successfully! Order delivered to customer.');
-            await this.deliverOrder(this.orderId);
-          } else {
-            this.otpErrorMessage = res?.message || 'Invalid OTP. Please try again.';
-          }
-        },
-        error: (err: any) => {
-          this.isVerifyingOtp = false;
-          console.error('Error verifying OTP:', err);
-          this.otpErrorMessage = err?.error?.message || 'OTP verification failed. Please check OTP and try again.';
-        }
-      });
-    } catch (err) {
-      this.isVerifyingOtp = false;
-      console.error(err);
-      this.otpErrorMessage = 'An error occurred during verification.';
+
+      const request$ =
+        await this.authService
+          .handleOrderByRider(body);
+
+
+      const response =
+        await firstValueFrom(
+          request$
+        );
+
+
+      console.log(
+        'Rider status updated to 3:',
+        response
+      );
+
     }
+
+    catch (error) {
+
+      console.error(
+        'Status update error:',
+        error
+      );
+
+    }
+
   }
 
-  async deliverOrder(orderId: string | undefined) {
-    if (!orderId) {
-      console.error('deliverOrder called without orderId');
-      return;
+
+
+  /* =====================================================
+     SWITCH TO CUSTOMER
+  ===================================================== */
+
+  onOtpVerified() {
+
+    this.currentTarget =
+      this.customerTarget;
+
+
+    if (this.vendorMarker) {
+
+      this.vendorMarker
+        .setMap(null);
+
+
+      this.vendorMarker =
+        null;
+
     }
 
-    // Stop location tracking when order is delivered
+
+    if (this.customerMarker) {
+
+      this.customerMarker
+        .setMap(null);
+
+    }
+
+
+    this.customerMarker =
+      new google.maps.Marker({
+
+        map:
+          this.map,
+
+        position:
+          this.customerTarget
+
+      });
+
+
+    this.headerText =
+      'Your Way To Customer';
+
+
+    this.pickupButtonText =
+      'Order Delivered';
+
+
+    if (this.order) {
+
+      this.order.rider_status =
+        3;
+
+    }
+
+
+    this.lastRouteUpdateTime =
+      0;
+
+
+    this.lastRouteUpdatePos =
+      null;
+
+
+    if (
+      this.lastPosition &&
+      this.currentTarget
+    ) {
+
+      this.drawRoute(
+
+        this.lastPosition,
+
+        this.currentTarget
+
+      );
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     GOOGLE MAPS
+  ===================================================== */
+
+  openGoogleMaps() {
+
+    if (
+      !this.vendorTarget &&
+      !this.customerTarget
+    ) {
+
+      return;
+
+    }
+
+
+    let target =
+      this.vendorTarget;
+
+
+    if (
+      this.isCustomerDeliveryStage
+    ) {
+
+      target =
+        this.customerTarget;
+
+    }
+
+
+    if (!target) {
+
+      return;
+
+    }
+
+
+    const url =
+
+      `https://www.google.com/maps/dir/?api=1` +
+
+      `&destination=${target.lat},${target.lng}` +
+
+      `&travelmode=driving`;
+
+
+    window.open(
+      url,
+      '_system'
+    );
+
+  }
+
+
+
+  /* =====================================================
+     CUSTOMER OTP INPUT
+
+     ONLY THIS FUNCTION HANDLES OTP TYPING.
+  ===================================================== */
+
+  onOtpInput(
+    event: Event
+  ) {
+
+    const input =
+      event.target as HTMLInputElement;
+
+
+    /*
+     * Get the input value.
+     */
+    let value =
+      input.value || '';
+
+
+    /*
+     * Remove everything except numbers.
+     *
+     * Example:
+     * "12a3-" becomes "123"
+     */
+    value =
+      value.replace(
+        /[^0-9]/g,
+        ''
+      );
+
+
+    /*
+     * Maximum six digits.
+     */
+    value =
+      value.slice(
+        0,
+        6
+      );
+
+
+    /*
+     * Save ONE clean OTP value.
+     */
+    this.customerOtp =
+      value;
+
+
+    /*
+     * Keep actual input synchronized.
+     */
+    if (
+      input.value !== value
+    ) {
+
+      input.value =
+        value;
+
+    }
+
+
+    /*
+     * Remove error once rider starts
+     * changing the OTP.
+     */
+    if (this.otpErrorMessage) {
+
+      this.otpErrorMessage =
+        '';
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     OTP FOCUS
+  ===================================================== */
+
+  onOtpFocus() {
+
+    this.isOtpFocused =
+      true;
+
+  }
+
+
+
+  onOtpBlur() {
+
+    this.isOtpFocused =
+      false;
+
+  }
+
+
+
+  /* =====================================================
+     FOCUS OTP PROGRAMMATICALLY
+  ===================================================== */
+
+  focusOtp() {
+
+    if (
+      this.isVerifyingOtp
+    ) {
+
+      return;
+
+    }
+
+
+    this.otpMasterInput
+      ?.nativeElement
+      ?.focus();
+
+  }
+
+
+
+  /* =====================================================
+     RESET CUSTOMER OTP
+  ===================================================== */
+
+  resetCustomerOtp() {
+
+    this.customerOtp =
+      '';
+
+
+    this.otpErrorMessage =
+      '';
+
+
+    if (
+      this.otpMasterInput?.nativeElement
+    ) {
+
+      this.otpMasterInput
+        .nativeElement
+        .value = '';
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     CHECK OTP API SUCCESS
+  ===================================================== */
+
+  private isOtpVerificationSuccessful(
+    response: any
+  ): boolean {
+
+    if (!response) {
+
+      return false;
+
+    }
+
+
+    /*
+     * Standard success response
+     */
+    if (
+      response.success === true ||
+      response.success === 1 ||
+      response.success === '1'
+    ) {
+
+      return true;
+
+    }
+
+
+    /*
+     * Status response
+     */
+    if (
+      response.status === true ||
+      response.status === 1 ||
+      response.status === '1' ||
+      response.status === 200 ||
+      response.status === '200' ||
+      response.status === 'success'
+    ) {
+
+      return true;
+
+    }
+
+
+    /*
+     * Verified flag
+     */
+    if (
+      response.verified === true
+    ) {
+
+      return true;
+
+    }
+
+
+    /*
+     * Nested data response
+     */
+    if (
+      response.data?.success === true ||
+      response.data?.status === true ||
+      response.data?.verified === true
+    ) {
+
+      return true;
+
+    }
+
+
+    return false;
+
+  }
+
+
+
+  /* =====================================================
+     VERIFY CUSTOMER OTP
+  ===================================================== */
+
+  async verifyCustomerOtp() {
+
+    /*
+     * Prevent multiple button clicks.
+     */
+    if (
+      this.isVerifyingOtp
+    ) {
+
+      return;
+
+    }
+
+
+    this.otpErrorMessage =
+      '';
+
+
+    /*
+     * Final clean OTP.
+     */
+    const enteredOtp =
+      this.customerOtp.trim();
+
+
+    /*
+     * Must be exactly six numbers.
+     */
+    if (
+      !/^[0-9]{6}$/.test(
+        enteredOtp
+      )
+    ) {
+
+      this.otpErrorMessage =
+        'Please enter the complete 6-digit OTP.';
+
+
+      this.focusOtp();
+
+
+      return;
+
+    }
+
+
+    if (!this.orderId) {
+
+      this.otpErrorMessage =
+        'Order information is missing.';
+
+
+      return;
+
+    }
+
+
+    if (!this.riderId) {
+
+      this.otpErrorMessage =
+        'Rider information is missing.';
+
+
+      return;
+
+    }
+
+
+    this.isVerifyingOtp =
+      true;
+
+
+    const body = {
+
+      order_id:
+        this.orderId,
+
+      entered_otp:
+        enteredOtp
+
+    };
+
+
+    console.log(
+      'Verifying Customer OTP:',
+      body
+    );
+
+
+    try {
+
+      /* =================================================
+         STEP 1
+         VERIFY CUSTOMER OTP
+      ================================================= */
+
+      const verifyRequest$ =
+        await this.authService
+          .riderVerifyOtpthroughtCustomer(
+            body
+          );
+
+
+      const verifyResponse =
+        await firstValueFrom(
+          verifyRequest$
+        );
+
+
+      console.log(
+        'Customer OTP API Response:',
+        verifyResponse
+      );
+
+
+      /*
+       * Do NOT change rider status unless
+       * OTP verification succeeded.
+       */
+      if (
+        !this.isOtpVerificationSuccessful(
+          verifyResponse
+        )
+      ) {
+
+        this.otpErrorMessage =
+
+          verifyResponse?.message
+
+          ||
+
+          verifyResponse?.data?.message
+
+          ||
+
+          'Invalid OTP. Please check the OTP and try again.';
+
+
+        /*
+         * Clear wrong OTP so rider can
+         * immediately type again.
+         */
+        this.resetOtpAfterInvalid();
+
+
+        return;
+
+      }
+
+
+      console.log(
+        'OTP verified successfully'
+      );
+
+
+      /* =================================================
+         STEP 2
+         COMPLETE ORDER
+      ================================================= */
+
+      await this.completeDeliveryAfterOtp();
+
+    }
+
+    catch (error: any) {
+
+      console.error(
+        'OTP Verification Error:',
+        error
+      );
+
+
+      this.otpErrorMessage =
+
+        error?.error?.message
+
+        ||
+
+        error?.message
+
+        ||
+
+        'OTP verification failed. Please try again.';
+
+    }
+
+    finally {
+
+      this.isVerifyingOtp =
+        false;
+
+    }
+
+  }
+
+
+
+  /* =====================================================
+     CLEAR INVALID OTP BUT KEEP ERROR
+  ===================================================== */
+
+  private resetOtpAfterInvalid() {
+
+    const currentError =
+      this.otpErrorMessage;
+
+
+    this.customerOtp =
+      '';
+
+
+    if (
+      this.otpMasterInput?.nativeElement
+    ) {
+
+      this.otpMasterInput
+        .nativeElement
+        .value = '';
+
+    }
+
+
+    this.otpErrorMessage =
+      currentError;
+
+
+    /*
+     * Wait for disabled state to clear
+     * before focusing again.
+     */
+    setTimeout(() => {
+
+      this.focusOtp();
+
+    }, 150);
+
+  }
+
+
+
+  /* =====================================================
+     COMPLETE DELIVERY AFTER OTP
+  ===================================================== */
+
+  private async completeDeliveryAfterOtp() {
+
+    if (!this.orderId) {
+
+      throw new Error(
+        'Order ID missing.'
+      );
+
+    }
+
+
+    /*
+     * status 4 = delivered
+     */
+    const body = {
+
+      orderId:
+        this.orderId,
+
+      riderId:
+        this.riderId,
+
+      status:
+        4
+
+    };
+
+
+    console.log(
+      'OTP verified. Updating rider status:',
+      body
+    );
+
+
+    /* =================================================
+       IMPORTANT:
+       RUN handleOrderByRider ONLY AFTER OTP SUCCESS
+    ================================================= */
+
+    const request$ =
+      await this.authService
+        .handleOrderByRider(body);
+
+
+    const response =
+      await firstValueFrom(
+        request$
+      );
+
+
+    console.log(
+      'handleOrderByRider Response:',
+      response
+    );
+
+
+    /*
+     * Explicit backend failure.
+     */
+    if (
+      response?.success === false ||
+      response?.status === false ||
+      response?.status === 0 ||
+      response?.status === '0' ||
+      response?.status === 'failed' ||
+      response?.status === 'error'
+    ) {
+
+      throw new Error(
+
+        response?.message
+
+        ||
+
+        'Unable to mark order as delivered.'
+
+      );
+
+    }
+
+
+    /*
+     * Backend delivery update succeeded.
+     */
+    if (this.order) {
+
+      this.order.rider_status =
+        4;
+
+    }
+
+
+    /*
+     * Clear OTP.
+     */
+    this.resetCustomerOtp();
+
+
+    /*
+     * Hide button.
+     */
+    this.hideButton =
+      true;
+
+
+    this.pickupButtonText =
+      '';
+
+
+    /*
+     * Only stop GPS after backend status
+     * has successfully changed.
+     */
     this.stopLocationTracking();
 
-    const body = { orderId, riderId: this.riderId, status: 4 };
-    try {
-      (await this.authService.handleOrderByRider(body)).subscribe({
-        next: (res: any) => {
-          // console.log('Order marked delivered:', res);
-          this.pickupButtonText = '';
 
-          // ✅ Navigate to home after success
-          this.router.navigate(['/home']);
-        },
-        error: (err: any) => {
-          console.error('Failed to mark order delivered:', err);
-        }
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    /*
+     * Return to rider home.
+     */
+    this.router.navigate([
+      '/home'
+    ]);
+
   }
+
+
+
+  /* =====================================================
+     STOP TRACKING
+  ===================================================== */
 
   stopLocationTracking() {
-    if (this.watchId) {
-      Geolocation.clearWatch({ id: this.watchId });
-      this.watchId = null;
+
+    if (!this.watchId) {
+
+      return;
+
     }
+
+
+    Geolocation.clearWatch({
+
+      id:
+        this.watchId
+
+    });
+
+
+    this.watchId =
+      null;
+
   }
 
-  // ------------------------
-  // CLEANUP
-  // ------------------------
+
+
+  /* =====================================================
+     DESTROY
+  ===================================================== */
+
   ngOnDestroy() {
+
     this.stopLocationTracking();
 
-    // Clean up subscriptions
+
     if (this.otpSub) {
+
       this.otpSub.unsubscribe();
+
+      this.otpSub =
+        null;
+
     }
+
+
     if (this.otpVerifiedSub) {
+
       this.otpVerifiedSub.unsubscribe();
+
+      this.otpVerifiedSub =
+        null;
+
     }
+
   }
+
 }
