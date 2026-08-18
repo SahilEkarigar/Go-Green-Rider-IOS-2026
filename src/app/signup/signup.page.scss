@@ -507,27 +507,26 @@ ion-toolbar {
 
 .prefix_phone_box {
   display: flex;
-
+  align-items: center;
   width: 100%;
-
   gap: 10px;
-}
 
+  select {
+    width: 90px !important;
+    min-width: 90px;
+    flex-shrink: 0;
+    padding-left: 10px !important;
+    padding-right: 18px !important;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    background-position: right 6px center;
+  }
 
-.prefix_phone_box select {
-  width: 78px !important;
-
-  flex-shrink: 0;
-
-  padding-left: 9px;
-  padding-right: 5px;
-}
-
-
-.prefix_phone_box input {
-  flex: 1;
-
-  min-width: 0;
+  input {
+    flex: 1;
+    min-width: 0;
+  }
 }
 
 
@@ -1011,4 +1010,97 @@ ion-toolbar {
     transition: none;
   }
 
+}
+
+/* Floating Hide Keyboard Button */
+.floating-keyboard-dismiss-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 20px;
+  z-index: 9999;
+  background: #088b46;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(8, 139, 70, 0.35);
+  cursor: pointer;
+  animation: fadeInPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    transform: scale(0.94);
+    background-color: #067038;
+  }
+}
+
+@keyframes fadeInPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =====================================================
+   UNVERIFIED USER ALERT MODAL
+===================================================== */
+::ng-deep .unverified-user-alert {
+  --background: #ffffff;
+  --max-width: 340px;
+
+  .alert-wrapper {
+    border-radius: 18px !important;
+    padding: 12px 6px 8px !important;
+    background: #ffffff !important;
+    box-shadow: 0 16px 40px rgba(0, 85, 40, 0.22) !important;
+  }
+
+  .alert-head {
+    padding: 12px 18px 6px !important;
+    text-align: center;
+
+    .alert-title {
+      color: #005528 !important;
+      font-size: 18px !important;
+      font-weight: 700 !important;
+    }
+  }
+
+  .alert-message {
+    padding: 6px 18px 16px !important;
+    color: #314238 !important;
+    font-size: 14px !important;
+    line-height: 21px !important;
+    text-align: center !important;
+  }
+
+  .alert-button-group {
+    padding: 4px 18px 10px !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  .alert-button {
+    width: 100% !important;
+    min-height: 44px !important;
+    background: linear-gradient(135deg, #005528 0%, #088b46 100%) !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 14px rgba(8, 139, 70, 0.28) !important;
+  }
 }

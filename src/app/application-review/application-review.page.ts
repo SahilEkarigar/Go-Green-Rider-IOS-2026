@@ -3,6 +3,12 @@ import { IonicModule } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 
+import { addIcons } from 'ionicons';
+import {
+  chevronBackOutline,
+  informationCircleOutline
+} from 'ionicons/icons';
+
 
 @Component({
   selector: 'app-application-review',
@@ -18,7 +24,12 @@ export class ApplicationReviewPage {
   constructor(
     private router: Router,
     private location: Location
-  ) {}
+  ) {
+    addIcons({
+      chevronBackOutline,
+      informationCircleOutline
+    });
+  }
 
 
   goHome(): void {

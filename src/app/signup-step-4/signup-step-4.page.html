@@ -8,17 +8,6 @@
         size="12"
         class="common_header">
 
-        <div
-          class="back_arrow_div"
-          (click)="goBack()">
-
-          <i
-            class="fa fa-chevron-left"
-            aria-hidden="true">
-          </i>
-
-        </div>
-
       </ion-col>
 
     </ion-row>
@@ -28,9 +17,9 @@
 </ion-header>
 
 
-<ion-content [fullscreen]="true" class="ioncontent">
+<ion-content [fullscreen]="true" class="ioncontent" (click)="dismissKeyboard()">
 
-  <div class="container">
+  <div class="container" (click)="dismissKeyboard()">
 
     <ion-row class="signup_steps_row">
 
@@ -40,7 +29,7 @@
 
           <!-- Page Heading -->
           <h2 class="text-center">
-            Sign Up
+            Register
           </h2>
 
 
@@ -50,27 +39,19 @@
             <div class="stepper">
 
               <div class="step active">
-                <div class="circle">
-                  1
-                </div>
+                <div class="circle">1</div>
               </div>
 
               <div class="step active">
-                <div class="circle">
-                  2
-                </div>
+                <div class="circle">2</div>
               </div>
 
               <div class="step">
-                <div class="circle">
-                  3
-                </div>
+                <div class="circle">3</div>
               </div>
 
               <div class="step">
-                <div class="circle">
-                  4
-                </div>
+                <div class="circle">4</div>
               </div>
 
             </div>
@@ -85,7 +66,8 @@
 
           <form
             class="form_box"
-            novalidate>
+            novalidate
+            (click)="$event.stopPropagation()">
 
 
             <!-- Address -->
@@ -99,12 +81,17 @@
                 type="text"
                 [(ngModel)]="address"
                 (input)="onAddressInput()"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 [ngClass]="{'input-error': isAddressInvalid}"
                 id="address"
                 name="address"
                 class="form-control"
                 placeholder="Enter your address"
-                autocomplete="street-address">
+                autocomplete="street-address"
+                autocorrect="on"
+                spellcheck="false">
 
               <div
                 *ngIf="isAddressInvalid"
@@ -128,6 +115,9 @@
                 type="date"
                 [(ngModel)]="dob"
                 (change)="onDobChange()"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 [ngClass]="{'input-error': isDobInvalid}"
                 id="dob"
                 name="dob"
@@ -196,10 +186,11 @@
                   [(ngModel)]="otherPrefix"
                   id="otherPrefix"
                   name="otherPrefix"
-                  class="form-control">
+                  class="form-control prefix-select"
+                  aria-label="Country code">
 
                   <option value="+1">
-                    +1
+                    🇨🇦 +1
                   </option>
 
                 </select>
@@ -209,12 +200,14 @@
                   type="tel"
                   [(ngModel)]="otherPhone"
                   (input)="onOtherPhoneInput($event)"
-                  (blur)="validateOptionalPhone()"
+                  (focus)="onInputFocus()"
+                  (blur)="validateOptionalPhone(); onInputBlur()"
+                  (keyup.enter)="dismissKeyboard()"
                   [ngClass]="{'input-error': isOtherPhoneInvalid}"
                   id="otherPhone"
                   name="otherPhone"
                   class="form-control"
-                  placeholder="Enter other phone number"
+                  placeholder="(XXX) XXX XXXX"
                   inputmode="numeric"
                   maxlength="10"
                   autocomplete="tel">
@@ -284,6 +277,17 @@
     </ion-row>
 
   </div>
+
+  <!-- Floating Keyboard Dismiss Button -->
+  <button
+    type="button"
+    class="floating-keyboard-dismiss-btn"
+    *ngIf="isKeyboardActive"
+    (click)="dismissKeyboard(); $event.stopPropagation()"
+    aria-label="Hide keyboard">
+    <ion-icon name="chevron-down-outline"></ion-icon>
+    <span>Hide Keyboard</span>
+  </button>
 
 </ion-content>
 

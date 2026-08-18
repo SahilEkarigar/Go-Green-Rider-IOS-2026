@@ -9,7 +9,8 @@ import {
 import {
   IonicModule,
   Platform,
-  LoadingController
+  LoadingController,
+  AlertController
 } from '@ionic/angular';
 
 import { FormsModule } from '@angular/forms';
@@ -28,6 +29,9 @@ import {
   ASAuthorizationAppleIDRequest
 } from '@ionic-native/sign-in-with-apple/ngx';
 
+
+import { addIcons } from 'ionicons';
+import { chevronDownOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-signup',
@@ -76,8 +80,9 @@ export class SignupPage implements OnInit, OnDestroy {
   isAppleAvailable = false;
   emailTouched: boolean = false;
 
-  private errorTimer: ReturnType<typeof setTimeout> | null = null;
+  isKeyboardActive: boolean = false;
 
+  private errorTimer: ReturnType<typeof setTimeout> | null = null;
 
   constructor(
     private platform: Platform,
@@ -87,9 +92,41 @@ export class SignupPage implements OnInit, OnDestroy {
     private storage: Storage,
     private googleAuthService: GoogleAuthService,
     private signInWithApple: SignInWithApple,
-    private loadingController: LoadingController
+    private loadingController: LoadingController,
+    private alertController: AlertController
   ) {
+    addIcons({ chevronDownOutline });
     this.init();
+  }
+
+  private async showUnverifiedUserPopup(message: string): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Account Notice',
+      message: message || 'User already exists but not verified. Complete profile.',
+      buttons: ['OK'],
+      cssClass: 'unverified-user-alert'
+    });
+    await alert.present();
+  }
+
+  dismissKeyboard(): void {
+    if (document.activeElement && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    this.isKeyboardActive = false;
+  }
+
+  onInputFocus(): void {
+    this.isKeyboardActive = true;
+  }
+
+  onInputBlur(): void {
+    setTimeout(() => {
+      const activeEl = document.activeElement;
+      if (!activeEl || (activeEl.tagName !== 'INPUT' && activeEl.tagName !== 'SELECT' && activeEl.tagName !== 'TEXTAREA')) {
+        this.isKeyboardActive = false;
+      }
+    }, 150);
   }
 
 
@@ -849,9 +886,30 @@ export class SignupPage implements OnInit, OnDestroy {
 
           } else {
 
+            const responseMsg =
+              response?.message || '';
+
+            const normalizedMsg =
+              String(responseMsg).toLowerCase();
+
+
+            if (
+              normalizedMsg.includes('user already exists but not verified') ||
+              normalizedMsg.includes('complete profile')
+            ) {
+
+              await this.showUnverifiedUserPopup(
+                responseMsg || 'User already exists but not verified. Complete profile.'
+              );
+
+              return;
+
+            }
+
+
             this.showSingleError(
               'general',
-              response?.message ||
+              responseMsg ||
               'Registration failed. Please try again.',
               false
             );
@@ -892,6 +950,20 @@ export class SignupPage implements OnInit, OnDestroy {
             String(
               apiErrorMessage
             ).toLowerCase();
+
+
+          if (
+            normalizedError.includes('user already exists but not verified') ||
+            normalizedError.includes('complete profile')
+          ) {
+
+            await this.showUnverifiedUserPopup(
+              apiErrorMessage || 'User already exists but not verified. Complete profile.'
+            );
+
+            return;
+
+          }
 
 
           if (

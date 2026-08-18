@@ -28,18 +28,15 @@
 </ion-header>
 
 
-<ion-content class="ioncontent container">
+<ion-content class="ioncontent container" (click)="dismissKeyboard()">
 
-  <div class="container">
+  <div class="container" (click)="dismissKeyboard()">
 
     <div class="row signup_steps_row">
 
       <div class="signup_steps">
 
-        <!-- =========================================
-             PAGE HEADING
-        ========================================== -->
-
+        <!-- PAGE HEADING -->
         <ion-row>
 
           <ion-col size="12">
@@ -57,47 +54,25 @@
         </ion-row>
 
 
-        <!-- =========================================
-             STEPPER
-        ========================================== -->
-
+        <!-- STEPPER -->
         <div class="step_counts">
 
           <div class="stepper">
 
             <div class="step active">
-
-              <div class="circle">
-                1
-              </div>
-
+              <div class="circle">1</div>
             </div>
 
-
             <div class="step">
-
-              <div class="circle">
-                2
-              </div>
-
+              <div class="circle">2</div>
             </div>
 
-
             <div class="step">
-
-              <div class="circle">
-                3
-              </div>
-
+              <div class="circle">3</div>
             </div>
 
-
             <div class="step">
-
-              <div class="circle">
-                4
-              </div>
-
+              <div class="circle">4</div>
             </div>
 
           </div>
@@ -105,17 +80,11 @@
         </div>
 
 
-        <!-- =========================================
-             FORM
-        ========================================== -->
-
-        <div class="form_box">
+        <!-- FORM -->
+        <div class="form_box" (click)="$event.stopPropagation()">
 
 
-          <!-- =========================================
-               FIRST NAME
-          ========================================== -->
-
+          <!-- FIRST NAME -->
           <div class="form_input_box">
 
             <label for="fname">
@@ -130,8 +99,13 @@
               [class.input-error]="isFnameInvalid"
               [(ngModel)]="fname"
               (input)="clearFieldError('fname')"
+              (focus)="onInputFocus()"
+              (blur)="onInputBlur()"
+              (keyup.enter)="dismissKeyboard()"
               placeholder="Enter your first name"
-              autocomplete="given-name">
+              autocomplete="given-name"
+              autocorrect="on"
+              spellcheck="false">
 
             <p
               *ngIf="errorField === 'fname' && generalError"
@@ -142,10 +116,7 @@
           </div>
 
 
-          <!-- =========================================
-               LAST NAME
-          ========================================== -->
-
+          <!-- LAST NAME -->
           <div class="form_input_box">
 
             <label for="lname">
@@ -160,8 +131,13 @@
               [class.input-error]="isLnameInvalid"
               [(ngModel)]="lname"
               (input)="clearFieldError('lname')"
+              (focus)="onInputFocus()"
+              (blur)="onInputBlur()"
+              (keyup.enter)="dismissKeyboard()"
               placeholder="Enter your last name"
-              autocomplete="family-name">
+              autocomplete="family-name"
+              autocorrect="on"
+              spellcheck="false">
 
             <p
               *ngIf="errorField === 'lname' && generalError"
@@ -172,10 +148,7 @@
           </div>
 
 
-          <!-- =========================================
-               EMAIL
-          ========================================== -->
-
+          <!-- EMAIL -->
           <div class="form_input_box">
 
             <label for="email">
@@ -190,7 +163,9 @@
               [class.input-error]="isEmailInvalid"
               [(ngModel)]="email"
               (input)="clearFieldError('email')"
-              (blur)="onEmailBlur()"
+              (focus)="onInputFocus()"
+              (blur)="onEmailBlur(); onInputBlur()"
+              (keyup.enter)="dismissKeyboard()"
               placeholder="Enter your email address"
               autocomplete="email"
               inputmode="email">
@@ -204,10 +179,7 @@
           </div>
 
 
-          <!-- =========================================
-               MOBILE NUMBER
-          ========================================== -->
-
+          <!-- MOBILE NUMBER -->
           <div class="form_input_box">
 
             <label for="phone">
@@ -219,10 +191,11 @@
               <select
                 name="prefix"
                 [(ngModel)]="prefix"
+                class="form-control prefix-select"
                 aria-label="Country code">
 
                 <option value="+1">
-                  +1
+                  🇨🇦 +1
                 </option>
 
               </select>
@@ -237,6 +210,9 @@
                 [(ngModel)]="phone"
                 (input)="onPhoneInput($event)"
                 (keydown)="allowOnlyNumbers($event)"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 placeholder="(XXX) XXX XXXX"
                 autocomplete="tel"
                 inputmode="numeric"
@@ -257,10 +233,7 @@
           </div>
 
 
-          <!-- =========================================
-               PASSWORD
-          ========================================== -->
-
+          <!-- PASSWORD -->
           <div class="form_input_box">
 
             <label for="password">
@@ -277,6 +250,9 @@
                 [class.input-error]="isPSWInvalid"
                 [(ngModel)]="password"
                 (input)="clearFieldError('password')"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 placeholder="Enter your password"
                 autocomplete="new-password">
 
@@ -305,10 +281,7 @@
           </div>
 
 
-          <!-- =========================================
-               CONFIRM PASSWORD
-          ========================================== -->
-
+          <!-- CONFIRM PASSWORD -->
           <div class="form_input_box">
 
             <label for="cpassword">
@@ -325,6 +298,9 @@
                 [class.input-error]="isCPSWInvalid"
                 [(ngModel)]="cpassword"
                 (input)="clearFieldError('cpassword')"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 placeholder="Confirm your password"
                 autocomplete="new-password">
 
@@ -353,10 +329,7 @@
           </div>
 
 
-          <!-- =========================================
-               GENERAL API ERROR
-          ========================================== -->
-
+          <!-- GENERAL API ERROR -->
           <div
             *ngIf="errorField === 'general' && generalError"
             class="form_input_box">
@@ -368,10 +341,7 @@
           </div>
 
 
-          <!-- =========================================
-               CONTINUE BUTTON
-          ========================================== -->
-
+          <!-- CONTINUE BUTTON -->
           <div class="button_group">
 
             <button
@@ -392,56 +362,6 @@
 
           </div>
 
-
-          <!-- =========================================
-               GOOGLE LOGIN
-          ========================================== -->
-
-        <!--  <div style="margin-top: 15px;">
-
-            <a
-              href="javascript:void(0)"
-              class="google_signin_button"
-              (click)="loginOrSignupWithGoogle()">
-
-              <img
-                src="../../assets/welcome/google.svg"
-                class="google_logo"
-                alt="Google"
-                loading="eager"
-                decoding="async">
-
-              Continue with Google
-
-            </a>
-
-          </div>-->
-
-
-          <!-- =========================================
-               APPLE LOGIN
-          ========================================== -->
-
-          <!--<div *ngIf="isAppleAvailable">
-
-            <a
-              href="javascript:void(0)"
-              class="apple_signin_button"
-              (click)="appleSignIn()">
-
-              <img
-                src="../../assets/welcome/apple.svg"
-                class="google_logo"
-                alt="Apple"
-                loading="eager"
-                decoding="async">
-
-              Continue with Apple
-
-            </a>
-
-          </div>-->
-
         </div>
 
       </div>
@@ -449,5 +369,16 @@
     </div>
 
   </div>
+
+  <!-- Floating Keyboard Dismiss Button -->
+  <button
+    type="button"
+    class="floating-keyboard-dismiss-btn"
+    *ngIf="isKeyboardActive"
+    (click)="dismissKeyboard(); $event.stopPropagation()"
+    aria-label="Hide keyboard">
+    <ion-icon name="chevron-down-outline"></ion-icon>
+    <span>Hide Keyboard</span>
+  </button>
 
 </ion-content>

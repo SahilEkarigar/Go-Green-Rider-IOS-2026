@@ -866,3 +866,44 @@ ion-toolbar {
     }
 
 }
+
+/* Floating Hide Keyboard Button */
+.floating-keyboard-dismiss-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 9999;
+  background: #088b46;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(8, 139, 70, 0.35);
+  cursor: pointer;
+  animation: fadeInPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    transform: scale(0.94);
+    background-color: #067038;
+  }
+}
+
+@keyframes fadeInPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

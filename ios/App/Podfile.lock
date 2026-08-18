@@ -36,6 +36,8 @@ PODS:
     - Capacitor
   - CapacitorPushNotifications (7.0.4):
     - Capacitor
+  - CapacitorScreenOrientation (7.0.4):
+    - Capacitor
   - CapacitorStatusBar (7.0.4):
     - Capacitor
   - CapacitorToast (7.0.3):
@@ -149,6 +151,7 @@ DEPENDENCIES:
   - "CapacitorNetwork (from `../../node_modules/@capacitor/network`)"
   - "CapacitorPreferences (from `../../node_modules/@capacitor/preferences`)"
   - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
+  - "CapacitorScreenOrientation (from `../../node_modules/@capacitor/screen-orientation`)"
   - "CapacitorStatusBar (from `../../node_modules/@capacitor/status-bar`)"
   - "CapacitorToast (from `../../node_modules/@capacitor/toast`)"
   - CordovaPlugins (from `../capacitor-cordova-ios-plugins`)
@@ -203,6 +206,8 @@ EXTERNAL SOURCES:
     :path: "../../node_modules/@capacitor/preferences"
   CapacitorPushNotifications:
     :path: "../../node_modules/@capacitor/push-notifications"
+  CapacitorScreenOrientation:
+    :path: "../../node_modules/@capacitor/screen-orientation"
   CapacitorStatusBar:
     :path: "../../node_modules/@capacitor/status-bar"
   CapacitorToast:
@@ -230,6 +235,7 @@ SPEC CHECKSUMS:
   CapacitorNetwork: 45766b1f8d26288c4579ae14657455c0cf19b6cb
   CapacitorPreferences: 688a15748e6fb91d52c7563e5f2df3be503dd694
   CapacitorPushNotifications: 57b0df89c5084a19c939e2fbe3b77446fe55a35b
+  CapacitorScreenOrientation: 9dd71b5f3f6c4bf37a9a00bd6edc9f620f738214
   CapacitorStatusBar: 4bf126c3c01dbaca8a4e416a29c4899cf91d0626
   CapacitorToast: 2e05ea42cba2a92683d199a0e7d32e4e5094879d
   CordovaPlugins: 33349d8be1aeaec30886db0e4fda5264c26d1ef1
@@ -251,6 +257,6 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
 
-PODFILE CHECKSUM: 26fb120b160e0bf86b2c533d7105f1a2c9e62257
+PODFILE CHECKSUM: ad645cab61e4151b460a3cfb28a062e075f59acd
 
 COCOAPODS: 1.16.2

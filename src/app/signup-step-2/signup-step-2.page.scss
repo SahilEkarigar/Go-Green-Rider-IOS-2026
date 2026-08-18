@@ -359,7 +359,8 @@ ion-toolbar {
    INPUTS
 ===================================================== */
 
-.form_input_box input {
+.form_input_box input,
+.form_input_box select {
     display: block;
 
     width: 100%;
@@ -388,6 +389,32 @@ ion-toolbar {
 }
 
 
+.form_input_box select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    padding-right: 38px !important;
+
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23088b46' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 14px center !important;
+    background-size: 16px 16px !important;
+
+    cursor: pointer;
+
+    option[value=""][disabled] {
+        color: #9ba59f;
+    }
+
+    option {
+        color: #27352d;
+        background: #ffffff;
+        padding: 10px;
+    }
+}
+
+
 .form_input_box input::placeholder {
     color: #9ba59f;
 
@@ -400,6 +427,7 @@ ion-toolbar {
 /* Focus */
 
 .form_input_box input:focus,
+.form_input_box select:focus,
 .form-control:focus {
     border-color: #088b46 !important;
 
@@ -726,4 +754,45 @@ input[type='date']::-webkit-calendar-picker-indicator {
         transition: none;
     }
 
+}
+
+/* Floating Hide Keyboard Button */
+.floating-keyboard-dismiss-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 9999;
+  background: #088b46;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(8, 139, 70, 0.35);
+  cursor: pointer;
+  animation: fadeInPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    transform: scale(0.94);
+    background-color: #067038;
+  }
+}
+
+@keyframes fadeInPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }

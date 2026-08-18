@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { Storage } from '@ionic/storage-angular';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-splashscreen',
@@ -21,12 +22,21 @@ export class SplashscreenPage implements OnInit {
 
   async ngOnInit() {
     await this.storage.create();
-    const token = await this.storage.get('token');
-    // console.log('✅ User verified redirect to home page :', token);
+    const token = (await this.storage.get('user_token')) || (await this.storage.get('token'));
 
     if (!this.openedByNotification) {
       if (token) {
-        this.router.navigate(['home']);
+        try {
+          const decoded: any = jwtDecode(token);
+          const isVerified = decoded?.is_verified ?? decoded?.verification_Done;
+          if (Number(isVerified) === 1) {
+            this.router.navigate(['home']);
+          } else {
+            this.router.navigate(['application-review']);
+          }
+        } catch (e) {
+          this.router.navigate(['home']);
+        }
       } else {
         setTimeout(() => {
           this.router.navigate(['/welcome']);

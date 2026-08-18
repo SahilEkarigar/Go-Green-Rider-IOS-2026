@@ -43,6 +43,7 @@ import {
   UserService
 } from '../services/user.service';
 
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-home',
@@ -122,6 +123,27 @@ export class HomePage implements OnInit, OnDestroy {
 
     await this.storage.create();
 
+    const user_token = (await this.storage.get('user_token')) || (await this.storage.get('token'));
+
+    if (user_token) {
+      try {
+        const decoded: any = jwtDecode(user_token);
+        console.log('decoded', decoded);
+
+        const isVerified = decoded?.is_verified ?? decoded?.verification_Done;
+
+        if (isVerified !== undefined && Number(isVerified) !== 1) {
+          console.log('User is not verified (is_verified = ' + isVerified + '). Redirecting to application-review...');
+          this.router.navigate(['application-review']);
+          return;
+        }
+      } catch (e) {
+        console.error('Error decoding token in home page:', e);
+      }
+    } else {
+      this.router.navigate(['login']);
+      return;
+    }
 
     this.user_id =
       await this.storage.get(
@@ -141,8 +163,13 @@ export class HomePage implements OnInit, OnDestroy {
       )
       .subscribe(user => {
 
-        this.user =
-          user;
+        this.user = user;
+
+        const isVerified = user?.data?.is_verified ?? user?.is_verified;
+        if (isVerified !== undefined && Number(isVerified) !== 1) {
+          this.router.navigate(['application-review']);
+          return;
+        }
 
         if (
           this.user?.data?.status !==

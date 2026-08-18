@@ -19,6 +19,9 @@ import { Storage } from '@ionic/storage-angular';
 import { jwtDecode } from 'jwt-decode';
 
 
+import { addIcons } from 'ionicons';
+import { chevronDownOutline } from 'ionicons/icons';
+
 type ValidationField =
   | 'accountHolderName'
   | 'institution'
@@ -71,6 +74,7 @@ export class SignupStep3Page implements OnInit, OnDestroy {
   role_id = 4;
 
   generalError: string = '';
+  isKeyboardActive: boolean = false;
 
 
   private readonly errorDisplayTime = 8000;
@@ -92,7 +96,29 @@ export class SignupStep3Page implements OnInit, OnDestroy {
     private authservice: AuthserviceService,
     private storage: Storage,
     private loadingController: LoadingController
-  ) {}
+  ) {
+    addIcons({ chevronDownOutline });
+  }
+
+  dismissKeyboard(): void {
+    if (document.activeElement && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    this.isKeyboardActive = false;
+  }
+
+  onInputFocus(): void {
+    this.isKeyboardActive = true;
+  }
+
+  onInputBlur(): void {
+    setTimeout(() => {
+      const activeEl = document.activeElement;
+      if (!activeEl || (activeEl.tagName !== 'INPUT' && activeEl.tagName !== 'SELECT' && activeEl.tagName !== 'TEXTAREA')) {
+        this.isKeyboardActive = false;
+      }
+    }, 150);
+  }
 
 
   async ngOnInit(): Promise<void> {

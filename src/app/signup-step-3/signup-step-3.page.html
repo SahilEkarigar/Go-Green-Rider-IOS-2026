@@ -8,17 +8,6 @@
         size="12"
         class="common_header">
 
-        <div
-          class="back_arrow_div"
-          (click)="goBack()">
-
-          <i
-            class="fa fa-chevron-left"
-            aria-hidden="true">
-          </i>
-
-        </div>
-
       </ion-col>
 
     </ion-row>
@@ -28,9 +17,9 @@
 </ion-header>
 
 
-<ion-content [fullscreen]="true" class="ioncontent">
+<ion-content [fullscreen]="true" class="ioncontent" (click)="dismissKeyboard()">
 
-  <div class="container">
+  <div class="container" (click)="dismissKeyboard()">
 
     <ion-row class="signup_steps_row">
 
@@ -40,7 +29,7 @@
 
           <!-- Heading -->
           <h2 class="text-center">
-            Sign Up
+            Register
           </h2>
 
 
@@ -76,7 +65,7 @@
 
 
           <!-- Form -->
-          <div class="form_box">
+          <div class="form_box" (click)="$event.stopPropagation()">
 
 
             <!-- Account Holder Name -->
@@ -90,6 +79,9 @@
                 type="text"
                 [(ngModel)]="account_holder_name"
                 (input)="clearFieldError('accountHolderName')"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 [ngClass]="{
                   'input-error': isAccount_holder_nameInvalid
                 }"
@@ -122,6 +114,9 @@
                 type="text"
                 [(ngModel)]="institution_number"
                 (input)="onNumericInput($event, 'institution')"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 [ngClass]="{
                   'input-error': isInstitution_numberInvalid
                 }"
@@ -131,7 +126,7 @@
                 placeholder="Enter 3-digit Institution Number"
                 inputmode="numeric"
                 maxlength="3"
-                autocomplete="off">
+                autocomplete="on">
 
               <div
                 *ngIf="isInstitution_numberInvalid"
@@ -155,6 +150,9 @@
                 type="text"
                 [(ngModel)]="transit_number"
                 (input)="onNumericInput($event, 'transit')"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 [ngClass]="{
                   'input-error': isTransit_numberInvalid
                 }"
@@ -164,7 +162,7 @@
                 placeholder="Enter 5-digit Transit Number"
                 inputmode="numeric"
                 maxlength="5"
-                autocomplete="off">
+                autocomplete="on">
 
               <div
                 *ngIf="isTransit_numberInvalid"
@@ -188,6 +186,9 @@
                 type="text"
                 [(ngModel)]="account_number"
                 (input)="onNumericInput($event, 'account')"
+                (focus)="onInputFocus()"
+                (blur)="onInputBlur()"
+                (keyup.enter)="dismissKeyboard()"
                 [ngClass]="{
                   'input-error': isAccount_numberInvalid
                 }"
@@ -197,7 +198,7 @@
                 placeholder="Enter 7–12 digit Account Number"
                 inputmode="numeric"
                 maxlength="12"
-                autocomplete="off">
+                autocomplete="on">
 
               <div
                 *ngIf="isAccount_numberInvalid"
@@ -269,6 +270,17 @@
     </ion-row>
 
   </div>
+
+  <!-- Floating Keyboard Dismiss Button -->
+  <button
+    type="button"
+    class="floating-keyboard-dismiss-btn"
+    *ngIf="isKeyboardActive"
+    (click)="dismissKeyboard(); $event.stopPropagation()"
+    aria-label="Hide keyboard">
+    <ion-icon name="chevron-down-outline"></ion-icon>
+    <span>Hide Keyboard</span>
+  </button>
 
 </ion-content>
 

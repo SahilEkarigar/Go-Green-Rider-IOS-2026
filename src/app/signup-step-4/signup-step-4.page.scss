@@ -492,28 +492,26 @@ input[type='date']::-webkit-calendar-picker-indicator {
 
 .prefix_phone_box {
     display: flex;
-
+    align-items: center;
     width: 100%;
-
     gap: 10px;
-}
 
+    select {
+        width: 90px !important;
+        min-width: 90px;
+        flex-shrink: 0;
+        padding-left: 10px !important;
+        padding-right: 18px !important;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        background-position: right 6px center;
+    }
 
-.prefix_phone_box select {
-    width: 78px !important;
-    min-width: 78px;
-
-    flex-shrink: 0;
-
-    padding-left: 9px;
-    padding-right: 4px;
-}
-
-
-.prefix_phone_box input {
-    min-width: 0;
-
-    flex: 1;
+    input {
+        min-width: 0;
+        flex: 1;
+    }
 }
 
 
@@ -786,4 +784,45 @@ input[type='date']::-webkit-calendar-picker-indicator {
         transition: none;
     }
 
+}
+
+/* Floating Hide Keyboard Button */
+.floating-keyboard-dismiss-btn {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  z-index: 9999;
+  background: #088b46;
+  color: #ffffff;
+  border: none;
+  border-radius: 24px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 4px 16px rgba(8, 139, 70, 0.35);
+  cursor: pointer;
+  animation: fadeInPop 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+  ion-icon {
+    font-size: 18px;
+  }
+
+  &:active {
+    transform: scale(0.94);
+    background-color: #067038;
+  }
+}
+
+@keyframes fadeInPop {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
