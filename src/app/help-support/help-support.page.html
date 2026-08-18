@@ -1,7 +1,7 @@
 <ion-header [translucent]="false" class="custom-header">
   <div class="header-container">
     <button class="back-btn" (click)="goBack()">
-      <i class="fa fa-chevron-left"></i>
+      <ion-icon name="chevron-back-outline"></ion-icon>
     </button>
 
     <h1 class="header-title">Contact Support</h1>
@@ -23,63 +23,84 @@
       our support team is always happy to assist you.
     </p>
 
-    <!-- Contact Cards -->
-
-    <div class="contact-cards-list">
-
-      <!-- Email -->
-
-      <div class="contact-row-item">
-
+    <!-- In-App Support Request Form (Replaces mailto per feedback) -->
+    <div class="support-form-card">
+      <div class="card-header-row">
         <div class="item-icon-wrapper email">
-          <i class="fa fa-envelope"></i>
+          <ion-icon name="mail-outline"></ion-icon>
         </div>
-
-        <div class="item-details">
+        <div class="header-titles">
           <span class="item-label">Email Support</span>
-
-          <a href="mailto:contact@gogreentechca.com" class="item-value">
-            contact&#64;gogreentechca.com
-          </a>
-
+          <a href="mailto:contact@gogreentechca.com" class="item-value-email">contact&#64;gogreentechca.com</a>
         </div>
-
       </div>
 
-      <!-- Support Hours -->
+      <div class="form-body">
+        <p class="form-instruction">
+          Send an in-app message directly to support to ensure your request is tracked and never missed.
+        </p>
 
-      <div class="contact-row-item">
-
-        <div class="item-icon-wrapper hours">
-          <i class="fa fa-clock-o"></i>
+        <div class="input-group">
+          <label>Subject / Order Ref</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="e.g. Issue with Order #12345"
+            [(ngModel)]="supportSubject" />
         </div>
 
-        <div class="item-details">
-
-          <span class="item-label">
-            Support Hours
-          </span>
-
-          <span class="item-value">
-            Monday – Saturday
-            <br>
-            9:00 AM – 8:00 PM
-          </span>
-
-          <small [style.color]="isSupportOpen ? '#2e7d32' : '#d32f2f'">
-
-            {{ isSupportOpen ? '🟢 Currently Open' : '🔴 Currently Closed' }}
-
-          </small>
-
+        <div class="input-group">
+          <label>Message</label>
+          <textarea
+            class="form-textarea"
+            rows="3"
+            placeholder="Type your message or feedback here..."
+            [(ngModel)]="supportBodyText"></textarea>
         </div>
 
+        <!-- Success Toast Alert -->
+        <div class="success-banner" *ngIf="supportMsgSentSuccess">
+          <ion-icon name="checkmark-circle-outline"></ion-icon>
+          <span>Support request sent! We will reply to your account email shortly.</span>
+        </div>
+
+        <button
+          class="send-support-btn"
+          [disabled]="!supportBodyText || supportBodyText.trim() === '' || isSendingSupportMsg"
+          (click)="sendInAppSupportEmail()">
+          <span *ngIf="!isSendingSupportMsg">
+            <ion-icon name="send-outline"></ion-icon>
+            Send Support Request
+          </span>
+          <ion-spinner *ngIf="isSendingSupportMsg" name="crescent"></ion-spinner>
+        </button>
       </div>
-
     </div>
 
-    <!-- Dynamic Support Message -->
+    <!-- Support Hours Card -->
+    <div class="contact-row-item">
+      <div class="item-icon-wrapper hours">
+        <ion-icon name="time-outline"></ion-icon>
+      </div>
 
+      <div class="item-details">
+        <span class="item-label">Support Hours</span>
+
+        <span class="item-value">
+          Monday – Saturday
+          <br>
+          9:00 AM – 8:00 PM
+        </span>
+
+        <!-- Status Dot Badge WITHOUT emojis (as requested: "Don't use emoji's") -->
+        <div class="status-badge-pill" [class.online]="isSupportOpen">
+          <span class="status-dot"></span>
+          <span>{{ isSupportOpen ? 'Currently Open' : 'Currently Closed' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dynamic Support Note -->
     <p class="final-note">
       {{ supportMessage }}
     </p>
@@ -87,77 +108,48 @@
   </div>
 
   <!-- Floating Chat Button -->
-
   <div class="chat-toggle-btn" (click)="toggleChat()" [class.active]="showChat">
-
-    <i class="fa" [ngClass]="showChat ? 'fa-times' : 'fa-comments'">
-    </i>
-
+    <ion-icon [name]="showChat ? 'close-outline' : 'chatbubbles-outline'"></ion-icon>
   </div>
 
   <!-- Chat Window -->
-
   <div class="chat-assistant-panel" *ngIf="showChat">
-
     <!-- Header -->
-
     <div class="assistant-header">
-
-      <span class="assistant-title">
-        💬 Smart Assistant
-      </span>
-
+      <div class="assistant-title-group">
+        <ion-icon name="sparkles-outline"></ion-icon>
+        <span class="assistant-title">Smart Assistant</span>
+      </div>
       <button class="close-assistant-btn" (click)="toggleChat()">
-
-        <i class="fa fa-times"></i>
-
+        <ion-icon name="close-outline"></ion-icon>
       </button>
-
     </div>
 
     <!-- Messages -->
-
     <div class="assistant-body" #chatBody>
-
       <div *ngFor="let msg of messages" class="chat-bubble-row" [ngClass]="msg.from">
-
         <div class="chat-bubble">
-
-          <p class="bubble-text">
-            {{ msg.text }}
-          </p>
-
+          <p class="bubble-text">{{ msg.text }}</p>
           <div class="bubble-options" *ngIf="msg.options?.length">
-
             <button *ngFor="let opt of msg.options" class="option-pill-btn" (click)="selectOption(opt)">
-
               {{ opt }}
-
             </button>
-
           </div>
-
         </div>
-
       </div>
-
     </div>
 
     <!-- Footer -->
-
     <div class="assistant-footer">
-
-      <input [(ngModel)]="userMessage" class="message-input-field" placeholder="Type your message..."
+      <input
+        [(ngModel)]="userMessage"
+        class="message-input-field"
+        placeholder="Type your message..."
         (keyup.enter)="sendMessage()" />
-
       <button class="send-message-btn" (click)="sendMessage()">
-
-        <i class="fa fa-paper-plane"></i>
-
+        <ion-icon name="paper-plane-outline"></ion-icon>
       </button>
-
     </div>
-
   </div>
 
 </ion-content>

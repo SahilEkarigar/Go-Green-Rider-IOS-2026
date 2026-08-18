@@ -1,67 +1,160 @@
 <ion-header [translucent]="false" class="custom-header">
   <div class="header-container">
     <button class="back-btn" (click)="goBack()">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      <ion-icon name="chevron-back-outline"></ion-icon>
     </button>
-    <h1 class="header-title">Reviews & Ratings</h1>
+    <h1 class="header-title">Reviews &amp; Ratings</h1>
     <div class="header-right-placeholder"></div>
   </div>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding ratings-content">
   <div class="main-container">
+
     <!-- Ratings Summary Card -->
     <div class="rating-summary-card">
       <div class="summary-left">
-        <h1 class="rating-score">4.5</h1>
-        <div class="stars-row">
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star"></i>
-          <i class="fa fa-star-half-o"></i>
+        <div class="score-badge-header">
+          <ion-icon name="bicycle-outline"></ion-icon>
+          <span>Rider Service Score</span>
         </div>
-        <p class="rating-count">43 Ratings</p>
+        <h1 class="rating-score">{{ riderAverageRating | number:'1.1-1' }}</h1>
+        
+        <div class="stars-row">
+          <ion-icon name="star" class="star-icon fill"></ion-icon>
+          <ion-icon name="star" class="star-icon fill"></ion-icon>
+          <ion-icon name="star" class="star-icon fill"></ion-icon>
+          <ion-icon name="star" class="star-icon fill"></ion-icon>
+          <ion-icon name="star-half" class="star-icon half"></ion-icon>
+        </div>
+        
+        <p class="rating-count">{{ totalCategoryReviewsCount }} {{ totalCategoryReviewsCount === 1 ? 'Review' : 'Reviews' }}</p>
       </div>
 
       <div class="summary-right">
-        <div *ngFor="let rating of ratings" class="progress-bar-group">
-          <span class="star-label">{{ rating.stars }} ★</span>
+        <div *ngFor="let item of starBreakdown" class="progress-bar-group">
+          <span class="star-label">{{ item.stars }} ★</span>
           <div class="progress-track">
-            <div class="progress-fill" [ngStyle]="{ width: (rating.percent * 100) + '%' }"></div>
+            <div class="progress-fill" [ngStyle]="{ width: (item.percent * 100) + '%' }"></div>
           </div>
+          <span class="count-num">{{ item.count }}</span>
         </div>
       </div>
     </div>
 
-    <div class="section-divider"></div>
+    <!-- Category Filter Tabs (Rider Service vs App Feedback) -->
+    <div class="category-filter-tabs">
+      <button
+        class="tab-btn"
+        [class.active]="selectedCategory === 'rider'"
+        (click)="setCategory('rider')">
+        <ion-icon name="bicycle-outline"></ion-icon>
+        <span>Rider Reviews</span>
+      </button>
+
+      <button
+        class="tab-btn"
+        [class.active]="selectedCategory === 'app'"
+        (click)="setCategory('app')">
+        <ion-icon name="phone-portrait-outline"></ion-icon>
+        <span>App Feedback</span>
+      </button>
+
+      <button
+        class="tab-btn"
+        [class.active]="selectedCategory === 'all'"
+        (click)="setCategory('all')">
+        <ion-icon name="chatbox-ellipses-outline"></ion-icon>
+        <span>All</span>
+      </button>
+    </div>
+
+    <!-- Star Filter Chips -->
+    <div class="star-filter-chips">
+      <button
+        class="chip-btn"
+        [class.active]="selectedStar === 0"
+        (click)="setStarFilter(0)">
+        All Ratings
+      </button>
+
+      <button
+        *ngFor="let s of [5, 4, 3, 2, 1]"
+        class="chip-btn"
+        [class.active]="selectedStar === s"
+        (click)="setStarFilter(s)">
+        {{ s }} ★
+      </button>
+    </div>
+
+    <!-- Notice Banner explaining rider score isolation -->
+    <div class="info-notice-card" *ngIf="selectedCategory === 'rider'">
+      <ion-icon name="thumbs-up-outline"></ion-icon>
+      <p>Only delivery performance reviews affect your Rider Rating. General app UI &amp; tech feedback are separated.</p>
+    </div>
 
     <!-- Review Comments List -->
     <div class="comments-section">
-      <h2 class="section-title">Latest Reviews</h2>
+      <div class="section-header-row">
+        <h2 class="section-title">
+          {{ selectedCategory === 'rider' ? 'Rider Delivery Feedback' : selectedCategory === 'app' ? 'App & Technical Feedback' : 'All Customer Reviews' }}
+        </h2>
+        <button
+          *ngIf="selectedStar !== 0"
+          class="reset-chip-btn"
+          (click)="setStarFilter(0)">
+          <ion-icon name="refresh-outline"></ion-icon> Reset Star Filter
+        </button>
+      </div>
       
-      <div *ngFor="let comment of comments; let i = index" class="review-card">
-        <div class="card-header">
-          <img [src]="comment.profile" alt="Profile" class="reviewer-avatar" />
-          <div class="reviewer-info">
-            <div class="reviewer-top">
-              <h3 class="reviewer-name">{{ comment.user }}</h3>
-              <span class="review-date">{{ comment.date }}</span>
-            </div>
-            
-            <div class="review-meta">
-              <div class="stars-mini">
-                <i class="fa fa-star" *ngFor="let s of [].constructor(comment.rating)"></i>
+      <div class="comments-list" *ngIf="filteredReviews.length > 0; else emptyReviews">
+        <div *ngFor="let comment of filteredReviews" class="review-card" [ngClass]="comment.category">
+          <div class="card-header">
+            <img [src]="comment.profile" alt="Profile" class="reviewer-avatar" />
+            <div class="reviewer-info">
+              <div class="reviewer-top">
+                <h3 class="reviewer-name">{{ comment.user }}</h3>
+                <span class="review-date">{{ comment.date }}</span>
               </div>
-              <strong class="score-value">{{ comment.rating | number:'1.1-1' }}</strong>
+              
+              <div class="review-meta">
+                <!-- Category Badge Tag -->
+                <span class="category-tag" [ngClass]="comment.category">
+                  {{ comment.categoryLabel }}
+                </span>
+
+                <span class="order-tag" *ngIf="comment.orderId">
+                  {{ comment.orderId }}
+                </span>
+
+                <div class="stars-mini">
+                  <ion-icon name="star" class="mini-star"></ion-icon>
+                  <strong class="score-value">{{ comment.rating | number:'1.1-1' }}</strong>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="card-body">
-          <p class="review-text">{{ comment.text }}</p>
+          <div class="card-body">
+            <p class="review-text">{{ comment.text }}</p>
+          </div>
         </div>
       </div>
+
+      <!-- Empty State -->
+      <ng-template #emptyReviews>
+        <div class="empty-state">
+          <ion-icon name="chatbox-ellipses-outline" class="empty-icon"></ion-icon>
+          <h4>No Reviews Match Filter</h4>
+          <p>There are no reviews matching your currently selected category or star rating.</p>
+          <button class="reset-empty-btn" (click)="resetFilters()">
+            <ion-icon name="refresh-outline"></ion-icon>
+            Show All Rider Reviews
+          </button>
+        </div>
+      </ng-template>
+
     </div>
+
   </div>
 </ion-content>

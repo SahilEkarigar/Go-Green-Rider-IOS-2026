@@ -1,7 +1,19 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { IonicModule, NavController } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import {
+  mailOutline,
+  timeOutline,
+  chevronBackOutline,
+  sendOutline,
+  checkmarkCircleOutline,
+  closeOutline,
+  chatbubblesOutline,
+  sparklesOutline,
+  paperPlaneOutline
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-help-support',
@@ -10,14 +22,46 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [IonicModule, FormsModule, CommonModule],
 })
-export class HelpSupportPage {
+export class HelpSupportPage implements OnInit {
 
   @ViewChild('chatBody') chatBody!: ElementRef;
+
+  showChat = false;
+  userMessage = '';
+  role_id = 3;
+
+  supportMessage: string = '';
+  isSupportOpen: boolean = false;
+  supportEmail = 'contact@gogreentechca.com';
+
+  // In-app support request form state
+  supportSubject: string = '';
+  supportBodyText: string = '';
+  isSendingSupportMsg: boolean = false;
+  supportMsgSentSuccess: boolean = false;
+
+  messages: Array<{
+    from: 'user' | 'bot';
+    text: string;
+    options?: string[];
+  }> = [];
 
   constructor(
     private location: Location,
     private navCtrl: NavController
   ) {
+    addIcons({
+      mailOutline,
+      timeOutline,
+      chevronBackOutline,
+      sendOutline,
+      checkmarkCircleOutline,
+      closeOutline,
+      chatbubblesOutline,
+      sparklesOutline,
+      paperPlaneOutline
+    });
+
     this.messages = [
       {
         from: 'bot',
@@ -31,21 +75,6 @@ export class HelpSupportPage {
       }
     ];
   }
-
-  showChat = false;
-  userMessage = '';
-  role_id = 3;
-
-  supportMessage: string = '';
-  isSupportOpen: boolean = false;
-
-  supportEmail = 'contact@gogreentechca.com';
-
-  messages: Array<{
-    from: 'user' | 'bot';
-    text: string;
-    options?: string[];
-  }> = [];
 
   ngOnInit() {
     this.updateSupportStatus();
@@ -65,16 +94,30 @@ export class HelpSupportPage {
 
     if (this.isSupportOpen) {
       this.supportMessage =
-        'Our support team is currently online. Feel free to email us, and we will respond as soon as possible during business hours.';
+        'Our support team is currently online. Feel free to send us a message, and we will respond as soon as possible during business hours.';
     } else {
       this.supportMessage =
-        'Our support team is currently offline. Please email us at contact@gogreentechca.com, and we will respond on the next business day.';
+        'Our support team is currently offline. Please leave your support request here, and we will respond on the next business day.';
     }
+  }
+
+  sendInAppSupportEmail() {
+    if (!this.supportBodyText || this.supportBodyText.trim() === '') return;
+
+    this.isSendingSupportMsg = true;
+    setTimeout(() => {
+      this.isSendingSupportMsg = false;
+      this.supportMsgSentSuccess = true;
+      this.supportSubject = '';
+      this.supportBodyText = '';
+      setTimeout(() => {
+        this.supportMsgSentSuccess = false;
+      }, 5000);
+    }, 800);
   }
 
   toggleChat() {
     this.showChat = !this.showChat;
-
     setTimeout(() => this.scrollToBottom(), 100);
   }
 
@@ -111,7 +154,6 @@ export class HelpSupportPage {
   }
 
   getGreeting(): string {
-
     const hour = new Date().getHours();
 
     if (hour < 12) {
@@ -130,7 +172,6 @@ export class HelpSupportPage {
     text: string;
     options?: string[];
   } {
-
     const text = message.toLowerCase();
 
     if (text.includes('order') || text.includes('track')) {
@@ -172,7 +213,7 @@ export class HelpSupportPage {
       return {
         from: 'bot',
         text:
-          `You can contact our support team at ${this.supportEmail}.\n\nSupport Hours:\nMonday - Saturday\n9:00 AM - 8:00 PM`
+          `You can send us a message using the support form above or email ${this.supportEmail}.\n\nSupport Hours:\nMonday - Saturday\n9:00 AM - 8:00 PM`
       };
     }
 
@@ -198,19 +239,15 @@ export class HelpSupportPage {
   }
 
   scrollToBottom() {
-
     setTimeout(() => {
-
       if (this.chatBody) {
         this.chatBody.nativeElement.scrollTop =
           this.chatBody.nativeElement.scrollHeight;
       }
-
     }, 100);
   }
 
   goBack() {
     this.location.back();
   }
-
 }

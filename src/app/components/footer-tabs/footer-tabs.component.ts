@@ -1,24 +1,40 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { IonTabBar } from '@ionic/angular/standalone';
+import { IonTabBar, IonIcon } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import {
+  homeOutline,
+  homeSharp,
+  notificationsOutline,
+  notificationsSharp,
+  settingsOutline,
+  settingsSharp
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-footer-tabs',
   templateUrl: './footer-tabs.component.html',
   styleUrls: ['./footer-tabs.component.scss'],
-  imports: [IonTabBar, CommonModule],
+  standalone: true,
+  imports: [IonTabBar, IonIcon, CommonModule],
 })
 export class FooterTabsComponent {
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    addIcons({
+      homeOutline,
+      homeSharp,
+      notificationsOutline,
+      notificationsSharp,
+      settingsOutline,
+      settingsSharp
+    });
+  }
 
   navigateToHome() {
     this.router.navigate(['/home']);
   }
 
-  // navigateToCategories() {
-  //   this.router.navigate(['/search']);
-  // }
   navigateToNotification() {
     this.router.navigate(['/notification']);
   }
