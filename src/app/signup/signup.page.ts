@@ -300,7 +300,7 @@ export class SignupPage implements OnInit, OnDestroy {
 
         this.clearAllErrors();
 
-      }, 2000);
+      }, 8000);
 
   }
 

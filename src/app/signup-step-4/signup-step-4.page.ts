@@ -65,7 +65,7 @@ export class SignupStep4Page implements OnInit, OnDestroy {
   generalError: string = '';
 
 
-  private readonly errorDisplayTime = 2000;
+  private readonly errorDisplayTime = 8000;
 
   private readonly maximumImageSize =
     5 * 1024 * 1024;

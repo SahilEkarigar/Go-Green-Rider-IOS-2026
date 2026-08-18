@@ -73,7 +73,7 @@ export class SignupStep3Page implements OnInit, OnDestroy {
   generalError: string = '';
 
 
-  private readonly errorDisplayTime = 2000;
+  private readonly errorDisplayTime = 8000;
 
   private readonly maximumFileSize =
     5 * 1024 * 1024;
