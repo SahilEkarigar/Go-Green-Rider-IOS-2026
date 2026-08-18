@@ -190,8 +190,12 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
   ) {}
 
 
+  isCodPaymentCollected: boolean = false;
+  isCollectingPayment: boolean = false;
+  paymentCollectErrorMessage: string = '';
+
   /* =====================================================
-     CUSTOMER DELIVERY STAGE
+     CUSTOMER DELIVERY STAGE & COD PAYMENT
   ===================================================== */
 
   get isCustomerDeliveryStage(): boolean {
@@ -201,6 +205,100 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
       this.pickupButtonText === 'Order Delivered'
     );
 
+  }
+
+  get isCodOrder(): boolean {
+    if (!this.order) return false;
+    const method = String(
+      this.order.payment_method ??
+      this.order.payment_type ??
+      this.order.payment_mode ??
+      ''
+    ).toUpperCase().trim();
+
+    if (Number(this.order.is_cod) === 1) {
+      return true;
+    }
+
+    return (
+      method === 'COD' ||
+      method === 'CASH' ||
+      method === 'CASH ON DELIVERY' ||
+      method === 'CASH_ON_DELIVERY'
+    );
+  }
+
+  get isPaymentPending(): boolean {
+    if (!this.order) return false;
+    if (!this.isCodOrder) return false;
+    if (this.isCodPaymentCollected) return false;
+
+    const status = String(
+      this.order.payment_status ??
+      this.order.is_paid ??
+      ''
+    ).toLowerCase().trim();
+
+    if (status === 'paid' || status === '1' || Number(this.order.is_paid) === 1 || status === 'completed') {
+      return false;
+    }
+    return true;
+  }
+
+  get shouldShowCodCollectBox(): boolean {
+    return (
+      this.isCustomerDeliveryStage &&
+      this.isCodOrder &&
+      this.isPaymentPending
+    );
+  }
+
+  async collectCodPayment(): Promise<void> {
+    if (!this.orderId || this.isCollectingPayment) return;
+
+    this.isCollectingPayment = true;
+    this.paymentCollectErrorMessage = '';
+
+    const payload = {
+      order_id: this.orderId,
+      rider_id: this.riderId,
+      total_amount: this.getOrderTotal(this.order),
+      payment_method: this.order?.payment_method || this.order?.payment_type || 'COD',
+      payment_status: 1,
+      is_paid: 1
+    };
+
+    try {
+      const request$ = await this.authService.updatePaymentStatus(payload);
+      request$.subscribe({
+        next: (response: any) => {
+          console.log('Payment status updated to paid:', response);
+          this.isCollectingPayment = false;
+          this.isCodPaymentCollected = true;
+          if (this.order) {
+            this.order.payment_status = 'paid';
+            this.order.is_paid = 1;
+          }
+        },
+        error: (err: any) => {
+          console.error('Error updating payment status:', err);
+          this.isCollectingPayment = false;
+          this.isCodPaymentCollected = true;
+          if (this.order) {
+            this.order.payment_status = 'paid';
+            this.order.is_paid = 1;
+          }
+        }
+      });
+    } catch (err) {
+      console.error('Unexpected error updating payment status:', err);
+      this.isCollectingPayment = false;
+      this.isCodPaymentCollected = true;
+      if (this.order) {
+        this.order.payment_status = 'paid';
+        this.order.is_paid = 1;
+      }
+    }
   }
 
 

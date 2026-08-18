@@ -1,91 +1,167 @@
-<ion-card class="order-card">
-  <div class="main_div">
-    <div class="for">
-      <div class="image-section">
-        <img src="../../assets/welcome/delivery_man.svg" alt="Shop Image" />
-      </div>
-      <div class="spinner-border" role="status">
-        <!-- <span class="sr-only">Loading...</span> -->
-      </div>
+<div class="order-modal-card">
+  <!-- Header Banner -->
+  <div class="modal-header-banner">
+    <div class="badge-new-order">
+      <span class="pulsing-dot"></span> New Order Alert!
     </div>
-    <h2 class="main-title">New Order!</h2>
-    <div class="order-meta">ID: {{this.orderDetails?.order_uid}}
-    </div>
-    <table class="order_modal_cutomer_deatils">
-      <tbody>
-        <tr>
-          <th>Customer Name</th>
-          <td>{{this.orderDetails?.firstname}} {{this.orderDetails?.lastname}}</td>
-        </tr>
-        <tr>
-          <th>Contact</th>
-          <td>{{this.orderDetails?.prefix}} {{this.orderDetails?.phonenumber}}</td>
-        </tr>
-        <tr>
-          <th>Address</th>
-          <td>{{this.orderDetails?.address}}</td>
-        </tr>
-        <tr>
-          <th>Distance from vendor to customer</th>
-          <td>{{ (vendor_to_customer_distance_km ?? '0.00') + ' KM' }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <h2 class="main-title">Vendor Details</h2>
-    <table class="order_modal_cutomer_deatils">
-      <tbody>
-        <tr>
-          <th>Vendor Name</th>
-          <td>{{this.orderDetails?.store_name}} </td>
-        </tr>
-        <tr>
-          <th>Contact</th>
-          <td>{{this.orderDetails?.vendor_prefix}} {{this.orderDetails?.vendor_phonenumber}}</td>
-        </tr>
-        <tr>
-          <th>Address</th>
-          <td>{{this.orderDetails?.store_address}}</td>
-        </tr>
-          <tr>
-          <th>Distance from me to vendor</th>
-          <td>{{ (rider_to_vendor_distance_km ?? '0.00') + ' KM' }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="bill_div">
-      <!-- <div class="order-details">
-        <h4>ORDER DETAILS:</h4>
-        <table class="order_items_table">
-          <thead>
-            <tr>
-              <th>Sr</th>
-              <th>Item Name</th>
-              <th>Qty</th>
-              <th>Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of order_list; let i = index">
-              <td class="text_middle">{{ i + 1 }}</td>
-              <td class="width_full">{{ item.product_name }} ({{item.variant_value}})</td>
-              <td class="text_middle">{{ item.product_quantity }}</td>
-              <td class="text_middle">${{ item.total_item_price }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div> -->
-      <div class="bill-section">
-        <div class="total-bill">Total Bill: <strong>${{ this.orderDetails?.total_price }}</strong></div>
-      </div>
-
-      <!-- Accept Button -->
-      <div class="order_pop_modal">
-        <button (click)="onAccept()" class="btn accept_order_btn">Accept</button>
-        <button (click)="onDecline()" class="btn reject_order_btn">Reject</button>
-      </div>
+    <div class="order-id-badge">
+      #{{ orderDetails?.order_uid || orderId }}
     </div>
   </div>
 
-</ion-card>
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+    <p>Fetching order details...</p>
+  </div>
+
+  <!-- Content Section -->
+  <div class="modal-body-content" *ngIf="!isLoading">
+
+    <!-- Vendor Card -->
+    <div class="info-card vendor-card">
+      <div class="card-header-title">
+        <ion-icon name="storefront-outline"></ion-icon>
+        <span>Pickup Vendor</span>
+      </div>
+      <div class="card-body">
+        <div class="info-row bold-row">
+          <span class="label">Vendor Name:</span>
+          <span class="value">{{ orderDetails?.store_name || 'N/A' }}</span>
+        </div>
+        <div class="info-row" *ngIf="orderDetails?.vendor_phonenumber">
+          <span class="label">Contact:</span>
+          <span class="value">{{ orderDetails?.vendor_prefix || '' }} {{ orderDetails?.vendor_phonenumber }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Address:</span>
+          <span class="value">{{ orderDetails?.store_address || 'N/A' }}</span>
+        </div>
+        <div class="info-row highlight-row">
+          <span class="label">Distance to Vendor:</span>
+          <span class="value badge-dist">{{ (rider_to_vendor_distance_km ?? '0.00') }} KM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Customer Card -->
+    <div class="info-card customer-card">
+      <div class="card-header-title">
+        <ion-icon name="location-outline"></ion-icon>
+        <span>Delivery Customer</span>
+      </div>
+      <div class="card-body">
+        <div class="info-row bold-row">
+          <span class="label">Customer Name:</span>
+          <span class="value">{{ orderDetails?.firstname }} {{ orderDetails?.lastname }}</span>
+        </div>
+        <div class="info-row" *ngIf="orderDetails?.phonenumber">
+          <span class="label">Contact:</span>
+          <span class="value">{{ orderDetails?.prefix || '' }} {{ orderDetails?.phonenumber }}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Address:</span>
+          <span class="value">{{ orderDetails?.address || 'N/A' }}</span>
+        </div>
+        <div class="info-row highlight-row">
+          <span class="label">Distance to Customer:</span>
+          <span class="value badge-dist">{{ (vendor_to_customer_distance_km ?? '0.00') }} KM</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Items Breakdown Section -->
+    <div class="info-card items-card" *ngIf="getOrderItems().length > 0">
+      <div class="card-header-title">
+        <ion-icon name="bag-handle-outline"></ion-icon>
+        <span>Order Items ({{ getOrderItems().length }})</span>
+      </div>
+      <div class="items-table-wrapper">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="text-center">Qty</th>
+              <th class="text-right">Price</th>
+              <th class="text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of getOrderItems(); let i = index">
+              <td class="item-name-cell">
+                <span class="item-title">{{ item.product_name || item.name || 'Product' }}</span>
+                <small class="item-variant" *ngIf="item.variant_value || item.variant">
+                  ({{ item.variant_value || item.variant }})
+                </small>
+              </td>
+              <td class="text-center qty-badge">
+                x{{ item.product_quantity ?? item.quantity ?? 1 }}
+              </td>
+              <td class="text-right price-cell">
+                ${{ getItemUnitPrice(item).toFixed(2) }}
+              </td>
+              <td class="text-right total-cell">
+                ${{ getItemTotalPrice(item).toFixed(2) }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Bill Summary Section -->
+    <div class="info-card summary-card">
+      <div class="card-header-title">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <span>Bill Summary</span>
+      </div>
+      <div class="summary-rows">
+        <!-- Subtotal -->
+        <div class="summary-row">
+          <span>Items Subtotal</span>
+          <span>${{ getItemsTotal().toFixed(2) }}</span>
+        </div>
+
+        <!-- Rider Delivery Charge -->
+        <div class="summary-row" *ngIf="getRiderDeliveryCharge() > 0">
+          <span>Rider Delivery Fee</span>
+          <span>${{ getRiderDeliveryCharge().toFixed(2) }}</span>
+        </div>
+
+        <!-- Fast Delivery Charges -->
+        <div class="summary-row" *ngIf="getFastDeliveryCharge() > 0">
+          <span>Fast Delivery Charge</span>
+          <span>${{ getFastDeliveryCharge().toFixed(2) }}</span>
+        </div>
+
+        <!-- Tip -->
+        <div class="summary-row tip-row" *ngIf="getTipAmount() > 0">
+          <span>
+            Tip
+            <small *ngIf="getTipPercentage() > 0">({{ getTipPercentage() }}%)</small>
+          </span>
+          <span class="tip-value">+${{ getTipAmount().toFixed(2) }}</span>
+        </div>
+
+        <!-- Total Payable -->
+        <div class="summary-row grand-total-row">
+          <span>Total Bill</span>
+          <span class="total-amount">${{ getOrderTotal() }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="modal-footer-actions">
+    <button type="button" class="btn-action btn-accept" (click)="onAccept()">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      Accept Order
+    </button>
+    <button type="button" class="btn-action btn-decline" (click)="onDecline()">
+      <ion-icon name="close-circle-outline"></ion-icon>
+      Decline
+    </button>
+  </div>
+</div>

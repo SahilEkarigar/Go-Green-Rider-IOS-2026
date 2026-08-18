@@ -1363,3 +1363,116 @@ ion-content {
   }
 
 }
+
+/* =====================================================
+   COD COLLECT SECTION
+===================================================== */
+.cod-collect-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 20px 16px;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1.5px solid #d4eae0;
+  box-shadow: 0 8px 24px rgba(0, 85, 40, 0.08);
+  box-sizing: border-box;
+
+  .cod-heading-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 16px;
+
+    .cod-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      color: #b78103;
+      font-weight: 700;
+      font-size: 12px;
+      margin-bottom: 10px;
+
+      ion-icon {
+        font-size: 16px;
+        color: #d99b00;
+      }
+    }
+
+    .cod-title {
+      margin: 0 0 6px;
+      color: #005528;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .cod-instruction-label {
+      margin: 0;
+      color: #5b6c62;
+      font-size: 13px;
+      line-height: 1.4;
+      max-width: 290px;
+    }
+  }
+
+  .cod-amount-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #eef8f3 0%, #e1f3e9 100%);
+    border: 1px dashed #088b46;
+    box-sizing: border-box;
+
+    .amount-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #436250;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .amount-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: #005528;
+    }
+  }
+
+  .collect-payment-btn {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #005528 0%, #088b46 100%);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(8, 139, 70, 0.24);
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+
+    ion-icon {
+      font-size: 20px;
+    }
+
+    &:active {
+      transform: scale(0.985);
+    }
+  }
+}

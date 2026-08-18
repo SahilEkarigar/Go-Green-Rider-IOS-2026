@@ -198,6 +198,10 @@ export class AuthserviceService {
     return this.http.post<any>(`${this.apiUrl}order/handle-orderbyrider`, body, { headers });
   }
 
+  async updatePaymentStatus(data: any): Promise<Observable<any>> {
+    const headers = await this.getHeaders();
+    return this.http.post<any>(`${this.apiUrl}riders/update-payment-status`, data, { headers });
+  }
 
   getReceivedOrders(user_id: string): Observable<any[]> {
     return from(this.getHeaders()).pipe(
@@ -208,6 +212,7 @@ export class AuthserviceService {
       })
     );
   }
+
   getCordinatesofOrder(order_id: string): Observable<any[]> {
     return from(this.getHeaders()).pipe(
       switchMap((headers: HttpHeaders) => {
@@ -215,6 +220,7 @@ export class AuthserviceService {
       })
     );
   }
+
   getRiderAnalytics(user_id: string): Observable<any[]> {
     return from(this.getHeaders()).pipe(
       switchMap((headers: HttpHeaders) => {

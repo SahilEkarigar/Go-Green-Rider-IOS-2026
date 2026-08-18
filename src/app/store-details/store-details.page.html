@@ -313,10 +313,56 @@
 
 
         <!-- =================================================
+             COD PAYMENT COLLECTION BOX
+        ================================================== -->
+        <div
+          *ngIf="shouldShowCodCollectBox"
+          class="cod-collect-section">
+
+          <div class="cod-heading-area">
+            <div class="cod-badge">
+              <ion-icon name="cash-outline"></ion-icon>
+              <span>Cash On Delivery</span>
+            </div>
+
+            <h3 class="cod-title">
+              Collect Cash Payment
+            </h3>
+
+            <p class="cod-instruction-label">
+              Please collect cash payment from customer before verifying delivery OTP.
+            </p>
+          </div>
+
+          <div class="cod-amount-card">
+            <span class="amount-label">Total Cash to Collect</span>
+            <span class="amount-val">$ {{ getOrderTotal(order) }}</span>
+          </div>
+
+          <button
+            type="button"
+            class="primary-action-btn collect-payment-btn"
+            (click)="collectCodPayment()"
+            [disabled]="isCollectingPayment">
+
+            <ng-container *ngIf="!isCollectingPayment">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              <span>Collect Payment ($ {{ getOrderTotal(order) }})</span>
+            </ng-container>
+
+            <ng-container *ngIf="isCollectingPayment">
+              <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
+              <span>Updating Payment Status...</span>
+            </ng-container>
+          </button>
+        </div>
+
+
+        <!-- =================================================
              CUSTOMER DELIVERY OTP
         ================================================== -->
         <div
-          *ngIf="isCustomerDeliveryStage"
+          *ngIf="isCustomerDeliveryStage && !shouldShowCodCollectBox"
           class="otp-entry-section">
 
 
