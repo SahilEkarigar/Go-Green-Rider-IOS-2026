@@ -10,7 +10,9 @@
       <div class="profile-section">
 
         <!-- Rider Profile -->
-        <div class="rider-profile">
+        <div
+          class="rider-profile"
+          (click)="goToEditAccount()">
 
           <img
             [src]="user.data?.profile_pic || '../../assets/home/rider_profile.png'"
@@ -50,18 +52,18 @@
             <div class="toggle-slider"></div>
 
             <div
-              class="toggle-option offline"
-              (click)="setStatus(false)">
-
-              Offline
-
-            </div>
-
-            <div
               class="toggle-option online"
               (click)="setStatus(true)">
 
               Online
+
+            </div>
+
+            <div
+              class="toggle-option offline"
+              (click)="setStatus(false)">
+
+              Offline
 
             </div>
 
@@ -221,10 +223,10 @@
           <img
             src="../../assets/home/resive_order_image_black.svg"
             class="segment-icon"
-            alt="Receive orders">
+            alt="New orders">
 
           <span>
-            Receive Order
+            New Orders
           </span>
 
         </button>
@@ -242,7 +244,7 @@
             alt="Completed orders">
 
           <span>
-            Completed Order
+            Completed Orders
           </span>
 
         </button>
@@ -270,7 +272,11 @@
           *ngIf="!receivedOrders || receivedOrders.length === 0"
           class="empty-state">
 
-          No orders found for this rider today.
+          <div class="empty-state-content">
+            <ion-icon name="bag-handle-outline" class="empty-icon"></ion-icon>
+            <h4>No New Orders Right Now</h4>
+            <p>You're all caught up! New delivery requests will appear here automatically.</p>
+          </div>
 
         </div>
 
@@ -735,7 +741,7 @@
       <div class="orders-list-section">
 
         <h3 class="orders-section-heading">
-          Delivered Orders
+          Completed Orders
         </h3>
 
 
@@ -747,7 +753,11 @@
           "
           class="empty-state">
 
-          No delivered orders were found for this rider today.
+          <div class="empty-state-content">
+            <ion-icon name="checkmark-done-circle-outline" class="empty-icon"></ion-icon>
+            <h4>No Completed Orders Today</h4>
+            <p>Once you finish delivery orders today, they will be listed here.</p>
+          </div>
 
         </div>
 

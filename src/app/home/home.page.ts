@@ -863,6 +863,10 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
+  goToEditAccount(): void {
+    this.router.navigate(['/edit-account']);
+  }
+
 
   /* =====================================================
      ACCORDION
