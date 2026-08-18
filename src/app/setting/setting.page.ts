@@ -17,6 +17,27 @@ import {
   NavController
 } from '@ionic/angular';
 
+import { addIcons } from 'ionicons';
+import {
+  personOutline,
+  keyOutline,
+  carOutline,
+  statsChartOutline,
+  documentTextOutline,
+  timeOutline,
+  swapHorizontalOutline,
+  businessOutline,
+  helpCircleOutline,
+  chatbubblesOutline,
+  documentAttachOutline,
+  lockClosedOutline,
+  starOutline,
+  logOutOutline,
+  chevronForwardOutline,
+  chevronBackOutline,
+  walletOutline
+} from 'ionicons/icons';
+
 import {
   Storage
 } from '@ionic/storage-angular';
@@ -83,7 +104,27 @@ export class SettingPage implements OnInit, OnDestroy {
     private storage: Storage,
     private authService: AuthserviceService,
     private userService: UserService
-  ) {}
+  ) {
+    addIcons({
+      personOutline,
+      keyOutline,
+      carOutline,
+      statsChartOutline,
+      documentTextOutline,
+      timeOutline,
+      swapHorizontalOutline,
+      businessOutline,
+      helpCircleOutline,
+      chatbubblesOutline,
+      documentAttachOutline,
+      lockClosedOutline,
+      starOutline,
+      logOutOutline,
+      chevronForwardOutline,
+      chevronBackOutline,
+      walletOutline
+    });
+  }
 
 
   /* =====================================================

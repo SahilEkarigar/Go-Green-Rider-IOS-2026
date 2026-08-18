@@ -11,6 +11,27 @@ import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 import { ScreenOrientation } from '@capacitor/screen-orientation';
+import { addIcons } from 'ionicons';
+import {
+  personOutline,
+  keyOutline,
+  carOutline,
+  statsChartOutline,
+  documentTextOutline,
+  timeOutline,
+  swapHorizontalOutline,
+  businessOutline,
+  helpCircleOutline,
+  chatbubblesOutline,
+  documentAttachOutline,
+  lockClosedOutline,
+  starOutline,
+  logOutOutline,
+  chevronForwardOutline,
+  chevronBackOutline,
+  bagHandleOutline,
+  checkmarkDoneCircleOutline
+} from 'ionicons/icons';
 
 @Component({
   selector: 'app-root',
@@ -31,6 +52,26 @@ export class AppComponent {
     private storage: Storage,
     private router: Router
   ) {
+    addIcons({
+      personOutline,
+      keyOutline,
+      carOutline,
+      statsChartOutline,
+      documentTextOutline,
+      timeOutline,
+      swapHorizontalOutline,
+      businessOutline,
+      helpCircleOutline,
+      chatbubblesOutline,
+      documentAttachOutline,
+      lockClosedOutline,
+      starOutline,
+      logOutOutline,
+      chevronForwardOutline,
+      chevronBackOutline,
+      bagHandleOutline,
+      checkmarkDoneCircleOutline
+    });
     this.platform.ready().then(() => this.initializeApp());
     this.platform.ready().then(async () => {
       try {

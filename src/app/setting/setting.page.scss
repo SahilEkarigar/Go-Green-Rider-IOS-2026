@@ -153,12 +153,13 @@ ion-content.settings-content {
 }
 
 
-.back-circle-btn i {
+.back-circle-btn i,
+.back-circle-btn ion-icon {
   margin-right: 2px;
 
   color: #ffffff;
 
-  font-size: 14px;
+  font-size: 18px;
 }
 
 
@@ -524,6 +525,10 @@ ion-content.settings-content {
   border-radius: 11px;
 
   font-size: 14px;
+
+  ion-icon {
+    font-size: 18px;
+  }
 }
 
 

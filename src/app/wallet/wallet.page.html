@@ -1,48 +1,263 @@
 <ion-header [translucent]="false" class="custom-header">
   <div class="header-container">
     <button class="back-btn" (click)="goBack()">
-      <i class="fa fa-chevron-left" aria-hidden="true"></i>
+      <ion-icon name="chevron-back-outline"></ion-icon>
     </button>
-    <h1 class="header-title">Balance & History</h1>
+    <h1 class="header-title">Wallet &amp; Transactions</h1>
     <div class="header-right-placeholder"></div>
   </div>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content [fullscreen]="true" class="wallet-content">
   <div class="wallet-container">
-    <!-- Balance Card Layout -->
+
+    <!-- Balance & Summary Overview Card -->
     <div class="balance-card">
       <div class="card-glow"></div>
+      
       <div class="balance-header">
-        <span class="balance-label">Current Balance</span>
+        <div class="balance-title-group">
+          <ion-icon name="wallet-outline" class="wallet-header-icon"></ion-icon>
+          <span class="balance-label">Current Balance</span>
+        </div>
         <div class="trend-badge">
-          <i class="fa fa-caret-up" aria-hidden="true"></i> 3.4%
+          <ion-icon name="arrow-up-outline"></ion-icon> +3.4%
         </div>
       </div>
-      <h1 class="balance-amount">$ 1,250.00</h1>
+
+      <h1 class="balance-amount">$ {{ currentBalance | number:'1.2-2' }}</h1>
+
+      <!-- Stats Summary Grid -->
+      <div class="stats-summary-grid">
+        <div class="stat-box">
+          <span class="stat-label">Total Earnings</span>
+          <span class="stat-val credit">$ {{ totalEarnings | number:'1.2-2' }}</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-box">
+          <span class="stat-label">Withdrawals</span>
+          <span class="stat-val debit">$ {{ totalWithdrawals | number:'1.2-2' }}</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-box">
+          <span class="stat-label">Pending</span>
+          <span class="stat-val pending">$ {{ pendingAmount | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
       <div class="balance-actions">
-        <button class="withdraw-card-btn">Withdraw Funds</button>
+        <button class="withdraw-card-btn" (click)="openPayoutModal()">
+          <ion-icon name="swap-horizontal-outline"></ion-icon>
+          Request Payout
+        </button>
       </div>
     </div>
 
-    <!-- Recent Transactions List -->
-    <div class="transactions-section">
-      <h3 class="section-title">Recent Transactions</h3>
+    <!-- Filter & Search Section -->
+    <div class="filters-section">
       
-      <div class="transactions-list">
-        <div class="transaction-item-card">
-          <div class="item-icon-wrapper debit">
-            <i class="fa fa-minus" aria-hidden="true"></i>
-          </div>
-          
-          <div class="item-info">
-            <span class="item-name">Order #12345</span>
-            <span class="item-date">26 June, 2025</span>
-          </div>
-          
-          <span class="transaction-amount debit">- $150.00</span>
+      <!-- Search Input -->
+      <div class="search-box">
+        <ion-icon name="search-outline" class="search-icon"></ion-icon>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by ID, date, or amount..."
+          [(ngModel)]="searchQuery" />
+        <button
+          *ngIf="searchQuery"
+          class="clear-search-btn"
+          (click)="searchQuery = ''">
+          <ion-icon name="close-circle"></ion-icon>
+        </button>
+      </div>
+
+      <!-- Type Filter Chips -->
+      <div class="filter-chips-row">
+        <button
+          class="chip-btn"
+          [class.active]="selectedType === 'all'"
+          (click)="setTypeFilter('all')">
+          All
+        </button>
+
+        <button
+          class="chip-btn earning"
+          [class.active]="selectedType === 'earning'"
+          (click)="setTypeFilter('earning')">
+          <ion-icon name="arrow-down-circle-outline"></ion-icon>
+          Earnings
+        </button>
+
+        <button
+          class="chip-btn withdrawal"
+          [class.active]="selectedType === 'withdrawal'"
+          (click)="setTypeFilter('withdrawal')">
+          <ion-icon name="arrow-up-circle-outline"></ion-icon>
+          Withdrawals
+        </button>
+      </div>
+
+      <!-- Secondary Controls Row (Status Filter & Sorting) -->
+      <div class="secondary-filters-row">
+        
+        <!-- Status Dropdown Select -->
+        <div class="select-wrapper">
+          <ion-icon name="funnel-outline" class="select-icon"></ion-icon>
+          <select [(ngModel)]="selectedStatus" class="filter-select">
+            <option value="all">All Statuses</option>
+            <option value="completed">Completed</option>
+            <option value="processing">Processing</option>
+            <option value="failed">Failed</option>
+          </select>
+          <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
         </div>
+
+        <!-- Sort Dropdown Select -->
+        <div class="select-wrapper">
+          <ion-icon name="options-outline" class="select-icon"></ion-icon>
+          <select [(ngModel)]="sortBy" class="filter-select">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="amount_high">Amount: High to Low</option>
+            <option value="amount_low">Amount: Low to High</option>
+          </select>
+          <ion-icon name="chevron-down-outline" class="select-arrow"></ion-icon>
+        </div>
+
+        <!-- Reset Button -->
+        <button
+          *ngIf="selectedType !== 'all' || selectedStatus !== 'all' || searchQuery || sortBy !== 'newest'"
+          class="reset-filter-btn"
+          (click)="resetFilters()"
+          title="Reset Filters">
+          <ion-icon name="refresh-outline"></ion-icon>
+        </button>
+
+      </div>
+
+    </div>
+
+    <!-- Transactions List Section -->
+    <div class="transactions-section">
+      <div class="section-header">
+        <h3 class="section-title">Transactions</h3>
+        <span class="count-badge">{{ filteredTransactions.length }} {{ filteredTransactions.length === 1 ? 'record' : 'records' }}</span>
+      </div>
+
+      <div class="transactions-list" *ngIf="filteredTransactions.length > 0; else emptyState">
+        <div
+          *ngFor="let tx of filteredTransactions"
+          class="transaction-card-item"
+          [class.earning]="tx.type === 'earning'"
+          [class.withdrawal]="tx.type === 'withdrawal'">
+
+          <!-- Left status accent bar -->
+          <div class="card-accent" [ngClass]="tx.status.toLowerCase()"></div>
+
+          <!-- Transaction Type Icon -->
+          <div class="tx-icon-box" [ngClass]="tx.type">
+            <ion-icon
+              [name]="tx.type === 'earning' ? 'arrow-down-circle-outline' : 'arrow-up-circle-outline'">
+            </ion-icon>
+          </div>
+
+          <!-- Transaction Info -->
+          <div class="card-details">
+            <div class="details-top">
+              <span class="tx-title">{{ tx.title }}</span>
+              <span class="tx-amount" [ngClass]="tx.type">
+                {{ tx.type === 'earning' ? '+' : '-' }}${{ tx.amount | number:'1.2-2' }}
+              </span>
+            </div>
+
+            <div class="details-bottom">
+              <div class="time-meta-group">
+                <span class="time-meta">
+                  <ion-icon name="calendar-outline"></ion-icon> {{ tx.date }}
+                </span>
+                <span class="time-meta">
+                  <ion-icon name="time"></ion-icon> {{ tx.time }}
+                </span>
+                <span class="method-tag" *ngIf="tx.method">{{ tx.method }}</span>
+              </div>
+
+              <!-- Status Badge -->
+              <span class="status-badge" [ngClass]="tx.status.toLowerCase()">
+                <ion-icon [name]="getStatusIcon(tx.status)" class="badge-icon"></ion-icon>
+                <span>{{ tx.status }}</span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Empty State Template -->
+      <ng-template #emptyState>
+        <div class="empty-state">
+          <div class="empty-state-content">
+            <ion-icon name="swap-horizontal-outline" class="empty-icon"></ion-icon>
+            <h4>No Transactions Found</h4>
+            <p>No transaction history matches your current filters or search criteria.</p>
+            <button class="reset-empty-btn" (click)="resetFilters()">
+              <ion-icon name="refresh-outline"></ion-icon>
+              Clear Filters
+            </button>
+          </div>
+        </div>
+      </ng-template>
+
+    </div>
+
+  </div>
+
+  <!-- Request Payout Modal -->
+  <div class="modal-backdrop" *ngIf="isPayoutModalOpen" (click)="closePayoutModal()">
+    <div class="payout-modal-card" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Request Payout</h3>
+        <button class="close-modal-btn" (click)="closePayoutModal()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-subtitle">Transfer available earnings directly to your verified bank account.</p>
+        
+        <div class="available-box">
+          <span>Available to Withdraw:</span>
+          <strong>$ {{ currentBalance | number:'1.2-2' }}</strong>
+        </div>
+
+        <div class="input-group">
+          <label>Payout Amount ($)</label>
+          <input
+            type="number"
+            class="amount-input"
+            placeholder="Enter amount e.g. 100"
+            [(ngModel)]="payoutAmount"
+            min="10"
+            [max]="currentBalance" />
+        </div>
+
+        <div class="bank-preview">
+          <ion-icon name="business-outline"></ion-icon>
+          <div>
+            <strong>Chase Bank ****4321</strong>
+            <span>Verified Primary Account</span>
+          </div>
+        </div>
+
+        <button
+          class="confirm-payout-btn"
+          [disabled]="!payoutAmount || payoutAmount <= 0 || payoutAmount > currentBalance || payoutLoading"
+          (click)="submitPayoutRequest()">
+          <span *ngIf="!payoutLoading">Confirm Payout</span>
+          <ion-spinner *ngIf="payoutLoading" name="crescent"></ion-spinner>
+        </button>
       </div>
     </div>
   </div>
+
 </ion-content>
