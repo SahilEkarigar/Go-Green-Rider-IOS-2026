@@ -10,6 +10,8 @@ import { StatusBar, Style } from '@capacitor/status-bar';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
+import { ScreenOrientation } from '@capacitor/screen-orientation';
+
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -36,12 +38,23 @@ export class AppComponent {
       } catch (err) {
         console.error('StatusBar error', err);
       }
+      try {
+        await ScreenOrientation.lock({ orientation: 'portrait' });
+      } catch (err) {
+        // Screen orientation plugin not supported on web
+      }
     });
   }
 
   async initializeApp() {
     await this.platform.ready();
     await this.storage.create();
+
+    try {
+      await ScreenOrientation.lock({ orientation: 'portrait' });
+    } catch (err) {
+      // Screen orientation fallback
+    }
 
     // Listen to router navigation events to dynamically change status bar style/color
     this.router.events.pipe(

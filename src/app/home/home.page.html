@@ -40,7 +40,7 @@
         <div class="status-toggle-box">
 
           <p class="status-title">
-            Store Status
+            Rider Status
           </p>
 
           <div
@@ -219,9 +219,7 @@
           (click)="selectTab('receive')">
 
           <img
-            [src]="selectedTab === 'receive'
-              ? '../../assets/home/resive_order_image.svg'
-              : '../../assets/home/resive_order_image_black.svg'"
+            src="../../assets/home/resive_order_image_black.svg"
             class="segment-icon"
             alt="Receive orders">
 
@@ -239,9 +237,7 @@
           (click)="selectTab('completed')">
 
           <img
-            [src]="selectedTab === 'completed'
-              ? '../../assets/home/total_orders_images.svg'
-              : '../../assets/home/completed_icon_button.svg'"
+            src="../../assets/home/completed_icon_button.svg"
             class="segment-icon"
             alt="Completed orders">
 
@@ -418,7 +414,7 @@
                 <!-- Item Price -->
                 <div class="item-price-wrapper">
                   <span class="structured-item-price">
-                    $ {{ item.total_item_price || item.product_price || '0' }}
+                    $ {{ getItemTotalPrice(item) }}
                   </span>
                 </div>
 
@@ -898,7 +894,7 @@
                 <!-- Item Price -->
                 <div class="item-price-wrapper">
                   <span class="structured-item-price">
-                    $ {{ item.total_item_price || item.product_price || '0' }}
+                    $ {{ getItemTotalPrice(item) }}
                   </span>
                 </div>
 

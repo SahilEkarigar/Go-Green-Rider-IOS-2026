@@ -578,113 +578,249 @@ ion-content {
 
 
           .order-items-list {
-
             display: flex;
-
             flex-direction: column;
-
-            gap: 10px;
-
+            gap: 12px;
+            margin-bottom: 16px;
 
             .item-row {
-
               display: flex;
-
-              justify-content: space-between;
-
               align-items: center;
-
+              gap: 12px;
               font-size: 13px;
+              padding: 8px 10px;
+              background-color: #f8f9fa;
+              border-radius: 12px;
+              border: 1px solid #edf2f7;
 
-
-              .item-left {
-
-                display: flex;
-
-                align-items: center;
-
-                gap: 8px;
-
-                min-width: 0;
-
-
-                .item-name {
-
-                  color: #343a40;
-
-                  font-weight: 500;
-
-                  white-space: nowrap;
-
-                  overflow: hidden;
-
-                  text-overflow: ellipsis;
-
-                }
-
-              }
-
-
-              .item-price {
-
-                font-weight: 600;
-
-                color: #212529;
-
+              .item-img-wrapper {
+                width: 44px;
+                height: 44px;
                 flex-shrink: 0;
-
-              }
-
-
-              .food-dot {
-
-                width: 14px;
-                height: 14px;
-
-                border:
-                  1.5px solid currentColor;
-
-                border-radius: 3px;
-
+                border-radius: 10px;
+                overflow: hidden;
+                background: #eef4f0;
                 display: flex;
-
                 align-items: center;
                 justify-content: center;
+                border: 1px solid #e3ede7;
 
-                flex-shrink: 0;
-
-
-                &::after {
-
-                  content: '';
-
-                  width: 5px;
-                  height: 5px;
-
-                  border-radius: 50%;
-
-                  background-color: currentColor;
-
+                img.item-featured-img {
+                  width: 100%;
+                  height: 100%;
+                  object-fit: cover;
+                  display: block;
                 }
-
-
-                &.green-dot {
-
-                  color: #199e45;
-
-                }
-
-
-                &.red-dot {
-
-                  color: #d62828;
-
-                }
-
               }
 
+              .item-main-info {
+                flex: 1;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+
+                .item-title-row {
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  min-width: 0;
+
+                  .item-name {
+                    color: #212529;
+                    font-weight: 600;
+                    font-size: 13px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                  }
+                }
+
+                .item-qty-badge {
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 4px;
+
+                  span {
+                    color: #6c757d;
+                    font-size: 11px;
+                    font-weight: 500;
+
+                    strong {
+                      color: $primary-color;
+                      font-weight: 700;
+                    }
+                  }
+
+                  .unit-price-dot {
+                    color: #adb5bd;
+                    font-size: 10px;
+                  }
+
+                  .unit-price-text {
+                    color: #495057;
+                    font-weight: 600;
+                  }
+                }
+              }
+
+              .item-total-price-col {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                flex-shrink: 0;
+
+                .item-price {
+                  font-weight: 700;
+                  color: #212529;
+                  font-size: 14px;
+                }
+
+                .item-calc-subtext {
+                  font-size: 10px;
+                  color: #868e96;
+                  font-weight: 500;
+                }
+              }
+
+              .food-dot {
+                width: 14px;
+                height: 14px;
+                border: 1.5px solid currentColor;
+                border-radius: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-shrink: 0;
+
+                &::after {
+                  content: '';
+                  width: 5px;
+                  height: 5px;
+                  border-radius: 50%;
+                  background-color: currentColor;
+                }
+
+                &.green-dot {
+                  color: #199e45;
+                }
+
+                &.red-dot {
+                  color: #d62828;
+                }
+              }
+            }
+          }
+
+          /* =====================================================
+             DISTINCT ORDER TOTAL CARD & BREAKDOWN
+          ===================================================== */
+          .distinct-order-total-card {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 14px 16px;
+            border: 1px solid rgba($primary-color, 0.2);
+            border-radius: 16px;
+            background: linear-gradient(135deg, #f0faf4 0%, #e6f6ed 100%);
+            box-shadow: 0 4px 12px rgba(8, 139, 70, 0.05);
+
+            .fee-breakdown-section {
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+              padding-bottom: 10px;
+              border-bottom: 1px dashed rgba($primary-color, 0.3);
+
+              .breakdown-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .breakdown-label-group {
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+
+                  .breakdown-icon {
+                    width: 16px;
+                    height: 16px;
+                    object-fit: contain;
+                  }
+
+                  .breakdown-ion-icon {
+                    font-size: 16px;
+                    color: #3b5043;
+
+                    &.tip-icon {
+                      color: #e53e3e;
+                    }
+                  }
+
+                  span {
+                    color: #3b5043;
+                    font-size: 12px;
+                    font-weight: 600;
+
+                    small {
+                      color: $primary-color;
+                      font-weight: 700;
+                    }
+                  }
+                }
+
+                .breakdown-value {
+                  color: #23322a;
+                  font-size: 13px;
+                  font-weight: 700;
+
+                  &.orange {
+                    color: #ce6b0b;
+                  }
+
+                  &.green {
+                    color: $primary-color;
+                  }
+                }
+              }
             }
 
+            .total-main-row {
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              padding-top: 4px;
+
+              .total-label-area {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .total-heading {
+                  font-size: 14px;
+                  font-weight: 700;
+                  color: #1a251f;
+                }
+
+                .payment-method-tag {
+                  font-size: 10px;
+                  font-weight: 700;
+                  text-transform: uppercase;
+                  padding: 2px 8px;
+                  border-radius: 10px;
+                  background-color: rgba($primary-color, 0.12);
+                  color: $primary-color;
+                }
+              }
+
+              .total-amount-area {
+                .total-amount-value {
+                  font-size: 17px;
+                  font-weight: 800;
+                  color: $primary-color;
+                }
+              }
+            }
           }
 
         }

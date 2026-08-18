@@ -1067,19 +1067,66 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
+  getItemUnitPrice(item: any): number {
+    if (!item) return 0;
+    const qty = Number(item.product_quantity ?? item.quantity ?? 1) || 1;
+    const price = Number(
+      item.product_price ??
+      item.single_product_price ??
+      item.single_item_price ??
+      item.price ??
+      0
+    );
+
+    if (price > 0) {
+      return price;
+    }
+
+    const totalItemPrice = Number(item.total_item_price);
+    if (!isNaN(totalItemPrice) && totalItemPrice > 0 && qty > 0) {
+      return totalItemPrice / qty;
+    }
+
+    return 0;
+  }
+
+
+  getItemTotalPrice(item: any): number {
+    if (!item) return 0;
+
+    const qty = Number(item.product_quantity ?? item.quantity ?? 1) || 1;
+    const unitPrice = Number(
+      item.product_price ??
+      item.single_product_price ??
+      item.single_item_price ??
+      item.price ??
+      0
+    );
+
+    const totalItemPrice = Number(item.total_item_price);
+
+    if (!isNaN(totalItemPrice) && totalItemPrice > 0) {
+      if (qty === 1 || totalItemPrice > unitPrice) {
+        return totalItemPrice;
+      }
+    }
+
+    return unitPrice * qty;
+  }
+
+
   getItemsTotal(order: any): number {
     if (!order) return 0;
+    if (Array.isArray(order.items) && order.items.length > 0) {
+      return order.items.reduce((acc: number, item: any) => {
+        return acc + this.getItemTotalPrice(item);
+      }, 0);
+    }
     if (order.subtotal !== undefined && order.subtotal !== null && order.subtotal !== '') {
       return Number(order.subtotal) || 0;
     }
     if (order.total_price !== undefined && order.total_price !== null && order.total_price !== '') {
       return Number(order.total_price) || 0;
-    }
-    if (Array.isArray(order.items) && order.items.length > 0) {
-      return order.items.reduce((acc: number, item: any) => {
-        const price = Number(item.total_item_price || (Number(item.product_price || 0) * Number(item.product_quantity || 1)));
-        return acc + price;
-      }, 0);
     }
     return 0;
   }

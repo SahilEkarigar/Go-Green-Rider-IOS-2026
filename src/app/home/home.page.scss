@@ -633,7 +633,8 @@ h6 {
 
   object-fit: contain;
 
-  opacity: 0.72;
+  opacity: 0.65;
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
 
@@ -649,6 +650,7 @@ h6 {
 
 .segment-btn.active .segment-icon {
   opacity: 1;
+  filter: invert(34%) sepia(87%) saturate(548%) hue-rotate(101deg) brightness(92%) contrast(96%);
 }
 
 

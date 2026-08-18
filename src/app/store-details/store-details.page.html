@@ -181,32 +181,120 @@
           class="accordion-body-details"
           *ngIf="isOrderDetailsExpanded">
 
+          <!-- Order Items List with Featured Image -->
           <div class="order-items-list">
 
             <div
               class="item-row"
-              *ngFor="let item of order?.items">
+              *ngFor="let item of order?.items; trackBy: trackByItem">
 
-              <div class="item-left">
-
-                <span
-                  class="food-dot"
-                  [ngClass]="{
-                    'green-dot': item.food_type === 'veg',
-                    'red-dot': item.food_type !== 'veg'
-                  }">
-                </span>
-
-                <span class="item-name">
-                  {{ item.product_quantity }} x {{ item.product_name }}
-                </span>
-
+              <div class="item-img-wrapper">
+                <img
+                  [src]="item.featured_image || item.product_image || item.image || '../../assets/home/store-logo.png'"
+                  (error)="handleProductImageError($event)"
+                  class="item-featured-img"
+                  [alt]="item.product_name || 'Product'">
               </div>
 
-              <span class="item-price">
-                $ {{ item.total_item_price || item.product_price }}
-              </span>
+              <div class="item-main-info">
+                <div class="item-title-row">
+                  <span
+                    class="food-dot"
+                    [ngClass]="{
+                      'green-dot': item.food_type === 'veg',
+                      'red-dot': item.food_type !== 'veg'
+                    }">
+                  </span>
 
+                  <span class="item-name">
+                    {{ item.product_name || item.name || 'Item' }}
+                  </span>
+                </div>
+
+                <div class="item-qty-badge">
+                  <span>Qty: <strong>{{ item.product_quantity || 1 }}</strong></span>
+                  <span class="unit-price-dot" *ngIf="getItemUnitPrice(item) > 0">•</span>
+                  <span class="unit-price-text" *ngIf="getItemUnitPrice(item) > 0">
+                    $ {{ getItemUnitPrice(item) }} each
+                  </span>
+                </div>
+              </div>
+
+              <div class="item-total-price-col">
+                <span class="item-price">
+                  $ {{ getItemTotalPrice(item) }}
+                </span>
+                <span class="item-calc-subtext" *ngIf="(item.product_quantity || 1) > 1 && getItemUnitPrice(item) > 0">
+                  ($ {{ getItemUnitPrice(item) }} &times; {{ item.product_quantity }})
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Pricing & Fee Breakdown Section -->
+          <div class="distinct-order-total-card">
+
+            <div
+              class="fee-breakdown-section"
+              *ngIf="getFastDeliveryCharge(order) > 0 || getRiderDeliveryCharge(order) > 0 || getTipAmount(order) > 0 || getItemsTotal(order) > 0">
+
+              <!-- Items Subtotal -->
+              <div class="breakdown-row" *ngIf="getItemsTotal(order) > 0">
+                <div class="breakdown-label-group">
+                  <ion-icon name="fast-food-outline" class="breakdown-ion-icon"></ion-icon>
+                  <span>Items Subtotal</span>
+                </div>
+                <span class="breakdown-value">$ {{ getItemsTotal(order).toFixed(2) }}</span>
+              </div>
+
+              <!-- Fast Delivery Charge -->
+              <div class="breakdown-row" *ngIf="getFastDeliveryCharge(order) > 0">
+                <div class="breakdown-label-group">
+                  <img src="../../assets/home/fast_delavery_image.svg" class="breakdown-icon" alt="Fast Delivery">
+                  <span>Fast Delivery Charge</span>
+                </div>
+                <span class="breakdown-value orange">+$ {{ getFastDeliveryCharge(order).toFixed(2) }}</span>
+              </div>
+
+              <!-- Rider Delivery Charge -->
+              <div class="breakdown-row" *ngIf="getRiderDeliveryCharge(order) > 0">
+                <div class="breakdown-label-group">
+                  <ion-icon name="bicycle-outline" class="breakdown-ion-icon"></ion-icon>
+                  <span>Rider Delivery Charge</span>
+                </div>
+                <span class="breakdown-value">+$ {{ getRiderDeliveryCharge(order).toFixed(2) }}</span>
+              </div>
+
+              <!-- Tip Amount / Tip Percentage -->
+              <div class="breakdown-row" *ngIf="getTipAmount(order) > 0">
+                <div class="breakdown-label-group">
+                  <ion-icon name="heart-outline" class="breakdown-ion-icon tip-icon"></ion-icon>
+                  <span>
+                    Tip Amount
+                    <small *ngIf="order?.tip_percentage && (!order?.tip_amount && !order?.tip)">({{ order?.tip_percentage }}%)</small>
+                  </span>
+                </div>
+                <span class="breakdown-value green">+$ {{ getTipAmount(order).toFixed(2) }}</span>
+              </div>
+
+            </div>
+
+            <!-- Main Order Total Row -->
+            <div class="total-main-row">
+              <div class="total-label-area">
+                <span class="total-heading">Order Total</span>
+                <span class="payment-method-tag" *ngIf="order?.payment_method">
+                  {{ order?.payment_method }}
+                </span>
+              </div>
+
+              <div class="total-amount-area">
+                <span class="total-amount-value">
+                  $ {{ getOrderTotal(order) }}
+                </span>
+              </div>
             </div>
 
           </div>
