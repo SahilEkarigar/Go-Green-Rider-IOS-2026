@@ -110,14 +110,14 @@
           <span
             class="status-badge"
             [ngClass]="{
-              'pending': order?.payment_method === 'COD',
-              'done': order?.payment_method !== 'COD'
+              'pending': isPaymentPending,
+              'done': !isPaymentPending
             }">
 
             {{
-              order?.payment_method === 'COD'
+              isPaymentPending
                 ? 'Pending'
-                : 'Done'
+                : 'Paid'
             }}
 
           </span>
@@ -337,6 +337,15 @@
           <div class="cod-amount-card">
             <span class="amount-label">Total Cash to Collect</span>
             <span class="amount-val">$ {{ getOrderTotal(order) }}</span>
+          </div>
+
+          <!-- Server Error Message -->
+          <div
+            *ngIf="paymentCollectErrorMessage"
+            class="otp-error-text"
+            style="margin-bottom: 14px;">
+            <ion-icon name="alert-circle-outline"></ion-icon>
+            <span>{{ paymentCollectErrorMessage }}</span>
           </div>
 
           <button

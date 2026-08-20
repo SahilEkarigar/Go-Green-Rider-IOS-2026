@@ -220,11 +220,23 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
       return true;
     }
 
+    if (
+      this.order.order_payment_status === 0 ||
+      this.order.order_payment_status === '0' ||
+      this.order.payment_status === 0 ||
+      this.order.payment_status === '0'
+    ) {
+      if (method !== 'ONLINE' && method !== 'RAZORPAY' && method !== 'STRIPE' && method !== 'CARD') {
+        return true;
+      }
+    }
+
     return (
       method === 'COD' ||
       method === 'CASH' ||
       method === 'CASH ON DELIVERY' ||
-      method === 'CASH_ON_DELIVERY'
+      method === 'CASH_ON_DELIVERY' ||
+      method === ''
     );
   }
 
@@ -233,15 +245,24 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
     if (!this.isCodOrder) return false;
     if (this.isCodPaymentCollected) return false;
 
-    const status = String(
-      this.order.payment_status ??
-      this.order.is_paid ??
-      ''
-    ).toLowerCase().trim();
+    const rawStatus = this.order.order_payment_status ?? this.order.payment_status ?? this.order.is_paid;
 
-    if (status === 'paid' || status === '1' || Number(this.order.is_paid) === 1 || status === 'completed') {
+    if (rawStatus !== undefined && rawStatus !== null && rawStatus !== '') {
+      const numStatus = Number(rawStatus);
+      if (numStatus === 0) {
+        return true;
+      }
+      if (numStatus === 1) {
+        return false;
+      }
+    }
+
+    const statusStr = String(rawStatus ?? '').toLowerCase().trim();
+
+    if (statusStr === 'paid' || statusStr === 'completed' || statusStr === 'done' || statusStr === '1') {
       return false;
     }
+
     return true;
   }
 
@@ -261,47 +282,48 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
 
     const payload = {
       order_id: this.orderId,
-      rider_id: this.riderId,
-      total_amount: this.getOrderTotal(this.order),
-      payment_method: this.order?.payment_method || this.order?.payment_type || 'COD',
-      payment_status: 1,
-      is_paid: 1
+      order_payment_status: 1
     };
 
     try {
       const request$ = await this.authService.updatePaymentStatus(payload);
       request$.subscribe({
         next: (response: any) => {
-          console.log('Payment status updated to paid:', response);
+          console.log('Payment status update response:', response);
           this.isCollectingPayment = false;
-          this.isCodPaymentCollected = true;
-          if (this.order) {
-            this.order.payment_status = 'paid';
-            this.order.is_paid = 1;
+
+          // Require a successful API response before unlocking delivery verification
+          if (
+            response &&
+            (response.status === true ||
+             response.status === 1 ||
+             response.status === 200 ||
+             response.success === true ||
+             (response.message && !String(response.message).toLowerCase().includes('error') && !String(response.message).toLowerCase().includes('fail')))
+          ) {
+            this.isCodPaymentCollected = true;
+            this.paymentCollectErrorMessage = '';
+            if (this.order) {
+              this.order.order_payment_status = 1;
+              this.order.payment_status = 'paid';
+              this.order.is_paid = 1;
+            }
+          } else {
+            this.paymentCollectErrorMessage = response?.message || 'Failed to update payment status. Please try again.';
           }
         },
         error: (err: any) => {
           console.error('Error updating payment status:', err);
           this.isCollectingPayment = false;
-          this.isCodPaymentCollected = true;
-          if (this.order) {
-            this.order.payment_status = 'paid';
-            this.order.is_paid = 1;
-          }
+          this.paymentCollectErrorMessage = err?.error?.message || err?.message || 'Server error updating payment status. Please try again.';
         }
       });
-    } catch (err) {
+    } catch (err: any) {
       console.error('Unexpected error updating payment status:', err);
       this.isCollectingPayment = false;
-      this.isCodPaymentCollected = true;
-      if (this.order) {
-        this.order.payment_status = 'paid';
-        this.order.is_paid = 1;
-      }
+      this.paymentCollectErrorMessage = 'Unexpected error occurred. Please try again.';
     }
   }
-
-
 
   /* =====================================================
      CHECK OTP COMPLETE

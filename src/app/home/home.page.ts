@@ -355,7 +355,7 @@ export class HomePage implements OnInit, OnDestroy {
 
 
         this.authservice
-          .getReceivedOrders(
+          .getTodayOrders(
             this.user_id
           )
           .subscribe({

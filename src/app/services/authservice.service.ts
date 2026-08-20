@@ -200,7 +200,7 @@ export class AuthserviceService {
 
   async updatePaymentStatus(data: any): Promise<Observable<any>> {
     const headers = await this.getHeaders();
-    return this.http.post<any>(`${this.apiUrl}riders/update-payment-status`, data, { headers });
+    return this.http.put<any>(`${this.apiUrl}riders/update-payment-status`, data, { headers });
   }
 
   getReceivedOrders(user_id: string): Observable<any[]> {
@@ -209,6 +209,16 @@ export class AuthserviceService {
         // take rider_role from this class property
         const body = { user_id, role_id: this.rider_role };
         return this.http.post<any[]>(`${this.apiUrl}order/getallorderbyvendorid/all`, body, { headers });
+      })
+    );
+  }
+
+  getTodayOrders(user_id: string): Observable<any[]> {
+    return from(this.getHeaders()).pipe(
+      switchMap((headers: HttpHeaders) => {
+        // take rider_role from this class property
+        const body = { user_id, role_id: this.rider_role };
+        return this.http.post<any[]>(`${this.apiUrl}order/getallorderbyvendorid/today`, body, { headers });
       })
     );
   }
