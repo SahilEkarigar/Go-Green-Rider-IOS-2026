@@ -1,0 +1,339 @@
+<ion-header [translucent]="false" class="custom-history-header">
+  <div class="header-toolbar">
+    <div class="back-circle-btn" (click)="goBack()" aria-label="Go Back">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </div>
+    <h1 class="header-title">Order History</h1>
+    <div class="refresh-circle-btn" (click)="fetchOrders()" aria-label="Refresh Orders">
+      <ion-icon name="refresh-outline" [class.spinning]="isLoading"></ion-icon>
+    </div>
+  </div>
+
+  <!-- Summary Stats Banner -->
+  <div class="stats-banner">
+    <div class="stat-card">
+      <span class="stat-value">{{ totalOrdersCount }}</span>
+      <span class="stat-label">Total Orders</span>
+    </div>
+    <div class="stat-card divider"></div>
+    <div class="stat-card">
+      <span class="stat-value green">{{ deliveredOrdersCount }}</span>
+      <span class="stat-label">Delivered</span>
+    </div>
+    <div class="stat-card divider"></div>
+    <div class="stat-card">
+      <span class="stat-value dark-green">$ {{ totalVolumeAmount.toFixed(2) }}</span>
+      <span class="stat-label">Total Volume</span>
+    </div>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="history-content">
+  <!-- Refresher -->
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull down to refresh orders" refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <div class="main-wrapper">
+    <!-- Search Bar -->
+    <div class="search-box-container">
+      <div class="search-input-wrapper">
+        <ion-icon name="search-outline" class="search-icon"></ion-icon>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search by Order ID, Store, Customer..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()">
+        <button *ngIf="searchQuery" class="clear-search-btn" (click)="searchQuery = ''; applyFilters()">
+          &times;
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Filter Segment Tabs -->
+    <div class="filter-tabs-scroller">
+      <button
+        type="button"
+        class="filter-tab-pill"
+        [class.active]="selectedStatusFilter === 'all'"
+        (click)="setStatusFilter('all')">
+        All ({{ orders.length }})
+      </button>
+      <button
+        type="button"
+        class="filter-tab-pill delivered"
+        [class.active]="selectedStatusFilter === 'delivered'"
+        (click)="setStatusFilter('delivered')">
+        Delivered
+      </button>
+      <button
+        type="button"
+        class="filter-tab-pill active-status"
+        [class.active]="selectedStatusFilter === 'active'"
+        (click)="setStatusFilter('active')">
+        Active
+      </button>
+      <button
+        type="button"
+        class="filter-tab-pill cancelled"
+        [class.active]="selectedStatusFilter === 'cancelled'"
+        (click)="setStatusFilter('cancelled')">
+        Cancelled
+      </button>
+    </div>
+
+    <!-- Secondary Quick Filter Row -->
+    <div class="secondary-filters-row">
+      <!-- Payment Method Filter -->
+      <div class="filter-dropdown-group">
+        <span class="filter-dropdown-label">Payment:</span>
+        <div class="pill-options">
+          <span class="sub-pill" [class.selected]="selectedPaymentFilter === 'all'" (click)="setPaymentFilter('all')">All</span>
+          <span class="sub-pill" [class.selected]="selectedPaymentFilter === 'cod'" (click)="setPaymentFilter('cod')">COD</span>
+          <span class="sub-pill" [class.selected]="selectedPaymentFilter === 'online'" (click)="setPaymentFilter('online')">Online</span>
+        </div>
+      </div>
+
+      <!-- Time Period Filter -->
+      <div class="filter-dropdown-group">
+        <span class="filter-dropdown-label">Time:</span>
+        <div class="pill-options">
+          <span class="sub-pill" [class.selected]="selectedPeriodFilter === 'all'" (click)="setPeriodFilter('all')">All</span>
+          <span class="sub-pill" [class.selected]="selectedPeriodFilter === 'today'" (click)="setPeriodFilter('today')">Today</span>
+          <span class="sub-pill" [class.selected]="selectedPeriodFilter === 'week'" (click)="setPeriodFilter('week')">Week</span>
+          <span class="sub-pill" [class.selected]="selectedPeriodFilter === 'month'" (click)="setPeriodFilter('month')">Month</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Skeleton State -->
+    <div *ngIf="isLoading" class="skeleton-container">
+      <div class="skeleton-card" *ngFor="let i of [1,2,3]">
+        <div class="sk-line header-sk"></div>
+        <div class="sk-line body-sk"></div>
+        <div class="sk-line footer-sk"></div>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="!isLoading && errorMessage" class="error-banner-card">
+      <ion-icon name="alert-circle-outline" class="error-icon"></ion-icon>
+      <p class="error-msg">{{ errorMessage }}</p>
+      <button type="button" class="retry-btn" (click)="fetchOrders()">Try Again</button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && !errorMessage && filteredOrders.length === 0" class="empty-state">
+      <div class="empty-state-content">
+        <ion-icon name="bag-handle-outline" class="empty-icon"></ion-icon>
+        <h4>No Orders Found</h4>
+        <p>No past orders match your selected filters or search query.</p>
+        <button
+          *ngIf="searchQuery || selectedStatusFilter !== 'all' || selectedPaymentFilter !== 'all' || selectedPeriodFilter !== 'all'"
+          type="button"
+          class="reset-filters-btn"
+          (click)="searchQuery = ''; selectedStatusFilter = 'all'; selectedPaymentFilter = 'all'; selectedPeriodFilter = 'all'; applyFilters()">
+          Reset Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Orders List (Home Page Styling) -->
+    <div *ngIf="!isLoading && !errorMessage && filteredOrders.length > 0" class="orders-list-section">
+      <div class="order-card" *ngFor="let order of filteredOrders; trackBy: trackByOrderId">
+        <div class="card-accent-bar"></div>
+
+        <!-- Card Header -->
+        <div class="order-card-header">
+          <span class="order-id">
+            ID: <strong>#{{ order.order_id || order.id || order.order_uid || 'N/A' }}</strong>
+          </span>
+
+          <div class="header-badges">
+            <span class="status-badge" [ngClass]="getOrderStatusClass(order)">
+              <span class="status-dot"></span>
+              {{ getOrderStatusText(order) }}
+            </span>
+
+            <div class="delivery-badge" *ngIf="order.is_fast_delivery || order.fast_delivery">
+              <img src="../../assets/home/fast_delavery_image.svg" class="badge-icon" alt="Fast delivery">
+              <span>Fast Delivery</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Date & Time Row -->
+        <div class="order-meta-info">
+          <div class="meta-item">
+            <ion-icon name="calendar-outline" class="meta-icon"></ion-icon>
+            <span class="meta-value">{{ formatOrderDate(order) }}</span>
+          </div>
+        </div>
+
+        <div class="order-divider"></div>
+
+        <!-- Store Details -->
+        <div class="store-info-row" *ngIf="order.store_name || order.vendor_name">
+          <img
+            [src]="order.store_image || defaultStoreImage"
+            (error)="handleProductImageError($event)"
+            alt="Store Logo"
+            class="store-img">
+          
+          <div class="store-meta">
+            <span class="store-label">Store</span>
+            <h4 class="store-name">{{ order.store_name || order.vendor_name || 'Partner Store' }}</h4>
+            <p class="store-address" *ngIf="order.store_address">
+              <ion-icon name="location-outline"></ion-icon>
+              {{ order.store_address }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Customer Details -->
+        <div class="customer-info-row" *ngIf="order.firstname || order.lastname || order.delivery_address || order.address">
+          <div class="customer-icon-wrap">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <div class="customer-meta">
+            <span class="customer-name" *ngIf="order.firstname || order.lastname">
+              {{ order.firstname || '' }} {{ order.lastname || '' }}
+              <small *ngIf="order.phonenumber">({{ order.phonenumber }})</small>
+            </span>
+            <span class="customer-address" *ngIf="order.delivery_address || order.address">
+              {{ order.delivery_address || order.address }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Structured Items List (Matching Home Page) -->
+        <div class="card-details-section" *ngIf="order.items && order.items.length > 0">
+          <div class="details-heading-row">
+            <span class="details-heading">Order Items</span>
+            <span class="items-count-badge">
+              {{ order.items.length }} {{ order.items.length === 1 ? 'Item' : 'Items' }}
+            </span>
+          </div>
+
+          <div class="structured-items-list">
+            <div class="structured-item-card" *ngFor="let item of order.items; trackBy: trackByItem">
+              <!-- Item Image -->
+              <div class="item-img-wrapper">
+                <img
+                  [src]="item.featured_image || item.product_image || item.image || defaultStoreImage"
+                  (error)="handleProductImageError($event)"
+                  class="item-featured-img"
+                  [alt]="item.product_name || 'Product'">
+              </div>
+
+              <!-- Item Main Info -->
+              <div class="item-main-info">
+                <div class="item-title-row">
+                  <span
+                    class="food-dot"
+                    [ngClass]="{
+                      'green-dot': item.food_type === 'veg',
+                      'red-dot': item.food_type !== 'veg'
+                    }">
+                  </span>
+
+                  <h4 class="structured-item-name">
+                    {{ item.product_name || item.name || 'Item' }}
+                  </h4>
+                </div>
+
+                <div class="item-qty-badge">
+                  <span>Qty: <strong>{{ item.product_quantity || item.quantity || 1 }}</strong></span>
+                  <span class="unit-price-dot" *ngIf="getItemUnitPrice(item) > 0">•</span>
+                  <span class="unit-price-text" *ngIf="getItemUnitPrice(item) > 0">
+                    $ {{ getItemUnitPrice(item).toFixed(2) }} each
+                  </span>
+                </div>
+              </div>
+
+              <!-- Item Total Price -->
+              <div class="item-price-wrapper">
+                <span class="structured-item-price">
+                  $ {{ getItemTotalPrice(item).toFixed(2) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Distinct Order Total Card (Matching Home Page) -->
+        <div class="distinct-order-total-card">
+          <!-- Fee & Tip Breakdown -->
+          <div
+            class="fee-breakdown-section"
+            *ngIf="getItemsTotal(order) > 0 || getFastDeliveryCharge(order) > 0 || getRiderDeliveryCharge(order) > 0 || getTipAmount(order) > 0">
+
+            <!-- Items Subtotal -->
+            <div class="breakdown-row" *ngIf="getItemsTotal(order) > 0">
+              <div class="breakdown-label-group">
+                <ion-icon name="fast-food-outline" class="breakdown-ion-icon"></ion-icon>
+                <span>Items Subtotal</span>
+              </div>
+              <span class="breakdown-value">$ {{ getItemsTotal(order).toFixed(2) }}</span>
+            </div>
+
+            <!-- Fast Delivery Charge -->
+            <div class="breakdown-row" *ngIf="getFastDeliveryCharge(order) > 0">
+              <div class="breakdown-label-group">
+                <img src="../../assets/home/fast_delavery_image.svg" class="breakdown-icon" alt="Fast Delivery">
+                <span>Fast Delivery Charge</span>
+              </div>
+              <span class="breakdown-value orange">+$ {{ getFastDeliveryCharge(order).toFixed(2) }}</span>
+            </div>
+
+            <!-- Rider Delivery Charge -->
+            <div class="breakdown-row" *ngIf="getRiderDeliveryCharge(order) > 0">
+              <div class="breakdown-label-group">
+                <ion-icon name="bicycle-outline" class="breakdown-ion-icon"></ion-icon>
+                <span>Delivery Charge</span>
+              </div>
+              <span class="breakdown-value">+$ {{ getRiderDeliveryCharge(order).toFixed(2) }}</span>
+            </div>
+
+            <!-- Tip Amount -->
+            <div class="breakdown-row" *ngIf="getTipAmount(order) > 0">
+              <div class="breakdown-label-group">
+                <ion-icon name="heart-outline" class="breakdown-ion-icon tip-icon"></ion-icon>
+                <span>
+                  Tip Amount
+                  <small *ngIf="order.tip_percentage && !order.tip_amount">({{ order.tip_percentage }}%)</small>
+                </span>
+              </div>
+              <span class="breakdown-value green">+$ {{ getTipAmount(order).toFixed(2) }}</span>
+            </div>
+          </div>
+
+          <!-- Main Order Total Row -->
+          <div class="total-main-row">
+            <div class="total-label-area">
+              <span class="total-heading">Order Total</span>
+              <span class="payment-method-tag" [class.cod]="isCodOrder(order)">
+                {{ isCodOrder(order) ? 'COD' : (order.payment_method || 'Online') }}
+              </span>
+              <span class="payment-status-tag" [class.paid]="isOrderPaid(order)">
+                {{ isOrderPaid(order) ? 'Paid' : 'Pending Cash' }}
+              </span>
+            </div>
+
+            <div class="total-amount-area">
+              <span class="total-amount-value">
+                $ {{ getOrderTotal(order) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+<app-footer-tabs></app-footer-tabs>

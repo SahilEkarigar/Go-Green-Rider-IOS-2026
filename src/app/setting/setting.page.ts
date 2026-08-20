@@ -215,6 +215,15 @@ export class SettingPage implements OnInit, OnDestroy {
   }
 
 
+  goToOrderHistory(): void {
+
+    this.navCtrl.navigateForward([
+      '/order-history'
+    ]);
+
+  }
+
+
   /* =====================================================
      HEADER BACK
   ===================================================== */
