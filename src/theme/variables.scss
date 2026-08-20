@@ -1,19 +1,3 @@
-// For information on how to create your own theme, please see:
-// http://ionicframework.com/docs/theming/
-
-app-footer-tabs {
-    position: fixed !important;
-    width: 100% !important;
-    bottom: 0px !important;
-    left: 0 !important;
-    box-shadow: 0px 10px 10px #ededed !important;
-}
-
-:root {
-  --ion-safe-area-top: env(safe-area-inset-top);
-  --ion-safe-area-bottom: env(safe-area-inset-bottom);
-  --primary-color: #088B46;
-}
 // Variables
 $primary-color: #088B46;
 $secondary-color: #CA2C2C;
