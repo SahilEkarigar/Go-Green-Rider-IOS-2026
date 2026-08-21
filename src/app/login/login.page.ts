@@ -115,6 +115,12 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   ngOnDestroy() {
 
     if (this.keyboardShowHandle) {

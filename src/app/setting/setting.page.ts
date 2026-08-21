@@ -151,6 +151,12 @@ export class SettingPage implements OnInit, OnDestroy {
 
   }
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
 
   /* =====================================================
      DESTROY

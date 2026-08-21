@@ -16,6 +16,12 @@ export class TermsConditionPage implements OnInit {
 
   ngOnInit() {
   }
+
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
   // goBackToScreen() {
   //   this.navCtrl.navigateBack('/setting-screen');
   // }

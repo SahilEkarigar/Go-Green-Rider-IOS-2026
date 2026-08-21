@@ -20,6 +20,12 @@ export class SplashscreenPage implements OnInit {
     private storage: Storage,
   ) {}
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   async ngOnInit() {
     await this.storage.create();
     const token = (await this.storage.get('user_token')) || (await this.storage.get('token'));
@@ -28,19 +34,28 @@ export class SplashscreenPage implements OnInit {
       if (token) {
         try {
           const decoded: any = jwtDecode(token);
-          const isVerified = decoded?.is_verified ?? decoded?.verification_Done;
-          if (Number(isVerified) === 1) {
-            this.router.navigate(['home']);
+          if (decoded && decoded.user_id) {
+            const isVerified = decoded?.is_verified ?? decoded?.verification_Done;
+            if (Number(isVerified) === 1) {
+              this.router.navigate(['home'], { replaceUrl: true });
+            } else {
+              this.router.navigate(['application-review'], { replaceUrl: true });
+            }
           } else {
-            this.router.navigate(['application-review']);
+            await this.storage.clear();
+            localStorage.removeItem('user_id');
+            this.router.navigate(['/welcome'], { replaceUrl: true });
           }
         } catch (e) {
-          this.router.navigate(['home']);
+          console.error('Invalid token on splashscreen:', e);
+          await this.storage.clear();
+          localStorage.removeItem('user_id');
+          this.router.navigate(['/welcome'], { replaceUrl: true });
         }
       } else {
         setTimeout(() => {
-          this.router.navigate(['/welcome']);
-        }, 3000);
+          this.router.navigate(['/welcome'], { replaceUrl: true });
+        }, 1500);
       }
     }
   }

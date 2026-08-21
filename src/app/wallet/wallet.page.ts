@@ -195,6 +195,13 @@ export class WalletPage implements OnInit {
     this.getOrderDetailsEarnings();
   }
 
+  doRefresh(event: any): void {
+    this.getOrderDetailsEarnings();
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   goBack(): void {
     this.location.back();
   }

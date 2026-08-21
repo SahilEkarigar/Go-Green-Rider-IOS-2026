@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" class="wallet-content">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="wallet-container">
 
     <!-- Balance & Summary Overview Card -->

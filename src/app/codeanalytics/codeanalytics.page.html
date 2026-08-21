@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content class="ioncontent">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <!-- Segment Tabs -->
   <div class="analytics-segment">
     <button [class.active]="selectedTab === 'today'" (click)="selectTab('today')">Today</button>

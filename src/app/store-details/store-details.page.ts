@@ -429,16 +429,16 @@ export class StoreDetailsPage implements AfterViewInit, OnDestroy {
         'Order Delivered';
 
     }
+  }
 
 
+  doRefresh(event: any): void {
     if (this.orderId) {
-
-      this.getCoordinates(
-        this.orderId
-      );
-
+      this.getCoordinates(this.orderId);
     }
-
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
   }
 
 

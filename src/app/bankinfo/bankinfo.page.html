@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="bank-container">
     <!-- Digital Credit/Debit Card graphic -->
     <div class="digital-bank-card">

@@ -61,7 +61,12 @@ export class RiderDetailsPage implements OnInit {
     this.riderDocDetails(token);
   }
 
-  async riderDocDetails(token: any) {
+  async doRefresh(event: any) {
+    const token = await this.storage.get('token');
+    await this.riderDocDetails(token, event);
+  }
+
+  async riderDocDetails(token: any, refresherEvent?: any) {
     const decoded: any = jwtDecode(token);
     const user_id = decoded.user_id;
 
@@ -71,8 +76,9 @@ export class RiderDetailsPage implements OnInit {
     };
 
     const profileObservable = await this.authService.riderDocumentDetails(requestBody);
-    profileObservable.subscribe(
-      (response) => {
+    profileObservable.subscribe({
+      next: (response) => {
+        if (refresherEvent) refresherEvent.target.complete();
         if (response.success && response.data) {
           const data = response.data;
 
@@ -90,10 +96,11 @@ export class RiderDetailsPage implements OnInit {
               : 'assets/home/submitimage.svg';
         }
       },
-      (error) => {
+      error: (error) => {
+        if (refresherEvent) refresherEvent.target.complete();
         console.error('Failed to fetch profile details', error);
       }
-    );
+    });
   }
 
   // async saveUpdateRiderDocDetails(token: any) {

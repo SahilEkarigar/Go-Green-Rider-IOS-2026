@@ -167,6 +167,12 @@ export class RatingsPage implements OnInit {
 
   ngOnInit() {}
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   goBack(): void {
     this.location.back();
   }

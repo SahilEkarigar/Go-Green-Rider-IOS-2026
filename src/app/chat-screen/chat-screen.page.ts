@@ -59,21 +59,32 @@ export class ChatScreenPage implements OnInit {
     this.getOldMessages();
   }
 
+  doRefresh(event: any) {
+    this.getOldMessages(event);
+  }
+
   // ------------------------------
   // FETCH OLD CHAT HISTORY
   // ------------------------------
-  getOldMessages() {
+  getOldMessages(refresherEvent?: any) {
     this.authService.getChatMessages({
       ride_id: this.orderId,
       rider_id: this.rider_id,
       customer_id: this.customer_id
     }).then(api => {
-      api.subscribe((res: any) => {
-        if (res.status) {
-          this.messages = res.data;
-          // console.log("📜 Old messages:", this.messages);
+      api.subscribe({
+        next: (res: any) => {
+          if (res.status) {
+            this.messages = res.data;
+          }
+          if (refresherEvent) refresherEvent.target.complete();
+        },
+        error: () => {
+          if (refresherEvent) refresherEvent.target.complete();
         }
       });
+    }).catch(() => {
+      if (refresherEvent) refresherEvent.target.complete();
     });
   }
 

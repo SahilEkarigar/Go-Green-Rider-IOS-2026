@@ -128,6 +128,12 @@ export class ResetPasswordPage implements OnInit, OnDestroy {
      BACK
   ===================================================== */
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   goBack(): void {
 
     this.location.back();

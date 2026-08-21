@@ -64,6 +64,12 @@ export class MapPage implements OnInit {
       // console.log(this.orders);
   }
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
 
   toggleAccordion(index: number) {
     this.activeIndexOrders = this.activeIndexOrders === index ? null : index; // Toggle logic for "orders"

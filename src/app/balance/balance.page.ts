@@ -51,19 +51,28 @@ export class BalancePage implements OnInit {
     this.getAllOrderHistory(this.rider_id, this.selectedDate);
   }
 
-  getAllOrderHistory(rider_id: any, date?: string) {
+  doRefresh(event: any) {
+    this.getAllOrderHistory(this.rider_id, this.selectedDate, event);
+  }
+
+  getAllOrderHistory(rider_id: any, date?: string, refresherEvent?: any) {
 
     const payload = { rider_id };
 
     const apiDate = date ? date : 'today';
 
     this.authservice.get_all_orders(payload, apiDate)
-      .subscribe(response => {
-        if (response.status == true) {
-          // console.log('Rider Order History', response);
-          this.orders = response.orders;
-        }else{
-          this.orders = [];
+      .subscribe({
+        next: (response) => {
+          if (response.status == true) {
+            this.orders = response.orders;
+          } else {
+            this.orders = [];
+          }
+          if (refresherEvent) refresherEvent.target.complete();
+        },
+        error: () => {
+          if (refresherEvent) refresherEvent.target.complete();
         }
       });
   }

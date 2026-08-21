@@ -240,4 +240,51 @@ textarea {
   appearance: none !important;
   -webkit-appearance: none !important;
 }
+
+/* 🚀 Hardware-Accelerated Smooth Page Open Transitions & Zero-Conflict Setup */
+ion-router-outlet,
+ion-page {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  background-color: var(--ion-background-color, #ffffff) !important;
+}
+
+.ion-page {
+  animation: pageFadeIn 0.28s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0.85;
+    transform: translate3d(0, 4px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* 💧 Refresher Custom Styling */
+ion-refresher {
+  z-index: 99;
+}
+
+ion-refresher-content {
+  --color: #005528;
+  --spinner-color: #005528;
+  font-family: var(--ion-font-family);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* 🖼️ Premium image loading transition */
+img {
+  transition: opacity 0.25s ease-in-out;
+}
+img[loading="lazy"] {
+  will-change: opacity;
+}
+
 

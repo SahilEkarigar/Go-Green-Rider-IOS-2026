@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content class="ion-padding content">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="policy-container">
     <p class="intro-text">
       At Go Green Store, we are committed to protecting your privacy. This Privacy Policy outlines how we collect, use, and safeguard your personal information when you use our services.

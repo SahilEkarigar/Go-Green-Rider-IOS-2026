@@ -60,6 +60,12 @@ export class WithdrawalPage implements OnInit {
     },
   ];
   ngOnInit() { }
+
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
   getStatusIcon(status: string): string {
     switch (status.trim().toLowerCase()) {
       case 'completed':

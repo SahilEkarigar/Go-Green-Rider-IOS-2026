@@ -79,7 +79,12 @@ export class EditAccountPage implements OnInit {
     }
 
   }
-  async riderProfileDetails(token: any) {
+  async doRefresh(event: any) {
+    const token = await this.storage.get('token');
+    await this.riderProfileDetails(token, event);
+  }
+
+  async riderProfileDetails(token: any, refresherEvent?: any) {
     const decoded: any = jwtDecode(token);
     const user_id = decoded.user_id;
 
@@ -89,8 +94,9 @@ export class EditAccountPage implements OnInit {
     };
 
     const profileObservable = await this.authService.riderProfileDetails(requestBody);
-    profileObservable.subscribe(
-      (response) => {
+    profileObservable.subscribe({
+      next: (response) => {
+        if (refresherEvent) refresherEvent.target.complete();
         if (response.success && response.data) {
           const data = response.data;
           this.userName = data.username || '';
@@ -105,10 +111,11 @@ export class EditAccountPage implements OnInit {
           this.riderProfilePicture = data.profile_pic || '';
         }
       },
-      (error) => {
+      error: (error) => {
+        if (refresherEvent) refresherEvent.target.complete();
         console.error('Failed to fetch profile details', error);
       }
-    );
+    });
   }
 
   async updateProfile() {  

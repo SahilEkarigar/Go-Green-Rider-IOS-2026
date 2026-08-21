@@ -57,6 +57,12 @@ export class ForgotPasswordPage {
      BACK
   ===================================================== */
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   goBack(): void {
 
     this.location.back();

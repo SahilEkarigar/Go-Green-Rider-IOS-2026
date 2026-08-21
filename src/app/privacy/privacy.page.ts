@@ -15,6 +15,11 @@ export class PrivacyPage implements OnInit {
   constructor(private location: Location, private navCtrl: NavController) {}
 
   ngOnInit() {}
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
   goBack(): void {
     this.location.back();
   }

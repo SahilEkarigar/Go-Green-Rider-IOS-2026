@@ -62,6 +62,13 @@ export class ShopstatusPage implements OnInit {
     });
   }
 
+  async doRefresh(event: any) {
+    await this.userService.refreshUserData();
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   // ✅ Ionic lifecycle: runs every time page is navigated to
   async ionViewWillEnter() {
     await this.userService.refreshUserData();

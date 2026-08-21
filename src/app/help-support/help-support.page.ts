@@ -80,6 +80,13 @@ export class HelpSupportPage implements OnInit {
     this.updateSupportStatus();
   }
 
+  doRefresh(event: any): void {
+    this.updateSupportStatus();
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   updateSupportStatus() {
     const now = new Date();
     const day = now.getDay(); // 0 = Sunday

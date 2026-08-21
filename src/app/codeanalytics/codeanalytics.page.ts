@@ -41,9 +41,15 @@ export class CodeAnalyticsPage implements OnInit {
     this.loadAnalytics();
   }
 
-  loadAnalytics() {
-    this.authservice.getRiderAnalytics(this.user_id).subscribe((res: any) => {
-      if (res.success) {
+  doRefresh(event: any) {
+    this.loadAnalytics(event);
+  }
+
+  loadAnalytics(refresherEvent?: any) {
+    this.authservice.getRiderAnalytics(this.user_id).subscribe({
+      next: (res: any) => {
+        if (refresherEvent) refresherEvent.target.complete();
+        if (res.success) {
         const data = res.data;
         // console.log("received data", data);
 
@@ -78,6 +84,10 @@ export class CodeAnalyticsPage implements OnInit {
         // set default tab data
         this.currentData = this.stats[this.selectedTab];
       }
+    },
+    error: () => {
+      if (refresherEvent) refresherEvent.target.complete();
+    }
     });
   }
 

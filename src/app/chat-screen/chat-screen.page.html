@@ -14,6 +14,9 @@
 
 
 <ion-content >
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="chat-container">
     <div class="messages" id="chatMessages">
       <div *ngFor="let msg of messages" [ngClass]="msg.sender_id == rider_id ? 'my-message' : 'their-message'"

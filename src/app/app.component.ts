@@ -174,23 +174,19 @@ export class AppComponent {
       // });
     });
     
-    let userId = await this.storage.get('user_id');
+    const userId = await this.storage.get('user_id');
 
-    while (!userId) {
-      // console.log('⏳ Waiting for user_id...');
-      await new Promise(r => setTimeout(r, 500));
-      userId = await this.storage.get('user_id');
-    }
+    if (userId) {
+      // ✅ Initialize socket and background management
+      this.socketManager.initialize(this.notificationHandler, this.isAppActive);
 
-    // ✅ Initialize socket and background management
-    this.socketManager.initialize(this.notificationHandler, this.isAppActive);
-
-    // ✅ Start GPS tracking
-    try {
-      this.locationTracker.startTracking();
-      // console.log('🛰️ Location tracking started');
-    } catch (err) {
-      console.error('⚠️ Location tracking failed:', err);
+      // ✅ Start GPS tracking
+      try {
+        this.locationTracker.startTracking();
+        // console.log('🛰️ Location tracking started');
+      } catch (err) {
+        console.error('⚠️ Location tracking failed:', err);
+      }
     }
 
     // console.log('✅ App initialization complete.');

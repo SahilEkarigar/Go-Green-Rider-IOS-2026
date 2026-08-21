@@ -17,6 +17,12 @@ export class WelcomePage {
     private router: Router
   ) {}
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   loginPage(): void {
     this.router.navigate(['/login']);
   }

@@ -134,14 +134,18 @@ export class HomePage implements OnInit, OnDestroy {
 
         if (isVerified !== undefined && Number(isVerified) !== 1) {
           console.log('User is not verified (is_verified = ' + isVerified + '). Redirecting to application-review...');
-          this.router.navigate(['application-review']);
+          this.router.navigate(['application-review'], { replaceUrl: true });
           return;
         }
       } catch (e) {
         console.error('Error decoding token in home page:', e);
+        await this.storage.clear();
+        localStorage.removeItem('user_id');
+        this.router.navigate(['/welcome'], { replaceUrl: true });
+        return;
       }
     } else {
-      this.router.navigate(['login']);
+      this.router.navigate(['/welcome'], { replaceUrl: true });
       return;
     }
 

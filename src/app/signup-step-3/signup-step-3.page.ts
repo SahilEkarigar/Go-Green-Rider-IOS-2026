@@ -128,6 +128,12 @@ export class SignupStep3Page implements OnInit, OnDestroy {
   }
 
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   ngOnDestroy(): void {
 
     if (this.validationTimer) {

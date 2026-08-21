@@ -17,6 +17,12 @@ export class ResendOtpPage implements OnInit {
 
   ngOnInit() {}
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   moveToNext(event: any) {
     const input = event.target;
     const value = input.value;

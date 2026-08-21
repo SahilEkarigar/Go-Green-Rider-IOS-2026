@@ -135,7 +135,12 @@ export class VehicelDetailsPage implements OnInit {
   // 
   // regDocumentName: string = '';
 
-  async vehicleDetailsData(token: any) {
+  async doRefresh(event: any) {
+    const token = await this.storage.get('token');
+    await this.vehicleDetailsData(token, event);
+  }
+
+  async vehicleDetailsData(token: any, refresherEvent?: any) {
     const decoded: any = jwtDecode(token);
     const user_id = decoded.user_id;
 
@@ -147,8 +152,9 @@ export class VehicelDetailsPage implements OnInit {
     };
 
     const profileObservable = await this.authService.vehicleDetailsData(requestBody);
-    profileObservable.subscribe(
-      (response) => {
+    profileObservable.subscribe({
+      next: (response) => {
+        if (refresherEvent) refresherEvent.target.complete();
         if (response.success && response.data) {
           const data = response.data;
           this.vehicleOwnerName = data.vehicle_owner_name || '';
@@ -158,10 +164,11 @@ export class VehicelDetailsPage implements OnInit {
           this.regDocumentPreview = data.registration_doc || '';
         }
       },
-      (error) => {
+      error: (error) => {
+        if (refresherEvent) refresherEvent.target.complete();
         console.error('Failed to fetch profile details', error);
       }
-    );
+    });
   }
 
 

@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="withdrawal-container pBottom">
     <div class="transactions-list-section">
       <h2 class="section-title">Latest Withdrawals</h2>

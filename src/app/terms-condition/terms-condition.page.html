@@ -9,6 +9,9 @@
 </ion-header>
 
 <ion-content class="ion-padding content">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="policy-container">
     <p class="intro-text">
       Welcome to Go Green Store! These Terms & Conditions govern your use of our mobile application and services. Please read them carefully before proceeding.

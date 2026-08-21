@@ -1,4 +1,7 @@
 <ion-content class="ioncontent container">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="container">
 
     <div class="create_account">

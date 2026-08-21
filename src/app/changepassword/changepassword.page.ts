@@ -41,6 +41,12 @@ export class ChangepasswordPage implements OnInit {
     this.user_id = decoded.user_id;  
   }
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   goBack(): void {
     this.location.back();
   }

@@ -19,6 +19,12 @@ export class FAQsPage implements OnInit {
 
   ngOnInit() { }
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
   goBack(): void {
     this.location.back();
   }

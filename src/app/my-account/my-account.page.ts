@@ -17,4 +17,10 @@ export class MyAccountPage implements OnInit {
   ngOnInit() {
   }
 
+  doRefresh(event: any): void {
+    setTimeout(() => {
+      event.target.complete();
+    }, 800);
+  }
+
 }

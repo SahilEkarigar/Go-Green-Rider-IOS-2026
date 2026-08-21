@@ -15,6 +15,9 @@
 </ion-header>
 
 <ion-content class="ioncontent">
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingText="Pull to refresh" refreshingSpinner="crescent"></ion-refresher-content>
+  </ion-refresher>
   <div class="container main">
     <div class="create_account">
       <img src="../../assets/home/profileimage.svg" class="order_in_seconds" alt="order_in_seconds" title="order_in_seconds">

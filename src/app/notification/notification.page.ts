@@ -72,11 +72,16 @@ export class NotificationPage implements OnInit {
   }
 
 
+  doRefresh(event: any): void {
+    this.loadNotifications(event);
+  }
+
+
   /* =====================================================
      LOAD NOTIFICATIONS
   ===================================================== */
 
-  private loadNotifications(): void {
+  private loadNotifications(refresherEvent?: any): void {
 
     const userId =
       localStorage.getItem(
@@ -91,13 +96,16 @@ export class NotificationPage implements OnInit {
       this.loadingNotifications =
         false;
 
+      if (refresherEvent) refresherEvent.target.complete();
       return;
 
     }
 
 
-    this.loadingNotifications =
-      true;
+    if (!refresherEvent) {
+      this.loadingNotifications =
+        true;
+    }
 
 
     this.auth
@@ -125,6 +133,7 @@ export class NotificationPage implements OnInit {
           this.loadingNotifications =
             false;
 
+          if (refresherEvent) refresherEvent.target.complete();
         },
 
 
@@ -144,6 +153,7 @@ export class NotificationPage implements OnInit {
           this.loadingNotifications =
             false;
 
+          if (refresherEvent) refresherEvent.target.complete();
         }
 
       });

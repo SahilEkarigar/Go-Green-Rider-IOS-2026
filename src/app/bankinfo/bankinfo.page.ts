@@ -38,12 +38,19 @@ export class BankinfoPage implements OnInit {
     this.loadBankInfo();
   }
 
-  async loadBankInfo() {
-    const loading = await this.loadingCtrl.create({
-      message: 'Loading bank details...',
-      spinner: 'circles',
-    });
-    await loading.present();
+  doRefresh(event: any) {
+    this.loadBankInfo(event);
+  }
+
+  async loadBankInfo(refresherEvent?: any) {
+    let loading: any = null;
+    if (!refresherEvent) {
+      loading = await this.loadingCtrl.create({
+        message: 'Loading bank details...',
+        spinner: 'circles',
+      });
+      await loading.present();
+    }
 
     try {
       const user_id = await this.storage.get('user_id');
@@ -55,7 +62,8 @@ export class BankinfoPage implements OnInit {
 
       this.authService.getBankInfo(user_id).subscribe({
         next: async (res: any) => {
-          await loading.dismiss();
+          if (loading) await loading.dismiss();
+          if (refresherEvent) refresherEvent.target.complete();
           if (res.success && res.data) {
             this.accountHolderName = res.data.account_holder_name || '';
             this.bankName = res.data.bank_name || '';
@@ -72,7 +80,8 @@ export class BankinfoPage implements OnInit {
           }
         },
         error: async (err) => {
-          await loading.dismiss();
+          if (loading) await loading.dismiss();
+          if (refresherEvent) refresherEvent.target.complete();
           console.error('Error fetching bank info:', err);
           const toast = await this.toastCtrl.create({
             message: 'Failed to load bank details. Please try again.',
@@ -83,7 +92,8 @@ export class BankinfoPage implements OnInit {
         },
       });
     } catch (e) {
-      await loading.dismiss();
+      if (loading) await loading.dismiss();
+      if (refresherEvent) refresherEvent.target.complete();
       console.error('Error retrieving user_id:', e);
     }
   }
